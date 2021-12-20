@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moonshot | Home</title>
+    <%- include("partials/commonStyles.ejs") %>
+    <%- include("partials/commonFonts.ejs") %>
+</head>
+<body>
+    <h1>Tender pre-advise</h1>
+    <p><a href="/moonshot">Go back to the index</a></p>
+
+    <ul>
+        <% for (let preadvisedTender of allPreadvisedTenders) { %>
+            <li><%= preadvisedTender.companyName %> | Expected launch date: <strong><%= preadvisedTender.expectedReceiveDate.getDate() %>-<%= preadvisedTender.expectedReceiveDate.getMonth() + 1 %>-<%= preadvisedTender.expectedReceiveDate.getFullYear() %></strong> | <a href="/moonshot/preadvised/<%= preadvisedTender._id %> ">Data</a></li>
+            <% } %>
+    </ul>
+
+    <%- include("partials/commonBootstrap.ejs") %>
+</body>
+</html>

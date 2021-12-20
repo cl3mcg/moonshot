@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moonshot | Home</title>
+    <%- include("partials/commonStyles.ejs") %>
+    <%- include("partials/commonFonts.ejs") %>
+</head>
+<body>
+    <h1> <%= matchingTender.companyName %>  </h1>
+    <h2>Tender pre-advised</h2>
+    <p><a href="/moonshot">Go back to the index</a></p>
+
+<ul>
+    <li>Registered by:</li>
+    <li>Registered on:</li>
+    <li>Sugar ID: <%= matchingTender.sugarID %></li>
+    <li>Expected receive date: <%= matchingTender.expectedReceiveDate.getDate() %>-<%= matchingTender.expectedReceiveDate.getMonth() + 1 %>-<%= matchingTender.expectedReceiveDate.getFullYear() %></li>
+    <li>Transport Mode: <% for (let transport of matchingTender.transportMode) {%> <%=transport%>, <% } %></li>
+    <li>Expected volumes: <% if (matchingTender.airFreightVolume > 0) { %> <%=`${matchingTender.airFreightVolume} Tons`%> <% } else if (matchingTender.seaFreightFCLVolume > 0) { %> <%=`${matchingTender.seaFreightFCLVolume} TEUs`%> <% } else if (matchingTender.seaFreightLCLVolume > 0) { %> <%=`${matchingTender.seaFreightLCLVolume} CBMs`%> <% } else if (matchingTender.railFreightVolume > 0) { %> <%=`${matchingTender.railFreightVolume} TEUs`%><% }%></li>
+    <li></li>
+</ul>
+
+    <%- include("partials/commonBootstrap.ejs") %>
+</body>
+</html>

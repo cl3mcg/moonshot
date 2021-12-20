@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moonshot | Home</title>
+    <%- include("partials/commonStyles.ejs") %>
+    <%- include("partials/commonFonts.ejs") %>
+</head>
+<body>
+    <h1>Tender pre-advise</h1>
+    <p><a href="/moonshot">Go back to the index</a></p>
+    <h2>Pre-advise the tender team about a tender to be launched in the future</h2>
+    <p>Dear Account Owner,<br>
+        The professional handling of a tender is a comprehensive task for our organization that involves substantial company resources. <br>
+        Please invest the following 2-5 minutes to announce your tender. <br>
+        Thank you!</p>
+
+<form action="/moonshot/preadvised/new" method="POST">
+
+<h3>Account information</h3>
+ <p>Please complete following details about your customer / prospect</p>
+    <div>
+        <div>
+            <label for="companyName"><h4>Company Name (Customer)</h4></label>
+        </div>
+        <div>
+            Please only enter the 'group company name' of your customer / prospect. No special characters allowed
+        </div>
+        <input type="text" id="companyName" name="companyName">
+
+        <div>
+            <label for="sugarID"><h4>Sugar ID</h4></label>
+        </div>
+        <div>
+            Please only enter ONE correct "main" Ident Number from the Sugar CRM system:
+        </div>
+        <input type="text" id="sugarID" name="sugarID">
+    
+        <div>
+            <label for="expectedReceiveDate"><h4>Expected receive date</h4></label>
+        </div>
+        <div>
+            When do you expect to receive the tender?
+        </div>
+        <input type="date" id="expectedReceiveDate" name="expectedReceiveDate">
+    </div>
+
+<h3>Volume information</h3>
+    <div>
+        <div>
+            <input type="checkbox" id="hasAirFreight" name="transportMode" value="hasAirFreight">
+            <label for="hasAirFreight">Air freight</label>
+            <label for="airFreightVolume">Volumes (in Tons)</label>
+            <input type="number" min="0" id="airFreightVolume" name="airFreightVolume" value="0">
+        </div>
+        <div>
+            <input type="checkbox" id="hasSeaFreightFCL" name="transportMode" value="hasSeaFreightFCL">
+            <label for="hasSeaFreightFCL">Sea freight FCL</label>
+            <label for="seaFreightFCLVolume">Volumes (in TEU)</label>
+            <input type="number" min="0" id="seaFreightFCLVolume" name="seaFreightFCLVolume" value="0">
+        </div>
+        <div>
+            <input type="checkbox" id="hasSeaFreightLCL" name="transportMode" value="hasSeaFreightLCL">
+            <label for="hasSeaFreightLCL">Sea freight LCL</label>
+            <label for="seaFreightLCLVolume">Volumes (in CBM)</label>
+            <input type="number" min="0" id="seaFreightLCLVolume" name="seaFreightLCLVolume" value="0">
+        </div>
+        <div>
+            <input type="checkbox" id="hasRailFreight" name="transportMode" value="hasRailFreight">
+            <label for="hasRailFreight">Rail freight</label>
+            <label for="railFreightVolume">Volumes (in TEU)</label>
+            <input type="number" min="0" id="railFreightVolume" name="railFreightVolume" value="0">
+        </div>
+    </div>
+
+    <h3>Key tradelanes</h3>
+        <div>
+            <table>
+                <thead>
+                    <tr>
+                    <th>From</th>
+                    <th>From Africa</th>
+                    <th>From Americas</th>
+                    <th>From Asia</th>
+                    <th>From Europe</th>
+                    <th>From Oceania</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    <td>To Africa</td>
+                    <td><input type="checkbox" id="africaToAfrica" name="keyTradelanes" value="africaToAfrica"></td>
+                    <td><input type="checkbox" id="americasToAfrica" name="keyTradelanes" value="africaToAmericas"></td>
+                    <td><input type="checkbox" id="asiaToAfrica" name="keyTradelanes" value="asiaToAfrica"></td>
+                    <td><input type="checkbox" id="europeToAfrica" name="keyTradelanes" value="europeToAfrica"></td>
+                    <td><input type="checkbox" id="oceaniaToAfrica" name="keyTradelanes" value="oceaniaToAfrica"></td>
+                    </tr>
+                    <tr>
+                    <td>To Americas</td>
+                    <td><input type="checkbox" id="africaToAmericas" name="keyTradelanes" value="africaToAmericas"></td>
+                    <td><input type="checkbox" id="americasToAmericas" name="keyTradelanes" value="africaToAmericas"></td>
+                    <td><input type="checkbox" id="asiaToAmericas" name="keyTradelanes" value="asiaToAmericas"></td>
+                    <td><input type="checkbox" id="europeToAmericas" name="keyTradelanes" value="europeToAmericas"></td>
+                    <td><input type="checkbox" id="oceaniaToAmericas" name="keyTradelanes" value="oceaniaToAmericas"></td>
+                    </tr>
+                    <tr>
+                    <td>To Asia</td>
+                    <td><input type="checkbox" id="africaToAsia" name="keyTradelanes" value="africaToAsia"></td>
+                    <td><input type="checkbox" id="americasToAsia" name="keyTradelanes" value="africaToAsia"></td>
+                    <td><input type="checkbox" id="asiaToAsia" name="keyTradelanes" value="asiaToAsia"></td>
+                    <td><input type="checkbox" id="europeToAsia" name="keyTradelanes" value="europeToAsia"></td>
+                    <td><input type="checkbox" id="oceaniaToAsia" name="keyTradelanes" value="oceaniaToAsia"></td>
+                    </tr>
+                    <tr>
+                    <td>To Europe</td>
+                    <td><input type="checkbox" id="africaToEurope" name="keyTradelanes" value="africaToEurope"></td>
+                    <td><input type="checkbox" id="americasToEurope" name="keyTradelanes" value="africaToEurope"></td>
+                    <td><input type="checkbox" id="asiaToEurope" name="keyTradelanes" value="asiaToEurope"></td>
+                    <td><input type="checkbox" id="europeToEurope" name="keyTradelanes" value="europeToEurope"></td>
+                    <td><input type="checkbox" id="oceaniaToEurope" name="keyTradelanes" value="oceaniaToEurope"></td>
+                    </tr>
+                    <tr>
+                    <td>To Oceania</td>
+                    <td><input type="checkbox" id="africaToOceania" name="keyTradelanes" value="africaToOceania"></td>
+                    <td><input type="checkbox" id="americasToOceania" name="keyTradelanes" value="africaToOceania"></td>
+                    <td><input type="checkbox" id="asiaToOceania" name="keyTradelanes" value="asiaToOceania"></td>
+                    <td><input type="checkbox" id="europeToOceania" name="keyTradelanes" value="europeToOceania"></td>
+                    <td><input type="checkbox" id="oceaniaToOceania" name="keyTradelanes" value="oceaniaToOceania"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    <h3>Rhenus relashionship</h3>
+        <div>
+            <h4>Existing Customer Rhenus Group</h4>
+                <p>Is the tendering company an existing customer to the Rhenus Group (locally or globally)? If more than one, please only select the business unit with the biggest stake.</p>
+                    <div>
+                        <input type="checkbox" id="historyAir&Ocean" name="relashionship" value="historyAir&Ocean">
+                        <label for="historyAir&Ocean">Yes - Rhenus Air & Ocean</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="historyRoadFreight" name="relashionship" value="historyRoadFreight">
+                        <label for="historyRoadFreight">Yes - Rhenus Road</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="historyContractLog" name="relashionship" value="historyContractLog">
+                        <label for="historyContractLog">Yes - Rhenus Contract Logistics</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="historyPortLog" name="relashionship" value="historyPortLog">
+                        <label for="historyPortLog">Yes - Rhenus Port Logistics</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="historyNone" name="relashionship" value="historyNone">
+                        <label for="historyNone">No history</label>
+                    </div>
+        </div>
+        <div>
+            <h4>Existing Customer Rhenus Air & Ocean</h4>
+                <p>If existing customer in Air & Ocean, please choose from the segmentation below (only estimate):</p>
+
+                <div>
+                    <input type="radio" id="segmentA" name="existingCustomerSegment" value="A-customer">
+                    <label for="segmentA">A: > 100 K€ gross profit p. a.</label>
+                </div>
+                
+                <div>
+                    <input type="radio" id="segmentB" name="existingCustomerSegment" value="B-customer">
+                    <label for="segmentB">B: > 50 K€ gross profit p. a. </label>
+                </div>
+                
+                <div>
+                    <input type="radio" id="segmentC" name="existingCustomerSegment" value="C-customer">
+                    <label for="segmentC">C: > 10 K€ gross profit p. a.</label>
+                </div>
+
+            <h4>Additional Comments</h4>
+                <p>Please feel free to share any comments that may be helpul for the tender team</p>
+                <textarea name="additionalComment" id="additionalComment" cols="30" rows="10"></textarea>
+        </div>
+
+
+    <h3>Tender Management</h3>
+        <div>
+            <h4>Global Region</h4>
+            <!-- <p>Select your global region</p>
+            <select name="globalRegion" id="globalRegion">
+                <option value="">--Please choose an option--</option>
+                <option value="africa">Africa</option>
+                <option value="americas">Americas</option>
+                <option value="Asia">Asia</option>
+                <option value="Europe">Europe</option>
+                <option value="Oceania">Oceania</option>
+            </select>
+            <h4>Region</h4> -->
+            <p>Select your country (or area):</p>
+            <select name="countryLocation" id="countryLocation">
+                <option value="">--Please choose an option--</option>
+<% for (let country of countriesData) { %>
+    <option value="<%= country.cca2 %>"><%= country.flag %> <span class="font-monospace"><%= country.cca2 %></span> <%= country.name.common %></option>
+<% } %>
+            </select>
+        </div>
+
+    <button>Submit</button>
+</form>
+    <%- include("partials/commonBootstrap.ejs") %>
+</body>
+</html>
