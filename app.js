@@ -12,6 +12,7 @@ const PreadvisedTender = require("./models/preadvisedTender.js")
 
 // Ressources
 const countriesData = require('./public/ressources/countries.json')
+const monthsData = require('./public/ressources/months.json')
 
 // Middlewares
 app.use(express.static(path.join(__dirname, 'public')))
@@ -72,39 +73,42 @@ app.post("/moonshot/preadvised/new", async function(req,res){
         seaFreightLCLVolume,
         railFreightVolume]
         for (let entry of volValidation) {if (!entry) {entry = 0}}
-        let arrayValidation = [transportMode, keyTradelanes]
-        for (let entry of arrayValidation) {if (typeof(entry) != "object") {entry = [entry]}}
-        let newEntry = new PreadvisedTender({
-            companyName: companyName,
-            sugarID: sugarID,
-            expectedReceiveDate: expectedReceiveDate,
-            transportMode: transportMode,
-            airFreightVolume: airFreightVolume,
-            seaFreightFCLVolume: seaFreightFCLVolume,
-            seaFreightLCLVolume: seaFreightLCLVolume,
-            railFreightVolume: railFreightVolume,
-            keyTradelanes: keyTradelanes,
-            history: relashionship,
-            existingCustomerSegment: existingCustomerSegment,
-            additionalComment: additionalComment,
-            countryLocation: countryLocation,
-        })
-        await newEntry.save()
-        console.log(`A new TENDER PRE-ADVISE has been registered in the database: ${companyName}`)
+    let arrayValidation = [transportMode,
+        keyTradelanes]
+    for (let entry of arrayValidation) {if (typeof(entry) != "object") {entry = [entry]}}
+    let registrationDate = function () {return new Date(Date.now())}
+    let newEntry = new PreadvisedTender({
+        recordDate: registrationDate(),
+        companyName: companyName,
+        sugarID: sugarID,
+        expectedReceiveDate: expectedReceiveDate,
+        transportMode: transportMode,
+        airFreightVolume: airFreightVolume,
+        seaFreightFCLVolume: seaFreightFCLVolume,
+        seaFreightLCLVolume: seaFreightLCLVolume,
+        railFreightVolume: railFreightVolume,
+        keyTradelanes: keyTradelanes,
+        history: relashionship,
+        existingCustomerSegment: existingCustomerSegment,
+        additionalComment: additionalComment,
+        countryLocation: countryLocation,
+    })
+    await newEntry.save()
+    console.log(`A new TENDER PRE-ADVISE has been registered in the database: ${companyName}`)
     res.redirect("/moonshot/preadvised/new")
 })
 
 
 app.get("/moonshot/preadvised", async function (req, res) {
     let allPreadvisedTenders = await PreadvisedTender.find({})
-    res.render("preadvised_index.ejs", {countriesData, allPreadvisedTenders})
+    res.render("preadvised_index.ejs", {countriesData, monthsData, allPreadvisedTenders})
 })
 
 app.get("/moonshot/preadvised/:id", async function (req, res) {
     let matchingId = req.params.id
     let matchingTender = await PreadvisedTender.findById(matchingId)
     console.log(matchingTender)
-    res.render("preadvised_show.ejs", {matchingTender})
+    res.render("preadvised_show.ejs", {countriesData, monthsData, matchingTender})
 })
 
 app.listen(3000, function () {
