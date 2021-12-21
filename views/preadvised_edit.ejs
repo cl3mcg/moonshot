@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moonshot | Home</title>
+    <%- include("partials/commonStyles.ejs") %>
+    <%- include("partials/commonFonts.ejs") %>
+</head>
+<body>
+    <h1>Edit the Tender pre-advise</h1>
+    <p><a href="/moonshot">Go back to the index</a></p>
+    <h2>Edit the information related to the pre-advise of a tender.</h2>
+    <p>Dear Account Owner,<br>
+        The professional handling of a tender is a comprehensive task for our organization that involves substantial company resources. <br>
+        Feel free to edit the information related to the tender with accurate information. <br>
+        Thank you!</p>
+
+<form action="/moonshot/preadvised/edit/<%= matchingTender.id %>?_method=PATCH" method="POST">
+
+<h3>Account information</h3>
+ <p>Please complete following details about your customer / prospect</p>
+    <div>
+        <div>
+            <label for="companyName"><h4>Company Name (Customer)</h4></label>
+        </div>
+        <div>
+            Please only enter the 'group company name' of your customer / prospect. No special characters allowed
+        </div>
+        <input type="text" id="companyName" name="companyName" value="<%= matchingTender.companyName %>">
+
+        <div>
+            <label for="sugarID"><h4>Sugar ID</h4></label>
+        </div>
+        <div>
+            Please only enter ONE correct "main" Ident Number from the Sugar CRM system:
+        </div>
+        <input type="text" id="sugarID" name="sugarID" value="<%= matchingTender.sugarID %>">
+    
+        <div>
+            <label for="expectedReceiveDate"><h4>Expected receive date</h4></label>
+        </div>
+        <div>
+            When do you expect to receive the tender?
+        </div>
+        <input type="date" id="expectedReceiveDate" name="expectedReceiveDate" value="<%= matchingTender.expectedReceiveDate.getFullYear() %>-<% if (matchingTender.expectedReceiveDate.getMonth() + 1 < 10) { %><%= `0${matchingTender.expectedReceiveDate.getMonth() + 1}` %><% } else { %><%= matchingTender.expectedReceiveDate.getMonth() + 1 %><% } %>-<% if (matchingTender.expectedReceiveDate.getDate() < 10) { %><%= `0${matchingTender.expectedReceiveDate.getDate()}` %><% } else { %><%= matchingTender.expectedReceiveDate.getDate()%><% } %>">
+    </div>
+
+<h3>Volume information</h3>
+    <div>
+        <div>
+            <input type="checkbox" id="hasAirFreight" name="transportMode" value="hasAirFreight" <% if (matchingTender.transportMode.includes("hasAirFreight")) { %><%= "checked" %><% } %>>
+            <label for="hasAirFreight">Air freight</label>
+            <label for="airFreightVolume">Volumes (in Tons)</label>
+            <input type="number" min="0" id="airFreightVolume" name="airFreightVolume" value="<% if (matchingTender.airFreightVolume != 0) { %><%= matchingTender.airFreightVolume %><% } else { %><%= 0 %><% } %>" >
+        </div>
+        <div>
+            <input type="checkbox" id="hasSeaFreightFCL" name="transportMode" value="hasSeaFreightFCL" <% if (matchingTender.transportMode.includes("hasSeaFreightFCL")) { %><%= "checked" %><% } %>>
+            <label for="hasSeaFreightFCL">Sea freight FCL</label>
+            <label for="seaFreightFCLVolume">Volumes (in TEU)</label>
+            <input type="number" min="0" id="seaFreightFCLVolume" name="seaFreightFCLVolume" value="<% if (matchingTender.seaFreightFCLVolume != 0) { %><%= matchingTender.seaFreightFCLVolume %><% } else { %><%= 0 %><% } %>" >
+        </div>
+        <div>
+            <input type="checkbox" id="hasSeaFreightLCL" name="transportMode" value="hasSeaFreightLCL" <% if (matchingTender.transportMode.includes("hasSeaFreightLCL")) { %><%= "checked" %><% } %>>
+            <label for="hasSeaFreightLCL">Sea freight LCL</label>
+            <label for="seaFreightLCLVolume">Volumes (in CBM)</label>
+            <input type="number" min="0" id="seaFreightLCLVolume" name="seaFreightLCLVolume" value="<% if (matchingTender.seaFreightLCLVolume != 0) { %><%= matchingTender.seaFreightLCLVolume %><% } else { %><%= 0 %><% } %>">
+        </div>
+        <div>
+            <input type="checkbox" id="hasRailFreight" name="transportMode" value="hasRailFreight" <% if (matchingTender.transportMode.includes("hasRailFreight")) { %><%= "checked" %><% } %>>
+            <label for="hasRailFreight">Rail freight</label>
+            <label for="railFreightVolume">Volumes (in TEU)</label>
+            <input type="number" min="0" id="railFreightVolume" name="railFreightVolume" value="<% if (matchingTender.railFreightVolume != 0) { %><%= matchingTender.railFreightVolume %><% } else { %><%= 0 %><% } %>">
+        </div>
+    </div>
+
+    <h3>Key tradelanes</h3>
+        <div>
+            <table>
+                <thead>
+                    <tr>
+                    <th>From</th>
+                    <th>From Africa</th>
+                    <th>From Americas</th>
+                    <th>From Asia</th>
+                    <th>From Europe</th>
+                    <th>From Oceania</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    <td>To Africa</td>
+                    <td><input type="checkbox" id="africaToAfrica" name="keyTradelanes" value="africaToAfrica" <% if (matchingTender.keyTradelanes.includes("africaToAfrica")) { %><%= "checked" %><% } %>></td>
+                    <td><input type="checkbox" id="americasToAfrica" name="keyTradelanes" value="americasToAfrica" <% if (matchingTender.keyTradelanes.includes("americasToAfrica")) { %><%= "checked" %><% } %>></td>
+                    <td><input type="checkbox" id="asiaToAfrica" name="keyTradelanes" value="asiaToAfrica" <% if (matchingTender.keyTradelanes.includes("asiaToAfrica")) { %><%= "checked" %><% } %>></td>
+                    <td><input type="checkbox" id="europeToAfrica" name="keyTradelanes" value="europeToAfrica" <% if (matchingTender.keyTradelanes.includes("europeToAfrica")) { %><%= "checked" %><% } %>></td>
+                    <td><input type="checkbox" id="oceaniaToAfrica" name="keyTradelanes" value="oceaniaToAfrica" <% if (matchingTender.keyTradelanes.includes("oceaniaToAfrica")) { %><%= "checked" %><% } %>></td>
+                    </tr>
+                    <tr>
+                    <td>To Americas</td>
+                    <td><input type="checkbox" id="africaToAmericas" name="keyTradelanes" value="africaToAmericas" <% if (matchingTender.keyTradelanes.includes("africaToAmericas")) { %><%= "checked" %><% } %>></td>
+                    <td><input type="checkbox" id="americasToAmericas" name="keyTradelanes" value="americasToAmericas" <% if (matchingTender.keyTradelanes.includes("americasToAmericas")) { %><%= "checked" %><% } %>></td>
+                    <td><input type="checkbox" id="asiaToAmericas" name="keyTradelanes" value="asiaToAmericas" <% if (matchingTender.keyTradelanes.includes("asiaToAmericas")) { %><%= "checked" %><% } %>></td>
+                    <td><input type="checkbox" id="europeToAmericas" name="keyTradelanes" value="europeToAmericas" <% if (matchingTender.keyTradelanes.includes("europeToAmericas")) { %><%= "checked" %><% } %>></td>
+                    <td><input type="checkbox" id="oceaniaToAmericas" name="keyTradelanes" value="oceaniaToAmericas" <% if (matchingTender.keyTradelanes.includes("oceaniaToAmericas")) { %><%= "checked" %><% } %>></td>
+                    </tr>
+                    <tr>
+                    <td>To Asia</td>
+                    <td><input type="checkbox" id="africaToAsia" name="keyTradelanes" value="africaToAsia" <% if (matchingTender.keyTradelanes.includes("africaToAsia")) { %><%= "checked" %><% } %>></td>
+                    <td><input type="checkbox" id="americasToAsia" name="keyTradelanes" value="americasToAsia" <% if (matchingTender.keyTradelanes.includes("americasToAsia")) { %><%= "checked" %><% } %>></td>
+                    <td><input type="checkbox" id="asiaToAsia" name="keyTradelanes" value="asiaToAsia" <% if (matchingTender.keyTradelanes.includes("asiaToAsia")) { %><%= "checked" %><% } %>></td>
+                    <td><input type="checkbox" id="europeToAsia" name="keyTradelanes" value="europeToAsia" <% if (matchingTender.keyTradelanes.includes("europeToAsia")) { %><%= "checked" %><% } %>></td>
+                    <td><input type="checkbox" id="oceaniaToAsia" name="keyTradelanes" value="oceaniaToAsia" <% if (matchingTender.keyTradelanes.includes("oceaniaToAsia")) { %><%= "checked" %><% } %>></td>
+                    </tr>
+                    <tr>
+                    <td>To Europe</td>
+                    <td><input type="checkbox" id="africaToEurope" name="keyTradelanes" value="africaToEurope" <% if (matchingTender.keyTradelanes.includes("africaToEurope")) { %><%= "checked" %><% } %>></td>
+                    <td><input type="checkbox" id="americasToEurope" name="keyTradelanes" value="americasToEurope" <% if (matchingTender.keyTradelanes.includes("americasToEurope")) { %><%= "checked" %><% } %>></td>
+                    <td><input type="checkbox" id="asiaToEurope" name="keyTradelanes" value="asiaToEurope" <% if (matchingTender.keyTradelanes.includes("asiaToEurope")) { %><%= "checked" %><% } %>></td>
+                    <td><input type="checkbox" id="europeToEurope" name="keyTradelanes" value="europeToEurope" <% if (matchingTender.keyTradelanes.includes("europeToEurope")) { %><%= "checked" %><% } %>></td>
+                    <td><input type="checkbox" id="oceaniaToEurope" name="keyTradelanes" value="oceaniaToEurope" <% if (matchingTender.keyTradelanes.includes("oceaniaToEurope")) { %><%= "checked" %><% } %>></td>
+                    </tr>
+                    <tr>
+                    <td>To Oceania</td>
+                    <td><input type="checkbox" id="africaToOceania" name="keyTradelanes" value="africaToOceania" <% if (matchingTender.keyTradelanes.includes("africaToOceania")) { %><%= "checked" %><% } %>></td>
+                    <td><input type="checkbox" id="americasToOceania" name="keyTradelanes" value="americasToOceania" <% if (matchingTender.keyTradelanes.includes("americasToOceania")) { %><%= "checked" %><% } %>></td>
+                    <td><input type="checkbox" id="asiaToOceania" name="keyTradelanes" value="asiaToOceania" <% if (matchingTender.keyTradelanes.includes("asiaToOceania")) { %><%= "checked" %><% } %>></td>
+                    <td><input type="checkbox" id="europeToOceania" name="keyTradelanes" value="europeToOceania" <% if (matchingTender.keyTradelanes.includes("europeToOceania")) { %><%= "checked" %><% } %>></td>
+                    <td><input type="checkbox" id="oceaniaToOceania" name="keyTradelanes" value="oceaniaToOceania" <% if (matchingTender.keyTradelanes.includes("oceaniaToOceania")) { %><%= "checked" %><% } %>></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    <h3>Rhenus relashionship</h3>
+        <div>
+            <h4>Existing Customer Rhenus Group</h4>
+                <p>Is the tendering company an existing customer to the Rhenus Group (locally or globally)? If more than one, please only select the business unit with the biggest stake.</p>
+                    <div>
+                        <input type="checkbox" id="historyAir&Ocean" name="relashionship" value="historyAir&Ocean" <% if (matchingTender.history.includes("historyAir&Ocean")) { %><%= "checked" %><% } %>>
+                        <label for="historyAir&Ocean">Yes - Rhenus Air & Ocean</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="historyRoadFreight" name="relashionship" value="historyRoadFreight" <% if (matchingTender.history.includes("historyRoadFreight")) { %><%= "checked" %><% } %>>
+                        <label for="historyRoadFreight">Yes - Rhenus Road</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="historyContractLog" name="relashionship" value="historyContractLog" <% if (matchingTender.history.includes("historyContractLog")) { %><%= "checked" %><% } %>>
+                        <label for="historyContractLog">Yes - Rhenus Contract Logistics</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="historyPortLog" name="relashionship" value="historyPortLog" <% if (matchingTender.history.includes("historyPortLog")) { %><%= "checked" %><% } %>>
+                        <label for="historyPortLog">Yes - Rhenus Port Logistics</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="historyNone" name="relashionship" value="historyNone" <% if (matchingTender.history.includes("historyNone")) { %><%= "checked" %><% } %>>
+                        <label for="historyNone">No history</label>
+                    </div>
+        </div>
+        <div>
+            <h4>Existing Customer Rhenus Air & Ocean</h4>
+                <p>If existing customer in Air & Ocean, please choose from the segmentation below (only estimate):</p>
+
+                <div>
+                    <input type="radio" id="segmentA" name="existingCustomerSegment" value="A-customer" <% if (matchingTender.existingCustomerSegment && matchingTender.existingCustomerSegment === "A-customer") { %><%= "checked" %><% } %>>
+                    <label for="segmentA">A: > 100 K€ gross profit p. a.</label>
+                </div>
+                
+                <div>
+                    <input type="radio" id="segmentB" name="existingCustomerSegment" value="B-customer" <% if (matchingTender.existingCustomerSegment && matchingTender.existingCustomerSegment === "B-customer") { %><%= "checked" %><% } %>>
+                    <label for="segmentB">B: > 50 K€ gross profit p. a. </label>
+                </div>
+                
+                <div>
+                    <input type="radio" id="segmentC" name="existingCustomerSegment" value="C-customer" <% if (matchingTender.existingCustomerSegment && matchingTender.existingCustomerSegment === "C-customer") { %><%= "checked" %><% } %>>
+                    <label for="segmentC">C: > 10 K€ gross profit p. a.</label>
+                </div>
+
+            <h4>Additional Comments</h4>
+                <p>Please feel free to share any comments that may be helpul for the tender team</p>
+                <textarea name="additionalComment" id="additionalComment" cols="30" rows="10"><% if (matchingTender.additionalComment) { %><%= matchingTender.additionalComment %><% } %></textarea>
+        </div>
+
+
+    <h3>Tender Management</h3>
+        <div>
+            <h4>Global Region</h4>
+            <!-- <p>Select your global region</p>
+            <select name="globalRegion" id="globalRegion">
+                <option value="">--Please choose an option--</option>
+                <option value="africa">Africa</option>
+                <option value="americas">Americas</option>
+                <option value="Asia">Asia</option>
+                <option value="Europe">Europe</option>
+                <option value="Oceania">Oceania</option>
+            </select>
+            <h4>Region</h4> -->
+            <p>Select your country (or area):</p>
+            <select name="countryLocation" id="countryLocation">
+                <option value="">--Please choose an option--</option>
+<% for (let country of countriesData) { %>
+    <option value="<%= country.cca2 %>" <% if (country.cca2 === matchingTender.countryLocation) {%><%= "selected" %><% } %>><%= country.flag %> <%= country.cca2 %> <%= country.name.common %></option>
+<% } %>
+            </select>
+        </div>
+
+    <button>Submit</button>
+</form>
+    <%- include("partials/commonBootstrap.ejs") %>
+</body>
+</html>

@@ -3,6 +3,7 @@ const Schema = mongoose.Schema
 
 const preAdvisedTenderSchema = new Schema({
     recordDate: Date,
+    lastModifiedDate: Date,
     companyName: String,
     sugarID: String,
     expectedReceiveDate: {

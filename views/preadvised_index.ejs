@@ -14,7 +14,7 @@
 
     <ul>
         <% for (let preadvisedTender of allPreadvisedTenders) { %>
-            <li><%= preadvisedTender.companyName %> | Expected launch date: <strong><%= preadvisedTender.expectedReceiveDate.getDate() %>-<%= monthsData[preadvisedTender.expectedReceiveDate.getMonth() + 1] %>-<%= preadvisedTender.expectedReceiveDate.getFullYear() %></strong> | <a href="/moonshot/preadvised/<%= preadvisedTender._id %> ">Data</a></li>
+            <li><%= preadvisedTender.companyName %> | Expected launch date: <strong><% if (preadvisedTender.expectedReceiveDate.getDate() < 10) { %><%= `0${preadvisedTender.expectedReceiveDate.getDate()}` %><%} else { %><%= preadvisedTender.expectedReceiveDate.getDate() %><% } %>-<%= monthsData[preadvisedTender.expectedReceiveDate.getMonth() + 1] %>-<%= preadvisedTender.expectedReceiveDate.getFullYear() %></strong> | <a href="/moonshot/preadvised/<%= preadvisedTender._id %> ">Data</a></li>
             <% } %>
     </ul>
 
