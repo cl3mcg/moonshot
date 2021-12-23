@@ -10,6 +10,7 @@ const nodemailer = require("nodemailer")
 
 // Database models
 const PreadvisedTender = require("./models/preadvisedTender.js")
+const Office = require("./models/office.js")
 
 // Ressources
 const countriesData = require('./public/ressources/countries.json')
@@ -37,7 +38,12 @@ mongoose.connect("mongodb://localhost:27017/moonshot", {
         console.log(err)
     })
 
-// Routes
+// Commonly used functions
+const currentTimeAndDate = function () {return new Date(Date.now())}
+const findCountryName = function (cca2) {for (country of countriesData) {if (country.cca2 === cca2) {return country.name.common}}}
+const findcca2 = function (countryName) {for (country of countriesData) {if (country.common.name === countryName) {return country.cca2}}}
+
+// Routes MOONSHOT PREADVISED
 app.get("/", function(req, res){
     res.send("Hello world !")
 })
@@ -77,9 +83,8 @@ app.post("/moonshot/preadvised/new", async function(req,res){
     let arrayValidation = [transportMode,
         keyTradelanes]
     for (let entry of arrayValidation) {if (typeof(entry) != "object") {entry = [entry]}}
-    let registrationDate = function () {return new Date(Date.now())}
     let newEntry = new PreadvisedTender({
-        recordDate: registrationDate(),
+        recordDate: currentTimeAndDate(),
         lastModifiedDate: null,
         companyName: companyName,
         sugarID: sugarID,
@@ -198,10 +203,8 @@ app.patch("/moonshot/preadvised/edit/:id", async function (req, res){
         keyTradelanes]
     for (let entry of arrayValidation) {if (typeof(entry) != "object") {entry = [entry]}}
 
-    let lastModifiedDate = function () {return new Date(Date.now())}
-
     let matchingTender = await PreadvisedTender.findByIdAndUpdate(matchingId, {
-        lastModifiedDate: lastModifiedDate,
+        lastModifiedDate: currentTimeAndDate(),
         companyName: newCompanyName,
         sugarID: newSugarID,
         expectedReceiveDate: newExpectedReceiveDate,
@@ -218,6 +221,45 @@ app.patch("/moonshot/preadvised/edit/:id", async function (req, res){
     })
     console.log(`The tender related to the company ${newCompanyName} has been UPDATED`)
     res.redirect(`/moonshot/preadvised/${matchingId}`)
+})
+
+// Routes MOONSHOT OFFICES
+app.get("/moonshot/office/new", function (req, res) {
+res.render("office_new.ejs", {countriesData, monthsData})
+})
+
+app.post("/moonshot/office/new", async function (req, res) {
+    let {
+        countryLocation,
+        officeSetup,
+        companyName,
+        address,
+        postCode,
+        city,
+        countryName,
+        officeLat,
+        officeLng,
+        tenderDesk,
+    } = req.body
+    console.log(req.body)
+    console.log(`Maching country is ${findCountryName(req.body.countryLocation)}`)
+    let inputLatLgn = function () {return [`${officeLat}, ${officeLng}`]}
+    let newEntry = new Office({
+        recordDate: currentTimeAndDate(),
+        lastModifiedDate: null,
+        officeRelatedCountry: findCountryName(countryLocation),
+        cca2: countryLocation,
+        officeSetup: officeSetup,
+        companyName: companyName,
+        address: address,
+        address_postCode: postCode,
+        address_city: city,
+        address_cca2: countryName,
+        tenderDesk: tenderDesk,
+        latlng: inputLatLgn()
+    })
+    await newEntry.save()
+    res.send("POST route is working")
 })
 
 app.listen(3000, function () {
