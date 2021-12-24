@@ -224,6 +224,12 @@ app.patch("/moonshot/preadvised/edit/:id", async function (req, res){
 })
 
 // Routes MOONSHOT OFFICES
+
+app.get("/moonshot/office", async function (req, res){
+    let allOffices = await Office.find({})
+    res.render("office_index.ejs", {countriesData, monthsData, allOffices})
+})
+
 app.get("/moonshot/office/new", function (req, res) {
 res.render("office_new.ejs", {countriesData, monthsData})
 })
@@ -237,13 +243,11 @@ app.post("/moonshot/office/new", async function (req, res) {
         postCode,
         city,
         countryName,
-        officeLat,
-        officeLng,
+        latlng,
         tenderDesk,
     } = req.body
     console.log(req.body)
     console.log(`Maching country is ${findCountryName(req.body.countryLocation)}`)
-    let inputLatLgn = function () {return [`${officeLat}, ${officeLng}`]}
     let newEntry = new Office({
         recordDate: currentTimeAndDate(),
         lastModifiedDate: null,
@@ -256,10 +260,54 @@ app.post("/moonshot/office/new", async function (req, res) {
         address_city: city,
         address_cca2: countryName,
         tenderDesk: tenderDesk,
-        latlng: inputLatLgn()
+        latlng: latlng
     })
     await newEntry.save()
-    res.send("POST route is working")
+    res.redirect(`/moonshot/office/${newEntry._id}`)
+})
+
+app.get("/moonshot/office/:id", async function (req, res){
+    let matchingId = req.params.id
+    let matchingOffice = await Office.findById(matchingId)
+    console.log(matchingOffice)
+    res.render("office_show.ejs", {countriesData, monthsData, matchingOffice})
+})
+
+app.get("/moonshot/office/edit/:id", async function (req, res){
+    let matchingId = req.params.id
+    let matchingOffice = await Office.findById(matchingId)
+    console.log(matchingOffice)
+    res.render("office_edit.ejs", {countriesData, monthsData, matchingOffice})
+})
+
+app.patch("/moonshot/office/edit/:id", async function (req, res){
+    let matchingId = req.params.id
+    console.log(req.body)
+    let {
+        newCountryLocation,
+        newOfficeSetup,
+        newCompanyName,
+        newAddress,
+        newPostCode,
+        newCity,
+        newCountryName,
+        newLatlng,
+        newTenderDesk,
+    } = req.body
+    let updateOffice = await Office.findByIdAndUpdate(matchingId, {
+        lastModifiedDate: currentTimeAndDate(),
+        cca2: newCountryLocation,
+        officeSetup: newOfficeSetup,
+        companyName: newCompanyName,
+        address: newAddress,
+        address_postCode: newPostCode,
+        address_city: newCity,
+        address_cca2: newCountryName,
+        tenderDesk: newTenderDesk,
+        latlng: newLatlng
+    })
+    console.log(`The office related to the company ${newCompanyName} has been UPDATED`)
+    res.redirect(`/moonshot/office/${matchingId}`)
 })
 
 app.listen(3000, function () {
