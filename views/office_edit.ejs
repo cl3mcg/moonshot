@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moonshot | Home</title>
+    <%- include("partials/commonStyles.ejs") %>
+    <%- include("partials/commonFonts.ejs") %>
+</head>
+<body>
+    <%- include("partials/navbar.ejs") %>
+    <h1>Edit office data</h1>
+    <form method="post" action="/moonshot/office/edit/<%= matchingOffice._id %>?_method=PATCH">
+        <div>
+            <h3>Country</h3>
+                <p>Select the country related to this office.</p>
+                <select name="countryLocation" id="countryLocation">
+                    <option value="">--Please choose an option--</option>
+                    <% for (let country of countriesData) {%> <option value="<%= country.cca2 %>" <% if(matchingOffice.cca2 === country.cca2) { %>selected<% } %>><%= country.cca2 %> - <%= country.name.common %></option> <% } %> 
+                </select>
+            <div>
+                <h4>Rhenus setup</h4>
+                <p>Select the current setup of Rhenus in this country</p>
+                <div>
+                    <div>
+                        <input type="radio" id="rhenusSetup" name="officeSetup" value="rhenusSetup" <% if(matchingOffice.officeSetup === "rhenusSetup") { %>checked<% } %>>
+                        <label for="rhenusSetup">Rhenus office</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="agentSetup" name="officeSetup" value="agentSetup" <% if(matchingOffice.officeSetup === "agentSetup") { %>checked<% } %>>
+                        <label for="agentSetup">Agent office</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <h4>Office details</h4>
+            <div>
+                <label for="companyName">Company name</label>
+                <input type="text" id="companyName" name="companyName" value="<%= matchingOffice.companyName %>">
+            </div>
+            <div>
+                <label for="address">Adress</label>
+                <input type="text" id="address" name="address" value="<%= matchingOffice.address %>"> 
+            </div>
+            <div>
+                <label for="postCode">ZIP Code</label>
+                <input type="text" id="postCode" name="postCode" value="<%= matchingOffice.address_postCode %>"> 
+            </div>
+            <div>
+                <label for="city">City name</label>
+                <input type="text" id="city" name="city" value="<%= matchingOffice.address_city %>"> 
+            </div>
+            <div>
+                <label for="countryName">Country name</label>
+                <select name="countryName" id="countryName">
+                    <option value="" selected>--Please choose an option--</option>
+                    <% for (let country of countriesData) {%> <option value="<%= country.cca2 %>" <% if(matchingOffice.address_cca2 === country.cca2) { %>selected<% } %>><%= country.cca2 %> - <%= country.name.common %></option> <% } %> 
+                </select>
+            </div>
+            <div>
+                <div>
+                    <label for="officeLatLng">Office Latitude</label>
+                    <input type="text" id="officeLatLng" name="officeLatLng" value="<%= matchingOffice.latlng %>"> 
+                </div>
+                <p><a href="https://support.google.com/maps/answer/18539?hl=en&co=GENIE.Platform=Desktop">How to get latitude and longitude</a></p>
+            </div>
+            <div>
+                <h5>Tender desk related</h5>
+                <p>Select the tender desk related to this office.</p>
+                <select name="tenderDesk" id="tenderDesk">
+                    <option value="">--Please choose an option--</option>
+                    <option value="ap" <% if(matchingOffice.tenderDesk === "ap") { %>selected<% } %>>CN - APAC Tender Management</option>
+                    <option value="eu" <% if(matchingOffice.tenderDesk === "eu") { %>selected<% } %>>DE - Europe Tender Management</option>
+                    <option value="am" <% if(matchingOffice.tenderDesk === "am") { %>selected<% } %>>US - Americas Tender Management</option>
+                </select>
+            </div>
+            <!-- <div>
+                <h4>Coverage</h4>
+                <div>
+                    <h5>Air</h5>
+                    <p>Select the airport coverage of this office</p>
+                    <h6>Airport #1</h6>
+                    <label for="countryAirport">Country</label>
+                    <select name="countryAirport" id="countryAirport">
+                        <option value="" selected>--Please choose an option--</option>
+                        <% for (let country of countriesData) {%> <option value="<%= country.cca2 %>"><%= country.cca2 %> - <%= country.name.common %></option> <% } %> 
+                    </select>
+                    <div>
+                        <label for="airportCode">Airport code</label>
+                        <input type="text" id="airportCode" name="airportCode" maxlength="3">
+                    </div>
+                    <div>
+                        <label for="airportName">City name</label>
+                        <input type="text" id="airportName" name="airportName"> 
+                    </div>
+                    <div>
+                        <div>
+                            <label for="airportLat">Airport Latitude</label>
+                            <input type="number" id="airportLat" name="airportLat"> 
+                        </div>
+                        <div>
+                            <label for="airportLng">Airport Longitude</label>
+                            <input type="number" id="airportLng" name="airportLng"> 
+                        </div>
+                        <p><a href="https://support.google.com/maps/answer/18539?hl=en&co=GENIE.Platform=Desktop">How to get latitude and longitude</a></p>
+                    </div>
+                    <button id="addAirport">Add another Airport</button>
+                </div>
+                <div>
+                    <h5>Sea</h5>
+                    <p>Select the seaport coverage of this office</p>
+                    <h6>Seaport #1</h6>
+                    <label for="countrySeaport">Country</label>
+                    <select name="countrySeaport" id="countrySeaport">
+                        <option value="" selected>--Please choose an option--</option>
+                        <% for (let country of countriesData) {%> <option value="<%= country.cca2 %>"><%= country.cca2 %> - <%= country.name.common %></option> <% } %> 
+                    </select>
+                    <div>
+                        <label for="seaportCode">Airport code</label>
+                        <input type="text" id="seaportCode" name="seaportCode" maxlength="3">
+                    </div>
+                    <div>
+                        <label for="seaportName">City name</label>
+                        <input type="text" id="seaportName" name="seaportName"> 
+                    </div>
+                    <div>
+                        <div>
+                            <label for="seaportLat">Airport Latitude</label>
+                            <input type="number" id="seaportLat" name="seaportLat"> 
+                        </div>
+                        <div>
+                            <label for="seaportLng">Airport Longitude</label>
+                            <input type="number" id="seaportLng" name="seaportLng"> 
+                        </div>
+                        <p><a href="https://support.google.com/maps/answer/18539?hl=en&co=GENIE.Platform=Desktop">How to get latitude and longitude</a></p>
+                    </div>
+                    <button>Add another Seaport</button>
+                </div>
+                <div>
+                    <h5>Rail</h5>
+                    <p>Select the rail coverage of this office</p>
+                    <h6>Rail station #1</h6>
+                    <label for="countryRailport">Country</label>
+                    <select name="countryRailport" id="countryRailport">
+                        <option value="" selected>--Please choose an option--</option>
+                        <% for (let country of countriesData) {%> <option value="<%= country.cca2 %>"><%= country.cca2 %> - <%= country.name.common %></option> <% } %> 
+                    </select>
+                    <div>
+                        <label for="railportCode">Airport code</label>
+                        <input type="text" id="railportCode" name="railportCode" maxlength="3">
+                    </div>
+                    <div>
+                        <label for="railportName">City name</label>
+                        <input type="text" id="railportName" name="railportName"> 
+                    </div>
+                    <div>
+                        <div>
+                            <label for="railportLat">Airport Latitude</label>
+                            <input type="number" id="railportLat" name="railportLat"> 
+                        </div>
+                        <div>
+                            <label for="railportLng">Airport Longitude</label>
+                            <input type="number" id="railportLng" name="railportLng"> 
+                        </div>
+                        <p><a href="https://support.google.com/maps/answer/18539?hl=en&co=GENIE.Platform=Desktop">How to get latitude and longitude</a></p>
+                    </div>
+                    <button>Add another Rail station</button>
+                </div>
+            </div>
+            <div>
+                <h4>Contacts</h4>
+                <h5>Operational</h5>
+                <p>Register some referent people in this office</p>
+                <div>
+                    <div>
+                        <label for="firstName">First name</label>
+                        <input type="text" name="firstName" id="firstName">
+                    </div>
+                    <div>
+                        <label for="lastName">Last name</label>
+                        <input type="text" name="lastName" id="lastName">
+                    </div>
+                    <div>
+                        <label for="phone">Phone</label>
+                        <input type="tel" name="phone" id="phone">
+                    </div>
+                    <div>
+                        <label for="email">Email</label>
+                        <input type="email" name="email" id="email">
+                    </div>
+                    <div>
+                        <label for="position">Position</label>
+                        <input type="text" name="position" id="position">
+                    </div>
+                </div>
+                <div>
+                    <p>Product coverage</p>
+                    <div>
+                        <input type="checkbox" id="coverageAirExp" name="coverageAirExp">
+                        <label for="coverageAirExp">Air Export</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="coverageAirImp" name="coverageAirImp">
+                        <label for="coverageAirImp">Air Import</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="coverageFclExp" name="coverageFclExp">
+                        <label for="coverageFclExp">FCL Export</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="coverageFclImp" name="coverageFclImp">
+                        <label for="coverageFclImp">FCL Import</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="coverageLclExp" name="coverageLclExp">
+                        <label for="coverageLclExp">LCL Export</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="coverageLclImp" name="coverageLclImp">
+                        <label for="coverageLclImp">LCL Import</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="coverageRailExp" name="coverageRailExp">
+                        <label for="coverageRailExp">Rail Export</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="coverageRailImp" name="coverageRailImp">
+                        <label for="coverageRailImp">Rail Import</label>
+                    </div>
+                </div>
+                <button>Add another contact</button>
+
+                <h5>Network support</h5>
+                <p>Register some general distribution list emails</p>
+                <div>
+                    <div>
+                        <label for="name">Name</label>
+                        <input type="text" name="name" id="name">
+                    </div>
+                    <div>
+                        <label for="ntwSupEmail">Email</label>
+                        <input type="email" name="ntwSupEmail" id="ntwSupEmail">
+                    </div>
+                </div>
+                <div>
+                    <p>Product coverage</p>
+                    <div>
+                        <input type="checkbox" id="coverageAirExp" name="coverageAirExp">
+                        <label for="coverageAirExp">Air Export</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="coverageAirImp" name="coverageAirImp">
+                        <label for="coverageAirImp">Air Import</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="coverageFclExp" name="coverageFclExp">
+                        <label for="coverageFclExp">FCL Export</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="coverageFclImp" name="coverageFclImp">
+                        <label for="coverageFclImp">FCL Import</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="coverageLclExp" name="coverageLclExp">
+                        <label for="coverageLclExp">LCL Export</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="coverageLclImp" name="coverageLclImp">
+                        <label for="coverageLclImp">LCL Import</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="coverageRailExp" name="coverageRailExp">
+                        <label for="coverageRailExp">Rail Export</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="coverageRailImp" name="coverageRailImp">
+                        <label for="coverageRailImp">Rail Import</label>
+                    </div>
+                </div>
+                <button>Add another Network Support</button>
+
+            </div>
+        </div> -->
+        <button>Submit</button>
+    </form>
+    <%- include("partials/commonBootstrap.ejs") %>
+    <script src="/js/office_new.js"></script>
+</body>
+</html>
