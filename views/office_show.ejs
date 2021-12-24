@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moonshot | Home</title>
+    <%- include("partials/commonStyles.ejs") %>
+    <%- include("partials/commonFonts.ejs") %>
+</head>
+<body>
+    <%- include("partials/navbar.ejs") %>
+    <h1><%= matchingOffice.companyName %></h1>
+    <h2><%= matchingOffice.address_city %>, <%= matchingOffice.address_cca2 %></h2>
+    <h3>Address</h3>
+    <p><%= matchingOffice.address %><br>
+    <%= matchingOffice.address_postCode %>, <%= matchingOffice.address_city %><br>
+    <% for (let country of countriesData) { if (country.cca2 === matchingOffice.address_cca2) { %> <%= country.name.common %> <% }} %></p>
+    <a href="/moonshot/office/edit/<%= matchingOffice._id %>">Edit</a>
+    <%- include("partials/commonBootstrap.ejs") %>
+    <script src="/js/office_new.js"></script>
+</body>
+</html>
