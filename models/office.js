@@ -18,7 +18,7 @@ const officeSchema = new Schema({
         maxlength: 2
     },
     tenderDesk: String,
-    latlng: Array
+    latlng: String
 })
 
 module.exports = mongoose.model("Office", officeSchema)
