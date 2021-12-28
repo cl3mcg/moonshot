@@ -2,8 +2,8 @@ const mongoose = require("mongoose")
 const Schema = mongoose.Schema
 
 const officeSchema = new Schema({
-    recordDate: String,
-    lastModifiedDate: String,
+    recordDate: Date,
+    lastModifiedDate: Date,
     cca2: {
         type: String,
         maxlength: 2
