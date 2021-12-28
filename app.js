@@ -43,13 +43,27 @@ const currentTimeAndDate = function () {return new Date(Date.now())}
 const findCountryName = function (cca2) {for (country of countriesData) {if (country.cca2 === cca2) {return country.name.common}}}
 const findcca2 = function (countryName) {for (country of countriesData) {if (country.common.name === countryName) {return country.cca2}}}
 
-// Routes MOONSHOT PREADVISED
+// Routes MOONSHOT HOME & START
 app.get("/", function(req, res){
     res.send("Hello world !")
 })
 
 app.get("/moonshot", function (req, res) {
     res.render("indexHome.ejs")
+})
+
+app.get("/moonshot/start", function (req, res){
+    res.render("indexStart.ejs")
+})
+
+// Routes MOONSHOT PREADVISED
+
+app.get("/moonshot/preadvised/index", function(req, res){
+    res.render("preadvised_index.ejs")
+})
+
+app.get("/moonshot/preadvised/start", function(req, res){
+    res.render("preadvised_start.ejs")
 })
 
 app.get("/moonshot/preadvised/new", function (req, res) {
@@ -225,7 +239,11 @@ app.patch("/moonshot/preadvised/edit/:id", async function (req, res){
 
 // Routes MOONSHOT OFFICES
 
-app.get("/moonshot/office", async function (req, res){
+app.get("/moonshot/office/start", function (req, res){
+    res.render("office_start.ejs")
+})
+
+app.get("/moonshot/office/index", async function (req, res){
     let allOffices = await Office.find({})
     res.render("office_index.ejs", {countriesData, monthsData, allOffices})
 })
