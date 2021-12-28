@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moonshot | Home</title>
+    <%- include("partials/commonStyles.ejs") %>
+    <%- include("partials/commonFonts.ejs") %>
+</head>
+<body>
+    <%- include("partials/navbar.ejs") %>
+<div class="container">
+    <h1 class="text-center">Start here...</h1>
+    <div class="container mt-5">
+    <h2>Tender Team</h2>
+        <div class="container rounded-3 border border-2 p-3">
+            <div class="alert alert-info" role="alert">
+                Only available (and visible) to the tender team.
+            </div>
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                <div class="col-sm-6">
+                <div class="card">
+                    <div class="card-body">
+                    <h5 class="card-title">Dashboard</h5>
+                    <p class="card-text">Visualize in a clear and concise way what lies ahead.</p>
+                    <a href="#" class="btn btn-primary disabled">Soon</a>
+                    </div>
+                </div>
+                </div>
+                <div class="col-sm-6">
+                <div class="card">
+                    <div class="card-body">
+                    <h5 class="card-title">Offices</h5>
+                    <p class="card-text">Get the office lists with the right contacts and spread the launch emails.</p>
+                    <a href="/moonshot/office/start" class="btn btn-primary">Go</a>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="container mt-3">
+            <h2>Registration</h2>
+            <div class="container rounded-3 border border-2 p-3">
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    <div class="col-sm-6">
+                    <div class="card">
+                        <div class="card-body">
+                        <h5 class="card-title">Pre-advise</h5>
+                        <p class="card-text">Preadvise a tender before its launch.</p>
+                        <a href="/moonshot/preadvised/start" class="btn btn-primary">Go</a>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="card">
+                            <div class="card-body">
+                            <h5 class="card-title">Registration</h5>
+                            <p class="card-text">In the starting blocks ! Launch your tender now !</p>
+                            <a href="#" class="btn btn-primary disabled">Soon</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+    <%- include("partials/commonBootstrap.ejs") %>
+</body>
+</html>
