@@ -10,15 +10,19 @@
 </head>
 <body>
     <%- include("partials/navbar.ejs") %>
+<div class="container">
     <h1>Moonshot</h1>
-    <p><a href="">Go to login</a></p>
-    <h2>Preadvised tender</h2>
-    <p><a href="/moonshot/preadvised/new">Pre-advise a tender</a></p>
-    <p><a href="/moonshot/preadvised">Pre-advised tender dashboard</a></p>
+    <p><a href="" class="btn btn-success" disabled>Go to login</a></p>
+    <h2>Start Page</h2>
+    <a href="/moonshot/start" class="btn btn-primary">Start page</a>
+    <h2>Preadvise</h2>
+    <p><a class="btn btn-primary" href="/moonshot/preadvised/new">Pre-advise a tender</a></p>
+    <p><a class="btn btn-primary" href="/moonshot/preadvised">Pre-advised tender dashboard</a></p>
     <h2>Tender registration</h2>
-    <p><a href="">Register a tender</a></p>
+    <p><a class="btn btn-primary" disabled href="">Register a tender</a></p>
     <h2>Offices data</h2>
-    <p><a href="/moonshot/office/new">Register new offices & contacts</a></p>
+    <p><a class="btn btn-primary" href="/moonshot/office/new">Register new offices & contacts</a></p>
+</div>
     <%- include("partials/commonBootstrap.ejs") %>
 </body>
 </html>

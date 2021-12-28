@@ -10,6 +10,7 @@
 </head>
 <body>
     <%- include("partials/navbar.ejs") %>
+<div class="container">
     <h1><%= matchingOffice.companyName %></h1>
     <h2><%= matchingOffice.address_city %>, <%= matchingOffice.address_cca2 %></h2>
     <h3>Address</h3>
@@ -17,6 +18,7 @@
     <%= matchingOffice.address_postCode %>, <%= matchingOffice.address_city %><br>
     <% for (let country of countriesData) { if (country.cca2 === matchingOffice.address_cca2) { %> <%= country.name.common %> <% }} %></p>
     <a href="/moonshot/office/edit/<%= matchingOffice._id %>">Edit</a>
+</div>
     <%- include("partials/commonBootstrap.ejs") %>
     <script src="/js/office_new.js"></script>
 </body>

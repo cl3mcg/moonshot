@@ -12,9 +12,8 @@
 
 <body>
     <%- include("partials/navbar.ejs") %>
-    <h1>
-        <%= matchingTender.companyName %>
-    </h1>
+<div class="container">
+    <h1><%= matchingTender.companyName %></h1>
     <h2>Tender pre-advised</h2>
     <p><a href="/moonshot">Go back to the index</a></p>
 
@@ -35,18 +34,16 @@
         </li>
         <% if (matchingTender.history[0]!=="historyNone" ) { %> <li>Customer segment: <%=`${matchingTender.existingCustomerSegment}`%></li> <% } %>
     </ul>
-<p>
-    <h3>
-        Actions
-    </h3>
-<div>
-    <a href="/moonshot/preadvised/edit/<%= matchingTender.id %>">Edit</a>
-    <form method="POST" action="/moonshot/preadvised/<%= matchingTender.id %>?_method=DELETE">
-        <button>Delete</button>
-    </form>
-</div>
-</p>
 
+    <h3>Actions</h3>
+    <div>
+        <a href="/moonshot/preadvised/edit/<%= matchingTender.id %>">Edit</a>
+        <form method="POST" action="/moonshot/preadvised/<%= matchingTender.id %>?_method=DELETE">
+            <button>Delete</button>
+        </form>
+    </div>
+    </p>
+</div>
     <%- include("partials/commonBootstrap.ejs") %>
 </body>
 
