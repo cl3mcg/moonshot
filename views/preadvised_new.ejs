@@ -7,6 +7,7 @@
     <title>Moonshot | Home</title>
     <%- include("partials/commonStyles.ejs") %>
     <%- include("partials/commonFonts.ejs") %>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
     <%- include("partials/navbar.ejs") %>
@@ -17,19 +18,22 @@
         Please invest the following 2-5 minutes to announce your tender. <br>
         Thank you!</p>
     <div class="container mb-5 py-4 border rounded-5">
-        <form class="mb-5" id="preadviseForm" action="/moonshot/preadvised/new" method="POST">
+        <form class="mb-5 needs-validation " id="preadviseForm" action="/moonshot/preadvised/new" method="POST" novalidate>
             <div class="row justify-content-md-center">
                 <div class="col-12">
                     <h2>Location & handling of the tender preadvise</h2>
                     <p>For a more efficient handling of this preadvise, select your location.</p>
                         <div class="container mb-5">
                             <div class="mb-3">
-                                <select class="form-select" id="countryLocation" name="countryLocation">
-                                    <option value="">--Please choose an option--</option>
-                                    <% for (let country of countriesData) { %>
-                                    <option value="<%= country.cca2 %>"><%= country.cca2 %> - <%= country.name.common %> <% if (!country.flag) { %>🇺🇳<% } else { %> <%=country.flag%> <% } %></option>
-                                    <% } %>
-                                </select>
+                                <div class="input-group has-validation">
+                                    <select class="form-select" id="countryLocation" name="countryLocation">
+                                        <option value="">--Please choose an option--</option>
+                                        <% for (let country of countriesData) { %>
+                                        <option value="<%= country.cca2 %>"><%= country.cca2 %> - <%= country.name.common %> <% if (!country.flag) { %>🇺🇳<% } else { %> <%=country.flag%> <% } %></option>
+                                        <% } %>
+                                    </select>
+                                    <div class="invalid-feedback">Please make a selection.</div>
+                                </div>
                                 <div class="form-text">Make sure to input the country where you are located, not the country of the company related to the tender preadvise.</div>
                             </div>
                         </div>
@@ -39,19 +43,26 @@
                     <p>Please complete the following details about your customer / prospect</p>
                         <div class="container mb-5">
                             <div class="mb-3">
-                                <label class="form-label" for="companyName">Company Name (Customer)</label>
-                                <input class="form-control" type="text" id="companyName" name="companyName">
-                                <div class="form-text">Enter the "group company name" of your customer / prospect.</div>
+                                <div>
+                                    <label class="form-label" for="companyName">Company Name (Customer)</label>
+                                    <input class="form-control" type="text" id="companyName" name="companyName" required>
+                                    <div class="form-text">Enter the "group company name" of your customer / prospect.</div>
+                                    <div class="invalid-feedback">Please fill this field.</div>
+                                </div>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label" for="sugarID">Sugar ID</label>
-                                <input class="form-control" type="text" id="sugarID" name="sugarID">
-                                <div class="form-text">Only enter ONE correct "main" <i>Indent Number</i> from the Sugar CRM system:</div>
+                                <div>
+                                    <label class="form-label" for="sugarID">Sugar ID</label>
+                                    <input class="form-control" type="text" id="sugarID" name="sugarID" required>
+                                    <div class="form-text">Only enter ONE correct "main" <i>Indent Number</i> from the Sugar CRM system:</div>
+                                    <div class="invalid-feedback">Please fill this field.</div>
+                                </div>
                             </div>        
                             <div>
                                 <label class="form-label" for="expectedReceiveDate">Expected receive date</label>
-                                <input class="form-control" type="date" id="expectedReceiveDate" name="expectedReceiveDate">
+                                <input class="form-control" type="date" id="expectedReceiveDate" name="expectedReceiveDate" required>
                                 <div class="form-text">When do you expect to receive the tender?</div>
+                                <div class="invalid-feedback">Please fill this field.</div>
                             </div>
                         </div>
                 </div>
@@ -63,13 +74,13 @@
                         <div class="row mb-3">
                             <div class="col-4">
                                 <div class="form-check">
-                                    <input class="form-check-input transportModeBox" id="hasAirFreight" type="checkbox" value="hasAirFreight" name="transportMode">
+                                    <input class="form-check-input transportModeBox" id="hasAirFreight" type="checkbox" value="hasAirFreight" name="transportMode" required>
                                     <label class="form-check-label" for="hasAirFreight">Air freight</label>
                                 </div>
                             </div>
                             <div class="col">
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control transportModeVolume" id="airFreightVol" placeholder="Air freight volumes in Tons" aria-label="Air freight volumes in Tons">
+                                    <input type="number" class="form-control transportModeVolume" id="airFreightVol" placeholder="Air volumes in Tons" aria-label="Air freight volumes in Tons" required>
                                     <span class="input-group-text">Tons</span>
                                     <span class="input-group-text"><i>(estimated)</i></span>
                                 </div>
@@ -78,13 +89,13 @@
                         <div class="row mb-3">
                             <div class="col-4">
                                 <div class="form-check">
-                                    <input class="form-check-input transportModeBox" id="hasSeaFreightFCL" type="checkbox" value="hasSeaFreightFCL" name="transportMode">
+                                    <input class="form-check-input transportModeBox" id="hasSeaFreightFCL" type="checkbox" value="hasSeaFreightFCL" name="transportMode" required>
                                     <label class="form-check-label" for="hasSeaFreightFCL">Seafreight FCL</label>
                                 </div>
                             </div>
                             <div class="col">
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control transportModeVolume" id="seaFreightFCLVol" placeholder="FCL volumes in TEUs" aria-label="FCL volumes in TEUs">
+                                    <input type="number" class="form-control transportModeVolume" id="seaFreightFCLVol" placeholder="FCL volumes in TEUs" aria-label="FCL volumes in TEUs" required>
                                     <span class="input-group-text">TEUs</span>
                                     <span class="input-group-text"><i>(estimated)</i></span>
                                 </div>
@@ -93,13 +104,13 @@
                         <div class="row mb-3">
                             <div class="col-4">
                                 <div class="form-check">
-                                    <input class="form-check-input transportModeBox" id="hasSeaFreightLCL" type="checkbox" value="hasSeaFreightLCL" name="transportMode">
+                                    <input class="form-check-input transportModeBox" id="hasSeaFreightLCL" type="checkbox" value="hasSeaFreightLCL" name="transportMode" required>
                                     <label class="form-check-label" for="hasSeaFreightLCL">Seafreight LCL</label>
                                 </div>
                             </div>
                             <div class="col">
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control transportModeVolume" id="seaFreightLCLVol" placeholder="LCL volumes in CBMs" aria-label="LCL volumes in CBMs">
+                                    <input type="number" class="form-control transportModeVolume" id="seaFreightLCLVol" placeholder="LCL volumes in CBMs" aria-label="LCL volumes in CBMs" required>
                                     <span class="input-group-text">CBMs</span>
                                     <span class="input-group-text"><i>(estimated)</i></span>
                                 </div>
@@ -108,13 +119,13 @@
                         <div class="row">
                             <div class="col-4">
                                 <div class="form-check">
-                                    <input class="form-check-input transportModeBox" id="hasRailFreight" type="checkbox" value="hasRailFreight" name="transportMode">
+                                    <input class="form-check-input transportModeBox" id="hasRailFreight" type="checkbox" value="hasRailFreight" name="transportMode" required>
                                     <label class="form-check-label" for="hasRailFreight">Rail freight</label>
                                 </div>
                             </div>
                             <div class="col">
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control transportModeVolume" id="railFreightVol" placeholder="Rail volumes in TEUs" aria-label="Rail volumes in TEUs">
+                                    <input type="number" class="form-control transportModeVolume" id="railFreightVol" placeholder="Rail volumes in TEUs" aria-label="Rail volumes in TEUs" required>
                                     <span class="input-group-text">TEUs</span>
                                     <span class="input-group-text"><i>(estimated)</i></span>
                                 </div>
@@ -139,43 +150,43 @@
                         <tbody>
                             <tr>
                             <th scope="row">From Africa</th>
-                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="africaToAfrica" name="keyTradelanes" value="africaToAfrica"></td>
-                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="africaToAmericas" name="keyTradelanes" value="africaToAmericas"></td>
-                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="africaToAsia" name="keyTradelanes" value="africaToAsia"></td>
-                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="africaToEurope" name="keyTradelanes" value="africaToEurope"></td>
-                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="africaToOceania" name="keyTradelanes" value="africaToOceania"></td>
+                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="africaToAfrica" name="keyTradelanes" value="africaToAfrica" required></td>
+                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="africaToAmericas" name="keyTradelanes" value="africaToAmericas" required></td>
+                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="africaToAsia" name="keyTradelanes" value="africaToAsia" required></td>
+                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="africaToEurope" name="keyTradelanes" value="africaToEurope" required></td>
+                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="africaToOceania" name="keyTradelanes" value="africaToOceania" required></td>
                             </tr>
                             <tr>
                             <th scope="row">From Americas</th>
-                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="americasToAfrica" name="keyTradelanes" value="americasToAfrica"></td>
-                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="americasToAmericas" name="keyTradelanes" value="americasToAmericas"></td>
-                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="americasToAsia" name="keyTradelanes" value="americasToAsia"></td>
-                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="americasToEurope" name="keyTradelanes" value="americasToEurope"></td>
-                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="americasToOceania" name="keyTradelanes" value="americasToOceania"></td>
+                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="americasToAfrica" name="keyTradelanes" value="americasToAfrica" required></td>
+                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="americasToAmericas" name="keyTradelanes" value="americasToAmericas" required></td>
+                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="americasToAsia" name="keyTradelanes" value="americasToAsia" required></td>
+                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="americasToEurope" name="keyTradelanes" value="americasToEurope" required></td>
+                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="americasToOceania" name="keyTradelanes" value="americasToOceania" required></td>
                             </tr>
                             <tr>
                             <th scope="row">From Asia</th>
-                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="asiaToAfrica" name="keyTradelanes" value="asiaToAfrica"></td>
-                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="asiaToAmericas" name="keyTradelanes" value="asiaToAmericas"></td>
-                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="asiaToAsia" name="keyTradelanes" value="asiaToAsia"></td>
-                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="asiaToEurope" name="keyTradelanes" value="asiaToEurope"></td>
-                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="asiaToOceania" name="keyTradelanes" value="asiaToOceania"></td>
+                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="asiaToAfrica" name="keyTradelanes" value="asiaToAfrica" required></td>
+                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="asiaToAmericas" name="keyTradelanes" value="asiaToAmericas" required></td>
+                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="asiaToAsia" name="keyTradelanes" value="asiaToAsia" required></td>
+                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="asiaToEurope" name="keyTradelanes" value="asiaToEurope" required></td>
+                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="asiaToOceania" name="keyTradelanes" value="asiaToOceania" required></td>
                             </tr>
                             <tr>
                             <th scope="row">From Europe</th>
-                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="europeToAfrica" name="keyTradelanes" value="europeToAfrica"></td>
-                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="europeToAmericas" name="keyTradelanes" value="europeToAmericas"></td>
-                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="europeToAsia" name="keyTradelanes" value="europeToAsia"></td>
-                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="europeToEurope" name="keyTradelanes" value="europeToEurope"></td>
-                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="europeToOceania" name="keyTradelanes" value="europeToOceania"></td>
+                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="europeToAfrica" name="keyTradelanes" value="europeToAfrica" required></td>
+                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="europeToAmericas" name="keyTradelanes" value="europeToAmericas" required></td>
+                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="europeToAsia" name="keyTradelanes" value="europeToAsia" required></td>
+                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="europeToEurope" name="keyTradelanes" value="europeToEurope" required></td>
+                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="europeToOceania" name="keyTradelanes" value="europeToOceania" required></td>
                             </tr>
                             <tr>
                             <th scope="row">From Oceania</th>
-                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="oceaniaToAfrica" name="keyTradelanes" value="oceaniaToAfrica"></td>
-                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="oceaniaToAmericas" name="keyTradelanes" value="oceaniaToAmericas"></td>
-                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="oceaniaToAsia" name="keyTradelanes" value="oceaniaToAsia"></td>
-                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="oceaniaToEurope" name="keyTradelanes" value="oceaniaToEurope"></td>
-                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="oceaniaToOceania" name="keyTradelanes" value="oceaniaToOceania"></td>
+                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="oceaniaToAfrica" name="keyTradelanes" value="oceaniaToAfrica" required></td>
+                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="oceaniaToAmericas" name="keyTradelanes" value="oceaniaToAmericas" required></td>
+                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="oceaniaToAsia" name="keyTradelanes" value="oceaniaToAsia" required></td>
+                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="oceaniaToEurope" name="keyTradelanes" value="oceaniaToEurope" required></td>
+                            <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="oceaniaToOceania" name="keyTradelanes" value="oceaniaToOceania" required></td>
                             </tr>
                         </tbody>
                     </table>
@@ -189,23 +200,23 @@
                             <p>Is the tendering company an existing customer to the Rhenus Group (locally or globally) ?</p>
                                 <div class="container mb-3">
                                         <div class="form-check mb-3">
-                                            <input class="form-check-input historyBox" id="historyAirOcean" type="checkbox" value="historyAirOcean" name="relashionship">
+                                            <input class="form-check-input historyBox" id="historyAirOcean" type="checkbox" value="historyAirOcean" name="relashionship" required>
                                             <label class="form-check-label" for="historyAirOcean">Yes - Rhenus Air & Ocean</label>
                                         </div>
                                         <div class="form-check mb-3">
-                                            <input class="form-check-input historyBox" id="historyRoadFreight" type="checkbox" value="historyRoadFreight" name="relashionship">
+                                            <input class="form-check-input historyBox" id="historyRoadFreight" type="checkbox" value="historyRoadFreight" name="relashionship" required>
                                             <label class="form-check-label" for="historyRoadFreight">Yes - Rhenus Road</label>
                                         </div>
                                         <div class="form-check mb-3">
-                                            <input class="form-check-input historyBox" id="historyContractLog" type="checkbox" value="historyContractLog" name="relashionship">
+                                            <input class="form-check-input historyBox" id="historyContractLog" type="checkbox" value="historyContractLog" name="relashionship" required>
                                             <label class="form-check-label" for="historyContractLog">Yes - Rhenus Contract Logistics</label>
                                         </div>
                                         <div class="form-check mb-3">
-                                            <input class="form-check-input historyBox" id="historyPortLog" type="checkbox" value="historyPortLog" name="relashionship">
+                                            <input class="form-check-input historyBox" id="historyPortLog" type="checkbox" value="historyPortLog" name="relashionship" required>
                                             <label class="form-check-label" for="historyPortLog">Yes - Rhenus Port Logistics</label>
                                         </div>
                                         <div class="form-check">
-                                            <input class="form-check-input historyBox" id="historyNone" type="checkbox" value="historyNone" name="relashionship">
+                                            <input class="form-check-input historyBox" id="historyNone" type="checkbox" value="historyNone" name="relashionship" required>
                                             <label class="form-check-label" for="historyNone">No history</label>
                                         </div>
                                 </div>
@@ -241,7 +252,7 @@
             </div>
 
             <div class="d-grid gap-2 col-6 mx-auto">
-                <button type="button" class="btn btn-primary" id="confirmBtn" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Confirm</button>
+                <button type="button" class="btn btn-primary" id="confirmBtn">Confirm</button>
             </div>
 
         </form>
@@ -265,7 +276,7 @@
                             <span><strong>Preadvise sent from: </strong></span>
                         </div>
                         <div class="col-12 col-md-8">
-                            <span id="mod_countryLocation">Coucou c'est Jean-Marie</span>
+                            <span id="mod_countryLocation"></span>
                         </div>
                     </div>
                     <div class="row justify-content-md-center mb-2">
@@ -309,12 +320,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- <div class="mb-2"><strong>Preadvise sent from: </strong><span class="position-relative top-0 start-50 translate-middle-x" id="mod_countryLocation">Coucou c'est Jean-Marie</span></div>
-                <div class="mb-2"><strong>Company name: </strong><span id="mod_companyName"></span></div>
-                <div class="mb-2"><strong>Sugar ID: </strong><span id="mod_sugarID"></span></div>
-                <div class="mb-2"><strong>Expected receive date: </strong><span id="mod_expectedReceiveDate"></span></div>
-                <div class="mb-2"><strong>History with Rhenus: </strong><span id="mod_rhenusHistory"></span></div>
-                <div class="mb-4"><strong>Customer segment: </strong><span id="mod_existingCustomerSegment"></span></div> -->
                 <strong>Transport mode & Volumes:</strong>
                 <table class="table table-sm mb-4">
                     <thead>

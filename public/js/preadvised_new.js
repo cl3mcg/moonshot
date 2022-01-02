@@ -1,6 +1,3 @@
-// ---- ---- Import of country data
-// const countriesData = require('./public/ressources/countries.json')
-
 // ---- ---- Declaration of elements
 const confirmBtn = document.querySelector("#confirmBtn")
 const mod_submitBtn = document.querySelector("#mod_submitBtn")
@@ -97,28 +94,89 @@ const mod_oceaniaToAmericas = document.querySelector("#mod_oceaniaToAmericas")
 const mod_oceaniaToAsia = document.querySelector("#mod_oceaniaToAsia")
 const mod_oceaniaToEurope = document.querySelector("#mod_oceaniaToEurope")
 const mod_oceaniaToOceania = document.querySelector("#mod_oceaniaToOceania")
+const mod_rhenusHistory = document.querySelector("#mod_rhenusHistory")
 const mod_existingCustomerSegment = document.querySelector("#mod_existingCustomerSegment")
 const mod_additionalComment = document.querySelector("#mod_additionalComment")
 
+// Declaration of Arrays
+const transportModesCheckboxes = [hasAirFreight, hasSeaFreightFCL, hasSeaFreightLCL, hasRailFreight]
+const transportModesVolumes = [airFreightVol, seaFreightFCLVol, seaFreightLCLVol, railFreightVol]
+const routes = [
+    africaToAfrica,
+    africaToAmericas,
+    africaToAsia,
+    africaToEurope,
+    africaToOceania,
+    americasToAfrica,
+    americasToAmericas,
+    americasToAsia,
+    americasToEurope,
+    americasToOceania,
+    asiaToAfrica,
+    asiaToAmericas,
+    asiaToAsia,
+    asiaToEurope,
+    asiaToOceania,
+    europeToAfrica,
+    europeToAmericas,
+    europeToAsia,
+    europeToEurope,
+    europeToOceania,
+    oceaniaToAfrica,
+    oceaniaToAmericas,
+    oceaniaToAsia,
+    oceaniaToEurope,
+    oceaniaToOceania
+]
+const histories = [
+    historyAirOcean,
+    historyRoadFreight,
+    historyContractLog,
+    historyPortLog,
+    historyNone
+]
+const historiesFormats = {
+    historyAirOcean: "Air & Ocean",
+    historyRoadFreight: "Road Freight",
+    historyContractLog: "Contract Logistics",
+    historyPortLog: "Port Logistics",
+    historyNone: "None"
+}
+
 // ---- ---- Declaration of reusable functions
+// ---- Function to get the filds .value or the checkbox .checked
 const getValue = function(element){
-    if (element.type === "checkbox") {
+    if (element.type === "checkbox" || element.type === "radio") {
         return element.checked
     } else {
         return element.value
     }
 }
-
+// ---- Function to get a numeric value expressed in the correct formating
 const getNumericValue = function (element) {
-    return Number(element.value).toLocaleString('en-US', {
+    return Number(parseInt(element.value)).toLocaleString('en-US', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     })
 }
 
+// ---- Function to get the numeric value of an entered volume
+const getVolume = function (volField, unit) {
+   if (volField.value) {
+       return `${getNumericValue(volField)} ${unit}`
+    } else {
+        return "-"}
+}
+
+
 // ---- ---- App functions
 const launchModal = function () {
-        mod_countryLocation.innerText = getValue(countryLocation)
+    const addingModalTriggers = function () {
+        confirmBtn.setAttribute("data-bs-toggle", "modal")
+        confirmBtn.setAttribute("data-bs-target","#staticBackdrop")
+    }
+
+    const addingModalFields = function () {
         mod_companyName.innerText = getValue(companyName)
         mod_sugarID.innerText = getValue(sugarID)
         mod_expectedReceiveDate.innerText = getValue(expectedReceiveDate)
@@ -126,11 +184,11 @@ const launchModal = function () {
         if(getValue(hasSeaFreightFCL)){mod_hasSeaFreightFCL.innerText = "✅"} else {mod_hasSeaFreightFCL.innerText = "-"}
         if(getValue(hasSeaFreightLCL)){mod_hasSeaFreightLCL.innerText = "✅"} else {mod_hasSeaFreightLCL.innerText = "-"}
         if(getValue(hasRailFreight)){mod_hasRailFreight.innerText = "✅"} else {mod_hasRailFreight.innerText = "-"}
-        mod_airFreightVol.innerText = `${getNumericValue(airFreightVol)} TEUs`
-        mod_seaFreightFCLVol.innerText = `${getNumericValue(seaFreightFCLVol)} TEUs`
-        mod_seaFreightLCLVol.innerText = `${getNumericValue(seaFreightLCLVol)} CBMs`
-        mod_railFreightVol.innerText = `${getNumericValue(railFreightVol)} TEUs`
-        if(getValue(africaToAmericas)){mod_africaToAmericas.innerText = "✅"} else {mod_africaToAfrica.innerText = "-"}
+        mod_airFreightVol.innerText = getVolume(airFreightVol, "Tons")
+        mod_seaFreightFCLVol.innerText = getVolume(seaFreightFCLVol, "TEUs")
+        mod_seaFreightLCLVol.innerText = getVolume(seaFreightLCLVol, "CBMs")
+        mod_railFreightVol.innerText = getVolume(railFreightVol, "TEUs")
+        if(getValue(africaToAfrica)){mod_africaToAfrica.innerText = "✅"} else {mod_africaToAfrica.innerText = "-"}
         if(getValue(africaToAmericas)){mod_africaToAmericas.innerText = "✅"} else {mod_africaToAmericas.innerText = "-"}
         if(getValue(africaToAsia)){mod_africaToAsia.innerText = "✅"} else {mod_africaToAsia.innerText = "-"}
         if(getValue(africaToEurope)){mod_africaToEurope.innerText = "✅"} else {mod_africaToEurope.innerText = "-"}
@@ -155,21 +213,90 @@ const launchModal = function () {
         if(getValue(oceaniaToAsia)){mod_oceaniaToAsia.innerText = "✅"} else {mod_oceaniaToAsia.innerText = "-"}
         if(getValue(oceaniaToEurope)){mod_oceaniaToEurope.innerText = "✅"} else {mod_oceaniaToEurope.innerText = "-"}
         if(getValue(oceaniaToOceania)){mod_oceaniaToOceania.innerText = "✅"} else {mod_oceaniaToOceania.innerText = "-"}
-        if (getValue(segmentA)) {mod_existingCustomerSegment.innerText = "A-customer"} else if (getValue(segmentB)) {mod_existingCustomerSegment.innerText = "B-customer"} else if (getValue(segmentC)) {mod_existingCustomerSegment.innerText = "C-customer"} else {mod_existingCustomerSegment.innerText = "-"}
-        if (getValue(additionalComment)) {mod_additionalComment.innerText = getValue(additionalComment)} else {mod_additionalComment.innerText = "-"}
+        if(getValue(segmentA)) {mod_existingCustomerSegment.innerText = "A-customer"} else if (getValue(segmentB)) {mod_existingCustomerSegment.innerText = "B-customer"} else if (getValue(segmentC)) {mod_existingCustomerSegment.innerText = "C-customer"} else {mod_existingCustomerSegment.innerText = "-"}
+        if(getValue(additionalComment)) {mod_additionalComment.innerText = getValue(additionalComment)} else {mod_additionalComment.innerText = "-"}
+
+// ---- Special display for Country registering the pre-advise
+
+        const adjustmod_countryLocation = async function () { 
+                try { 
+                        const result = await axios.get("../../ressources/countries.json")
+                    const countriesData = result.data
+                    let matchingCountry = null
+                    for (let country of countriesData) {
+                        if (country.cca2 === getValue(countryLocation)) {
+                            mod_countryLocation.innerText =  `${country.cca2} - ${country.name.common} ${country.flag}`
+                        }
+                    }
+                    }
+                catch (err) {
+                    console.log("Oh no ! There's an error !", err) 
+                } 
+       
+        }
+        adjustmod_countryLocation()
+
+// ---- Special display for Customer History with Rhenus
+        let historyArray = []
+        for (let history of histories) {
+            if (getValue(history)) {
+                switch (history) {
+                    case historyAirOcean:
+                        historyArray.push(historiesFormats.historyAirOcean)
+                    break;
+                    case historyRoadFreight:
+                        historyArray.push(historiesFormats.historyRoadFreight)
+                    break;
+                    case historyContractLog:
+                        historyArray.push(historiesFormats.historyContractLog)
+                    break;
+                    case historyPortLog:
+                        historyArray.push(historiesFormats.historyPortLog)
+                    break;
+                    case historyNone:
+                        historyArray.push(historiesFormats.historyNone)
+                }
+            }
+        }
+        mod_rhenusHistory.innerText = historyArray.join(", ")
+    }
+
+const removeModalTriggers = function () {
+    confirmBtn.removeAttribute("data-bs-toggle")
+    confirmBtn.removeAttribute("data-bs-target")
 }
 
+    addingModalTriggers()
+    addingModalFields()
+    confirmBtn.click()
+    removeModalTriggers()
+}
 
 // ---- ---- Event Listener functions
-// ---- Controling the launch of the confirmation modal.
-confirmBtn.addEventListener("click", function (event) {event.preventDefault(), launchModal()})
+// ---- Controling the launch of the confirmation modal
 
-// ---- Controling the availability of volume fields depending on the transport mode selected.
+const formValidation = function () {
+    let forms = document.querySelectorAll('.needs-validation')
+    for (let form of forms) {
+        form.classList.add('was-validated')
+        if (form.checkValidity()) {
+            launchModal()
+            console.log("The form is validated.")
+        } else {
+            console.log("The form is not validated.")
+        }
+    }
+}
+
+confirmBtn.addEventListener("click", function (event) {event.preventDefault(), formValidation()})
+
+// ---- Controling the availability of volume fields depending on the transport mode selected
 for (let transportModeBox of transportModeBoxes) {
     transportModeBox.addEventListener("click", function () {
         if (!transportModeBox.checked) {
             var array = Array.from(transportModeBoxes);
             let index = array.indexOf(transportModeBox)
+            transportModeVolumes[index].value = null
             transportModeVolumes[index].setAttribute("disabled", "true")
         } else {
             var array = Array.from(transportModeBoxes);
@@ -183,6 +310,7 @@ for (let transportModeBox of transportModeBoxes) {
         if (!transportModeBox.checked) {
             var array = Array.from(transportModeBoxes);
             let index = array.indexOf(transportModeBox)
+            transportModeVolumes[index].value = null
             transportModeVolumes[index].setAttribute("disabled", "true")
         } else {
             var array = Array.from(transportModeBoxes);
@@ -192,33 +320,149 @@ for (let transportModeBox of transportModeBoxes) {
     }
 })
 
-// ---- Controling the availability of customer segment radio depending on the customer history.
-const validationArray = []
+// ---- Controling the requiered attribute of transport modes checkboxes & volumes fields
+// ---- NOTE: In practice it is working, but I noticed some descrpencies in the way the requiered attribute is set. In practice this should note lead to bugs.
+const validationArray1 = []
+
+for (let transportModesCheckbox of transportModesCheckboxes) {
+    transportModesCheckbox.addEventListener("click", function () {
+        let index = transportModesCheckboxes.indexOf(transportModesCheckbox)
+        if (transportModesCheckbox.checked){
+            validationArray1.push(transportModesVolumes[`${index}`])
+            transportModesCheckbox.setAttribute("required", true)
+            transportModesVolumes[`${index}`].setAttribute("required", true)
+            for (let transportModesCheckbox2 of transportModesCheckboxes) {
+                if (transportModesCheckboxes.indexOf(transportModesCheckbox2) !== index && !transportModesCheckbox2.checked) {
+                    transportModesCheckbox2.removeAttribute("required")
+                    transportModesVolumes[`${transportModesCheckboxes.indexOf(transportModesCheckbox2)}`].removeAttribute("required")
+                }
+            }
+        } else {
+            let indexToDelete = validationArray1.indexOf(transportModesVolumes[`${index}`])
+            validationArray1.splice(indexToDelete,1)
+            if(validationArray1.length === 0) {
+                for (let transportModesCheckbox of transportModesCheckboxes) {
+                    transportModesCheckbox.setAttribute("required", true)
+                }
+                for (let transportModesVolume of transportModesVolumes) {
+                    transportModesVolume.setAttribute("required", true)
+                }
+            } else {
+                transportModesCheckbox.removeAttribute("required")
+                transportModesVolumes[`${index}`].removeAttribute("required")
+                for (let transportModesCheckbox2 of transportModesCheckboxes) {
+                    if (transportModesCheckbox2.check) {
+                        transportModesCheckbox2.setAttribute("required", true)
+                    } else {
+                        transportModesCheckbox2.removeAttribute("required")
+                    }
+                }
+            }
+        }
+    })
+}
+
+window.addEventListener("load", function () {
+    for (let transportModesCheckbox of transportModesCheckboxes) {
+        transportModesCheckbox.checked = false
+    }
+    for (let transportModesVolume of transportModesVolumes) {
+        transportModesVolume.value = null
+        transportModesVolume.setAttribute("disabled", true)
+    }
+})
+
+// ---- Controling the requiered attribute of each lanes From/To
+let lanesBoxCheckedAmount = 0
+
+for (let route of routes) {
+    route.addEventListener("click", function () {
+        if (route.checked === true) {
+            lanesBoxCheckedAmount += 1
+        } else {
+            lanesBoxCheckedAmount -= 1
+        }
+        for (let route of routes) {
+            if (lanesBoxCheckedAmount > 0) {route.removeAttribute("required")}
+            else {route.setAttribute("required", true)}
+        }
+    })
+}
+
+window.addEventListener("load", function () {
+    for (let route of routes) {
+        route.checked = false
+    }
+})
+
+// ---- Controling the requiered attribute of the History boxes
+let historyBoxCheckedAmount = 0
+
+for (let history of histories) {
+    history.addEventListener("click", function () {
+        if (history.checked === true) {
+            historyBoxCheckedAmount += 1
+        } else {
+            historyBoxCheckedAmount -= 1
+        }
+        for (let history of histories) {
+            if (historyBoxCheckedAmount > 0) {history.removeAttribute("required")}
+            else {history.setAttribute("required", true)}
+        }
+    })
+}
+
+window.addEventListener("load", function () {
+    for (let history of histories) {
+        history.checked = false
+    }
+})
+
+// ---- Adding the requiered attribute of the Customer Segment radios if "Air & Ocean History" is checked
+
+historyAirOcean.addEventListener("click", function () {
+    for (let radio of customerSegmentRadios) {
+        if (historyAirOcean.checked === true) {
+            radio.setAttribute("required", true)
+        }
+        else {
+            radio.removeAttribute("required")   
+        }
+    }
+})
+
+
+// ---- Controling the availability of customer segment radio depending on the customer history
+const validationArray2 = []
 const hasHistoryArray = ["historyAirOcean","historyRoadFreight","historyContractLog","historyPortLog"]
 
 for (let historyBox of historyBoxes) {
     historyBox.addEventListener("click", function () {
         if (historyBox.checked && hasHistoryArray.includes(historyBox.value)) {
-            validationArray.push(historyBox.value)
-            if (validationArray.length > 0) {document.querySelector("#historyNone").setAttribute("disabled", "true"), document.querySelector("#historyNone").checked = false}
+            validationArray2.push(historyBox.value)
+            if (validationArray2.length > 0) {document.querySelector("#historyNone").setAttribute("disabled", "true"), document.querySelector("#historyNone").checked = false}
             for (let customerSegmentRadio of customerSegmentRadios) {
                 if (historyAirOcean.checked) {
                     customerSegmentRadio.removeAttribute("disabled")
+                    customerSegmentRadio.setAttribute("required", "true")
                 } else {
                     customerSegmentRadio.setAttribute("disabled", "true")
+                    customerSegmentRadio.removeAttribute("required")
                     customerSegmentRadio.checked = false
                 }
             }
         } else if (!historyBox.checked && hasHistoryArray.includes(historyBox.value)) {
-            let removalIndex = validationArray.indexOf(historyBox.value)
-            validationArray.splice(removalIndex, 1)
-            if (validationArray.length === 0) {document.querySelector("#historyNone").removeAttribute("disabled")}
+            let removalIndex = validationArray2.indexOf(historyBox.value)
+            validationArray2.splice(removalIndex, 1)
+            if (validationArray2.length === 0) {document.querySelector("#historyNone").removeAttribute("disabled")}
             for (let customerSegmentRadio of customerSegmentRadios) {
                 if (!historyAirOcean.checked) {
                     customerSegmentRadio.setAttribute("disabled", "true")
+                    customerSegmentRadio.removeAttribute("required")
                     customerSegmentRadio.checked = false
                 } else {
                     customerSegmentRadio.removeAttribute("disabled")
+                    customerSegmentRadio.setAttribute("required", "true")
                 }
             }
         }
@@ -232,4 +476,32 @@ window.addEventListener("load", function () {
     for (let historyBox of historyBoxes) {
         historyBox.checked = false
     }
+    for (let historyBox of historyBoxes) {
+        historyBox.checked = false
+    }
+    for (let radio of customerSegmentRadios) {
+        radio.checked = false
+    }
 })
+
+// ---- ---- Bootstrap form validation
+const bootsrapValidation = function () {
+
+// ---- Fetch all the forms we want to apply custom Bootstrap validation styles to
+    var forms = document.querySelectorAll('.needs-validation')
+  
+// ---- Loop over them and prevent submission
+    Array.prototype.slice.call(forms)
+      .forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+          if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+          }
+  
+          form.classList.add('was-validated')
+        }, false)
+      })
+  }
+
+mod_submitBtn.addEventListener("click", bootsrapValidation())
