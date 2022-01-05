@@ -1,4 +1,4 @@
-// App
+// ----- App
 const express = require("express")
 const app = express()
 const ejs = require("ejs")
@@ -9,15 +9,15 @@ const mongoose = require("mongoose")
 const nodemailer = require("nodemailer")
 const axios = require("axios")
 
-// Database models
+// ----- Database models
 const PreadvisedTender = require("./models/preadvisedTender.js")
 const Office = require("./models/office.js")
 
-// Ressources
+// ----- Ressources
 const countriesData = require('./public/ressources/countries.json')
 const monthsData = require('./public/ressources/months.json')
 
-// Middlewares
+// ----- Middlewares
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
@@ -26,7 +26,7 @@ app.set("views", path.join(__dirname, "views"))
 app.set("view engine", "ejs")
 app.engine("ejs", ejsMate)
 
-// Database connection
+// ----- Database connection
 mongoose.connect("mongodb://localhost:27017/moonshot", {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -39,12 +39,12 @@ mongoose.connect("mongodb://localhost:27017/moonshot", {
         console.log(err)
     })
 
-// Commonly used functions
+// ----- Commonly used functions
 const currentTimeAndDate = function () {return new Date(Date.now())}
 const findCountryName = function (cca2) {for (country of countriesData) {if (country.cca2 === cca2) {return country.name.common}}}
 const findcca2 = function (countryName) {for (country of countriesData) {if (country.common.name === countryName) {return country.cca2}}}
 
-// Routes MOONSHOT HOME & START
+// ----- Routes MOONSHOT HOME & START
 app.get("/", function(req, res){
     res.send("Hello world !")
 })
@@ -57,9 +57,9 @@ app.get("/moonshot/start", function (req, res){
     res.render("indexStart.ejs")
 })
 
-// Routes MOONSHOT PREADVISED
+// ----- Routes MOONSHOT PREADVISED
 
-app.get("/moonshot/preadvised/index", function(req, res){
+app.get("/moonshot/preadvised/index", async function(req, res){
     res.render("preadvised_index.ejs")
 })
 
@@ -163,8 +163,92 @@ app.post("/moonshot/preadvised/new", async function(req,res){
 
 
 app.get("/moonshot/preadvised", async function (req, res) {
-    let allPreadvisedTenders = await PreadvisedTender.find({})
-    res.render("preadvised_index.ejs", {countriesData, monthsData, allPreadvisedTenders})
+    const d = new Date()
+    const today = new Date(d.getFullYear(), d.getMonth(), d.getDate())
+    const d30 = new Date (d.setDate(d.getDate() + 30))
+    const next30days = new Date(d30.getFullYear(), d30.getMonth(), d30.getDate())
+    const d90 = new Date (d30.setDate(d30.getDate() + 60))
+    const next90days = new Date(d90.getFullYear(), d90.getMonth(), d90.getDate())
+ 
+
+    // const preadvised_past = await PreadvisedTender.find({"expectedReceiveDate": {$lt: today}})
+    // const preadvised_inM = await PreadvisedTender.find({"expectedReceiveDate": {$gte: today, $lte: next30days}})
+    // const preadvised_inQ = await PreadvisedTender.find({"expectedReceiveDate": {$gt: next30days, $lte: next90days}})
+    // const preadvised_inY = await PreadvisedTender.find({"expectedReceiveDate": {$gt: next90days}})
+    // let allPreadvisedTenders = await PreadvisedTender.find({})
+
+    // ----- Function below is used to sort an array containing objects according to a defined attribute.
+    // ----- Function below has been copied from https://stackoverflow.com/questions/10123953/how-to-sort-an-object-array-by-date-property
+    var sortBy = (function () {
+        var toString = Object.prototype.toString,
+            // default parser function
+            parse = function (x) { return x; },
+            // gets the item to be sorted
+            getItem = function (x) {
+              var isObject = x != null && typeof x === "object";
+              var isProp = isObject && this.prop in x;
+              return this.parser(isProp ? x[this.prop] : x);
+            };
+            
+        /**
+         * Sorts an array of elements.
+         *
+         * @param {Array} array: the collection to sort
+         * @param {Object} cfg: the configuration options
+         * @property {String}   cfg.prop: property name (if it is an Array of objects)
+         * @property {Boolean}  cfg.desc: determines whether the sort is descending
+         * @property {Function} cfg.parser: function to parse the items to expected type
+         * @return {Array}
+         */
+        return function sortby (array, cfg) {
+          if (!(array instanceof Array && array.length)) return [];
+          if (toString.call(cfg) !== "[object Object]") cfg = {};
+          if (typeof cfg.parser !== "function") cfg.parser = parse;
+          cfg.desc = !!cfg.desc ? -1 : 1;
+          return array.sort(function (a, b) {
+            a = getItem.call(cfg, a);
+            b = getItem.call(cfg, b);
+            return cfg.desc * (a < b ? -1 : +(a > b));
+          });
+        };
+        
+      }());
+
+      const allPreadvisedTenders = sortBy(await PreadvisedTender.find({}), { prop: "expectedReceiveDate" })
+      const preadvised_past = sortBy(await PreadvisedTender.find({"expectedReceiveDate": {$lt: today}}), { prop: "expectedReceiveDate" })
+      const preadvised_inM = sortBy(await PreadvisedTender.find({"expectedReceiveDate": {$gte: today, $lte: next30days}}), { prop: "expectedReceiveDate" })
+      const preadvised_inQ = sortBy(await PreadvisedTender.find({"expectedReceiveDate": {$gt: next30days, $lte: next90days}}), { prop: "expectedReceiveDate" })
+      const preadvised_inY = sortBy(await PreadvisedTender.find({"expectedReceiveDate": {$gt: next90days}}), { prop: "expectedReceiveDate" })
+      const preadvised_inAM = []
+      const preadvised_inAP = []
+      const preadvised_inEU = []
+
+      for (let preadvise of allPreadvisedTenders) {
+          for (let country of countriesData) {
+              if (country.cca2 === preadvise.countryLocation) {
+                  if (country.region === "Europe" || country.region === "Africa" || country.subregion === "Central Asia" || country.subregion === "Western Asia") {
+                    preadvised_inEU.push(preadvise)
+                  } else if (country.region === "Asia" || country.region === "Oceania") {
+                    preadvised_inAP.push(preadvise)
+                  } else if (country.region === "Americas") {
+                    preadvised_inAM.push(preadvise)
+                  } else (preadvised_inEU.push(preadvise))
+              }
+          }
+      }
+
+    // ----- For debugging purposes
+    // console.log(`"today" is registered as ${today}`)
+    // console.log(`"next30days" is registered as ${next30days}`)
+    // console.log(`"next90days" is registered as ${next90days}`)
+    // console.log(`"preadvised_inM" results are ${preadvised_inM}`)
+    // console.log(`"preadvised_inQ" results are ${preadvised_inQ}`)
+    // console.log(`"preadvised_inY" results are ${preadvised_inY}`)
+    // console.log(`"preadvised_inAM" results are ${preadvised_inAM}`)
+      // console.log(`"preadvised_inAP" results are ${preadvised_inAP}`)
+        // console.log(`"preadvised_inEU" results are ${preadvised_inEU}`)
+
+    res.render("preadvised_index.ejs", {countriesData, monthsData, today, next30days, next90days, allPreadvisedTenders, preadvised_past, preadvised_inM, preadvised_inQ, preadvised_inY, preadvised_inAM, preadvised_inAP, preadvised_inEU})
 })
 
 app.get("/moonshot/preadvised/:id", async function (req, res) {
@@ -238,7 +322,7 @@ app.patch("/moonshot/preadvised/edit/:id", async function (req, res){
     res.redirect(`/moonshot/preadvised/${matchingId}`)
 })
 
-// Routes MOONSHOT OFFICES
+// ----- Routes MOONSHOT OFFICES
 
 app.get("/moonshot/office/start", function (req, res){
     res.render("office_start.ejs")
