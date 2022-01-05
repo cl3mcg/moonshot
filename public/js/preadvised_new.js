@@ -180,7 +180,7 @@ const launchModal = function () {
         mod_companyName.innerText = getValue(companyName)
         mod_sugarID.innerText = getValue(sugarID)
         mod_expectedReceiveDate.innerText = getValue(expectedReceiveDate)
-        if(getValue(hasAirFreight)){mod_hasAirFreight.innerText = "✅"} else {mod_hasAirFreight.innerText = "-"}
+        if(getValue(hasAirFreight)){mod_hasAirFreight.innerHTML = "✅"} else {mod_hasAirFreight.innerText = "-"}
         if(getValue(hasSeaFreightFCL)){mod_hasSeaFreightFCL.innerText = "✅"} else {mod_hasSeaFreightFCL.innerText = "-"}
         if(getValue(hasSeaFreightLCL)){mod_hasSeaFreightLCL.innerText = "✅"} else {mod_hasSeaFreightLCL.innerText = "-"}
         if(getValue(hasRailFreight)){mod_hasRailFreight.innerText = "✅"} else {mod_hasRailFreight.innerText = "-"}
@@ -280,10 +280,22 @@ const formValidation = function () {
     for (let form of forms) {
         form.classList.add('was-validated')
         if (form.checkValidity()) {
+            confirmBtn.classList.remove("btn-primary")
+            confirmBtn.classList.add("btn-success")
+            setTimeout(() => {
+                confirmBtn.classList.remove("btn-success")
+                confirmBtn.classList.add("btn-primary")
+            }, 250);
             launchModal()
             console.log("The form is validated.")
         } else {
             console.log("The form is not validated.")
+            confirmBtn.classList.remove("btn-primary")
+            confirmBtn.classList.add("btn-danger", "animate__animated", "animate__shakeX", "animate__faster")
+            setTimeout(() => {
+                confirmBtn.classList.remove("btn-danger", "animate__animated", "animate__shakeX", "animate__faster")
+                confirmBtn.classList.add("btn-primary") 
+            }, 250);
         }
     }
 }
