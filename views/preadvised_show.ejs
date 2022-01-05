@@ -13,16 +13,19 @@
 <body>
     <%- include("partials/navbar.ejs") %>
 <div class="container">
+    <div class="container my-5"></div>
     <h1><%= matchingTender.companyName %></h1>
     <h2>Tender pre-advised</h2>
-    <p><a href="/moonshot">Go back to the index</a></p>
+    <p><a class="btn btn-light btn-sm border" href="/moonshot/preadvised"><i class="bi bi-arrow-left-circle"></i> Back</a></p>
 
     <ul>
         <li>Registered by:</li>
-        <li>Registered on: <%= matchingTender.recordDate.getDate() %>-<%=monthsData[matchingTender.recordDate.getMonth() + 1]%>-<%=matchingTender.recordDate.getFullYear() %> at <%=matchingTender.recordDate.getHours()%>:<%=matchingTender.recordDate.getMinutes()%></li>
-        <li>Registered from: <% for (let country of countriesData) { if (country.cca2 === matchingTender.countryLocation) { %> <%=`${country.flag} ${country.name.common}`%><%}}%></li>
-        <li>Sugar ID: <%= matchingTender.sugarID %>
+        <li>Registered on: <%= matchingTender.recordDate.getDate() %>-<%=monthsData[matchingTender.recordDate.getMonth() + 1]%>-<%=matchingTender.recordDate.getFullYear() %>
+            <!-- Uncomment below to display the hour of registration -->
+            <!-- at <%=matchingTender.recordDate.getHours()%>:<%=matchingTender.recordDate.getMinutes()%> -->
         </li>
+        <li>Registered from: <% for (let country of countriesData) { if (country.cca2 === matchingTender.countryLocation) { %> <%=`${country.flag} ${country.name.common}`%><%}}%></li>
+        <li>Sugar ID: <%= matchingTender.sugarID %></li>
         <li>Expected receive date: <%= matchingTender.expectedReceiveDate.getDate() %>-<%=monthsData[matchingTender.expectedReceiveDate.getMonth() + 1]%>-<%=matchingTender.expectedReceiveDate.getFullYear() %>
         </li>
         <li>Transport Mode: <% for (let transport of matchingTender.transportMode) {%><%=transport%>, <% } %></li>
@@ -36,11 +39,17 @@
     </ul>
 
     <h3>Actions</h3>
-    <div>
-        <a href="/moonshot/preadvised/edit/<%= matchingTender.id %>">Edit</a>
-        <form method="POST" action="/moonshot/preadvised/<%= matchingTender.id %>?_method=DELETE">
-            <button>Delete</button>
-        </form>
+    <div class="container">
+        <div class="row">
+            <div class="col col-xs-12 col-sm-1">
+                <a class="btn btn-light btn-sm border" href="/moonshot/preadvised/edit/<%= matchingTender.id %>"><i class="bi bi-pencil-square"></i> Edit</a>
+            </div>
+            <div class="col col-xs-12 col-sm-1">
+                <form method="POST" action="/moonshot/preadvised/<%= matchingTender.id %>?_method=DELETE">
+                    <button class="btn btn-outline-danger btn-sm border-danger"><i class="bi bi-trash"></i> Delete</button>
+                </form>
+            </div>
+        </div>
     </div>
     </p>
 </div>
