@@ -8,6 +8,7 @@
     <%- include("partials/commonStyles.ejs") %>
     <%- include("partials/commonFonts.ejs") %>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 </head>
 <body>
     <%- include("partials/navbar.ejs") %>
@@ -26,8 +27,8 @@
                         <div class="container mb-5">
                             <div class="mb-3">
                                 <div class="input-group has-validation">
-                                    <select class="form-select" id="countryLocation" name="countryLocation">
-                                        <option value="">--Please choose an option--</option>
+                                    <select class="form-select" id="countryLocation" name="countryLocation" required>
+                                        <option selected disabled value="">Choose...</option>
                                         <% for (let country of countriesData) { %>
                                         <option value="<%= country.cca2 %>"><%= country.cca2 %> - <%= country.name.common %> <% if (!country.flag) { %>🇺🇳<% } else { %> <%=country.flag%> <% } %></option>
                                         <% } %>
@@ -90,7 +91,7 @@
                             <div class="col-4">
                                 <div class="form-check">
                                     <input class="form-check-input transportModeBox" id="hasSeaFreightFCL" type="checkbox" value="hasSeaFreightFCL" name="transportMode" required>
-                                    <label class="form-check-label" for="hasSeaFreightFCL">Seafreight FCL</label>
+                                    <label class="form-check-label" for="hasSeaFreightFCL">Sea freight FCL</label>
                                 </div>
                             </div>
                             <div class="col">
@@ -105,7 +106,7 @@
                             <div class="col-4">
                                 <div class="form-check">
                                     <input class="form-check-input transportModeBox" id="hasSeaFreightLCL" type="checkbox" value="hasSeaFreightLCL" name="transportMode" required>
-                                    <label class="form-check-label" for="hasSeaFreightLCL">Seafreight LCL</label>
+                                    <label class="form-check-label" for="hasSeaFreightLCL">Sea freight LCL</label>
                                 </div>
                             </div>
                             <div class="col">
@@ -411,8 +412,8 @@
                 <span id="mod_additionalComment"></span>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary position-relative top-50 start-0" id="mod_returnBtn" data-bs-dismiss="modal">Change</button>
-                    <button type="submit" form="preadviseForm" class="btn btn-success position-relative top-50 end-0" id="mod_submitBtn">Submit</button>
+                    <button type="button" class="btn btn-outline-secondary position-relative top-50 start-0" id="mod_returnBtn" data-bs-dismiss="modal"><i class="bi bi-pencil-square"></i> Change</button>
+                    <button type="submit" form="preadviseForm" class="btn btn-success position-relative top-50 end-0" id="mod_submitBtn"><i class="bi bi-send-check"></i> Submit</button>
                 </div>
             </div>
             </div>
