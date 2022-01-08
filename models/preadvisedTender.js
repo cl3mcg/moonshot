@@ -8,7 +8,7 @@ const preAdvisedTenderSchema = new Schema({
     sugarID: String,
     expectedReceiveDate: {
         type: Date,
-        min: "2021-12-01"
+        min: "2021-10-01"
     },
     transportMode: Array,
     airFreightVolume: {
