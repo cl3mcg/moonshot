@@ -157,10 +157,10 @@
                             <% } else { %>  
                         <% for (let entry of preadvised_past) { %>
                             <div class="col col-12 col-sm-4 col-xl-3">
-                                <div class="card h-100 <% if ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) <= 10) { %> 
+                                <div class="card h-100 <% if ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) >= -10) { %> 
                                 border-secondary
                                 <% } %>">
-                                    <% if ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) <= 10) { %> 
+                                    <% if ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) >= -10) { %> 
                                         <span class="position-absolute top-0 start-100 translate-middle badge bg-secondary fs-6"><i class="bi bi-alarm"></i></span>
                                     <% } %>
                                     <h5 class="card-header text-truncate"><%= entry.companyName %></h5>
@@ -205,9 +205,9 @@
                                         <% } else { %> 
                                         <% for (entry of preadvised_inAM) { %>
                                             <div class="col col-12 col-sm-4 col-xl-3">
-                                                <div class="card h-100 <% if ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) <= 0 && (new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24 >= -10)) { %> 
+                                                <div class="card h-100 <% if (((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) < 0) && ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) >= -10)) { %> 
                                                 border-secondary
-                                                <% } else if ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) <= 10) { %> 
+                                                <% } else if (((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) >= 0) && (new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) <= 10) { %> 
                                                     border-danger
                                                     <% } %>">
                                                     <% if ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) <= 0 && (new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24 >= -10)) { %> 
@@ -253,9 +253,9 @@
                                         <% } else { %> 
                                         <% for (entry of preadvised_inAP) { %>
                                             <div class="col col-12 col-sm-4 col-xl-3">
-                                                <div class="card h-100 <% if ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) <= 0 && (new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24 >= -10)) { %> 
+                                                <div class="card h-100 <% if (((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) < 0) && ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) >= -10)) { %> 
                                                 border-secondary
-                                                <% } else if ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) <= 10) { %> 
+                                                <% } else if (((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) >= 0) && (new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) <= 10) { %> 
                                                     border-danger
                                                     <% } %>">
                                                     <% if ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) <= 0 && (new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24 >= -10)) { %> 
@@ -301,9 +301,9 @@
                                         <% } else { %> 
                                         <% for (entry of preadvised_inEU) { %>
                                             <div class="col col-12 col-sm-4 col-xl-3">
-                                                <div class="card h-100 <% if ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) <= 0 && (new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24 >= -10)) { %> 
+                                                <div class="card h-100 <% if (((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) < 0) && ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) >= -10)) { %> 
                                                 border-secondary
-                                                <% } else if ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) <= 10) { %> 
+                                                <% } else if (((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) >= 0) && (new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) <= 10) { %> 
                                                     border-danger
                                                     <% } %>">
                                                     <% if ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) <= 0 && (new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24 >= -10)) { %> 
