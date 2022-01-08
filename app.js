@@ -276,33 +276,34 @@ app.get("/moonshot/preadvised/edit/:id", async function (req, res){
 
 app.patch("/moonshot/preadvised/edit/:id", async function (req, res){
     let matchingId = req.params.id
-    let {
-        newCompanyName,
-        newSugarID,
-        newExpectedReceiveDate,
-        newTransportMode,
+
+    let newCompanyName = req.body.companyName
+    let newSugarID = req.body.sugarID
+    let newExpectedReceiveDate = req.body.expectedReceiveDate
+    let newTransportMode = req.body.transportMode
+    let newAirFreightVolume = req.body.airFreightVolume
+    let newSeaFreightFCLVolume = req.body.seaFreightFCLVolume
+    let newSeaFreightLCLVolume = req.body.seaFreightLCLVolume
+    let newRailFreightVolume = req.body.railFreightVolume
+    let newKeyTradelanes = req.body.keyTradelanes
+    let newRelashionship = req.body.relashionship
+    let newExistingCustomerSegment = req.body.existingCustomerSegment
+    let newAdditionalComment = req.body.additionalComment
+    let newCountryLocation = req.body.countryLocation
+   
+    console.log(req.body)
+    console.log(newExpectedReceiveDate)
+
+    let volValidation = [
         newAirFreightVolume,
         newSeaFreightFCLVolume,
         newSeaFreightLCLVolume,
-        newRailFreightVolume,
-        newKeyTradelanes,
-        newRelashionship,
-        newExistingCustomerSegment,
-        newAdditionalComment,
-        newCountryLocation
-    } = req.body
-
-    let volValidation = [
-        airFreightVolume,
-        seaFreightFCLVolume,
-        seaFreightLCLVolume,
-        railFreightVolume]
+        newRailFreightVolume]
         for (let entry of volValidation) {if (!entry) {entry = 0}}
-    let arrayValidation = [transportMode,
-        keyTradelanes]
+    let arrayValidation = [newTransportMode, newKeyTradelanes]
     for (let entry of arrayValidation) {if (typeof(entry) != "object") {entry = [entry]}}
 
-    let matchingTender = await PreadvisedTender.findByIdAndUpdate(matchingId, {
+    await PreadvisedTender.findByIdAndUpdate(matchingId, {
         lastModifiedDate: currentTimeAndDate(),
         companyName: newCompanyName,
         sugarID: newSugarID,
