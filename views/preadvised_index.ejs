@@ -33,7 +33,7 @@
                 <div class="container mb-4">
                     <h2>This month</h2>
                     <h3><%= monthsData[today.getMonth() + 1]%>-<%= today.getFullYear() %></h3>
-                    <div class="row">
+                    <div class="row gy-3">
                         <% if (!preadvised_inM || preadvised_inM.length === 0) {%>
                             <div class="col col-12 col-sm-4 col-xl-3 mt-2">
                                 <div class="card h-100 text-muted">
@@ -70,7 +70,7 @@
                 <div class="container mb-4">
                     <h2>Within the next 3 months</h2>
                     <h3>from <%= monthsData[next30days.getMonth() + 1]%>-<%= next30days.getFullYear() %> to <%= monthsData[next90days.getMonth() + 1]%>-<%= next90days.getFullYear() %></h3>
-                    <div class="row">
+                    <div class="row gy-3">
                         <% if (!preadvised_inQ || preadvised_inQ.length === 0) {%>
                             <div class="col col-12 col-sm-4 col-xl-3 mt-2">
                                 <div class="card h-100 text-muted">
@@ -107,7 +107,7 @@
                 <div class="container mb-5">
                     <h2>In the future</h2>
                     <h3>after <%= monthsData[next90days.getMonth() + 1]%>-<%= next90days.getFullYear() %></h3>
-                    <div class="row">
+                    <div class="row gy-3">
                         <% if (!preadvised_inY || preadvised_inY.length === 0) {%>
                             <div class="col col-12 col-sm-4 col-xl-3 mt-2">
                                 <div class="card h-100 text-muted">
@@ -144,7 +144,7 @@
                 <div class="container mb-4">
                     <h2 class="text-muted">Past preadvised</h2>
                     <h3 class="text-muted">Before <%= monthsData[today.getMonth() + 1]%>-<%= today.getFullYear() %></h3>
-                    <div class="row">
+                    <div class="row gy-3">
                         <% if (!preadvised_past || preadvised_past.length === 0) {%>
                             <div class="col col-12 col-sm-4 col-xl-3 mt-2">
                                 <div class="card h-100 text-muted">
@@ -161,7 +161,7 @@
                                 border-secondary
                                 <% } %>">
                                     <% if ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) >= -10) { %> 
-                                        <span class="position-absolute top-0 start-100 translate-middle badge bg-secondary fs-6"><i class="bi bi-alarm"></i></span>
+                                        <span class="position-absolute top-0 start-100 translate-middle badge bg-secondary fs-6"><i class="bi bi-clock-history"></i></span>
                                     <% } %>
                                     <h5 class="card-header text-truncate"><%= entry.companyName %></h5>
                                         <div class="card-body">
@@ -187,12 +187,12 @@
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="panelsStayOpen-headingOne">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false" aria-controls="panelsStayOpen-collapseOne">
-                                AM tender desk
+                                <h2 class="my-1">AM tender desk</h2>
                             </button>
                             </h2>
                             <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingOne">
                             <div class="accordion-body">
-                                <div class="row">
+                                <div class="row gy-3">
                                     <% if (!preadvised_inAM || preadvised_inAM === 0) { %>
                                             <div class="col col-12 col-sm-4 col-xl-3 mt-2">
                                                 <div class="card h-100 text-muted">
@@ -206,13 +206,13 @@
                                         <% for (entry of preadvised_inAM) { %>
                                             <div class="col col-12 col-sm-4 col-xl-3">
                                                 <div class="card h-100 <% if (((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) < 0) && ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) >= -10)) { %> 
-                                                border-secondary
-                                                <% } else if (((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) >= 0) && (new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) <= 10) { %> 
-                                                    border-danger
-                                                    <% } %>">
-                                                    <% if ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) <= 0 && (new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24 >= -10)) { %> 
-                                                        <span class="position-absolute top-0 start-100 translate-middle badge bg-secondary fs-6"><i class="bi bi-alarm"></i></span>
-                                                    <% } else if ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) <= 10) { %> 
+                                                    border-secondary
+                                                    <% } else if (((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) >= 0) && (new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) <= 10) { %> 
+                                                        border-danger
+                                                        <% } %>">
+                                                        <% if (((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) < 0) && ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) >= -10)) { %> 
+                                                        <span class="position-absolute top-0 start-100 translate-middle badge bg-secondary fs-6"><i class="bi bi-clock-history"></i></span>
+                                                    <% } else if (((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) >= 0) && ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) <= 10)) { %> 
                                                         <span class="position-absolute top-0 start-100 translate-middle badge bg-danger fs-6"><i class="bi bi-alarm"></i></span>
                                                     <% } %>
                                                     <h5 class="card-header text-truncate"><%= entry.companyName %></h5>
@@ -235,12 +235,12 @@
                         <div class="accordion-item">
                         <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
-                                AP tender desk
+                                <h2 class="my-1">AP tender desk</h2>
                             </button>
                         </h2>
                         <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo">
                             <div class="accordion-body">
-                                <div class="row">
+                                <div class="row gy-3">
                                     <% if (!preadvised_inAP || preadvised_inAP === 0) { %>
                                             <div class="col col-12 col-sm-4 col-xl-3 mt-2">
                                                 <div class="card h-100 text-muted">
@@ -254,13 +254,13 @@
                                         <% for (entry of preadvised_inAP) { %>
                                             <div class="col col-12 col-sm-4 col-xl-3">
                                                 <div class="card h-100 <% if (((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) < 0) && ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) >= -10)) { %> 
-                                                border-secondary
-                                                <% } else if (((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) >= 0) && (new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) <= 10) { %> 
-                                                    border-danger
-                                                    <% } %>">
-                                                    <% if ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) <= 0 && (new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24 >= -10)) { %> 
-                                                        <span class="position-absolute top-0 start-100 translate-middle badge bg-secondary fs-6"><i class="bi bi-alarm"></i></span>
-                                                    <% } else if ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) <= 10) { %> 
+                                                    border-secondary
+                                                    <% } else if (((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) >= 0) && (new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) <= 10) { %> 
+                                                        border-danger
+                                                        <% } %>">
+                                                        <% if (((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) < 0) && ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) >= -10)) { %> 
+                                                        <span class="position-absolute top-0 start-100 translate-middle badge bg-secondary fs-6"><i class="bi bi-clock-history"></i></span>
+                                                        <% } else if (((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) >= 0) && ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) <= 10)) { %>
                                                         <span class="position-absolute top-0 start-100 translate-middle badge bg-danger fs-6"><i class="bi bi-alarm"></i></span>
                                                     <% } %>
                                                     <h5 class="card-header text-truncate"><%= entry.companyName %></h5>
@@ -283,12 +283,12 @@
                         <div class="accordion-item">
                         <h2 class="accordion-header" id="panelsStayOpen-headingThree">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
-                            EU tender desk
+                                <h2 class="my-1">EU tender desk</h2>
                             </button>
                         </h2>
                         <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingThree">
                             <div class="accordion-body">
-                                <div class="row">
+                                <div class="row gy-3">
                                     <% if (!preadvised_inEU || preadvised_inEU === 0) { %>
                                             <div class="col col-12 col-sm-4 col-xl-3 mt-2">
                                                 <div class="card h-100 text-muted">
@@ -306,9 +306,9 @@
                                                 <% } else if (((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) >= 0) && (new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) <= 10) { %> 
                                                     border-danger
                                                     <% } %>">
-                                                    <% if ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) <= 0 && (new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24 >= -10)) { %> 
-                                                        <span class="position-absolute top-0 start-100 translate-middle badge bg-secondary fs-6"><i class="bi bi-alarm"></i></span>
-                                                    <% } else if ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) <= 10) { %> 
+                                                    <% if (((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) < 0) && ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) >= -10)) { %> 
+                                                        <span class="position-absolute top-0 start-100 translate-middle badge bg-secondary fs-6"><i class="bi bi-clock-history"></i></span>
+                                                        <% } else if (((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) >= 0) && ((new Date(entry.expectedReceiveDate).getTime() - new Date().getTime())/(1000 * 60 * 60 * 24) <= 10)) { %>
                                                         <span class="position-absolute top-0 start-100 translate-middle badge bg-danger fs-6"><i class="bi bi-alarm"></i></span>
                                                     <% } %>
                                                     <h5 class="card-header text-truncate"><%= entry.companyName %></h5>
