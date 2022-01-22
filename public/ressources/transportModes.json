@@ -1,0 +1,6 @@
+{
+    "hasAirFreight": "Air freight",
+    "hasSeaFreightFCL": "Sea freight FCL",
+    "hasSeaFreightLCL": "Sea freight LCL",
+    "hasRailFreight": "Rail freight"
+}
