@@ -1,12 +1,12 @@
 // ----- App
 const express = require("express")
 const app = express()
+const colors = require('colors')
 const ejs = require("ejs")
 const path = require("path")
 const ejsMate = require("ejs-mate")
 const methodOverride = require("method-override")
 const mongoose = require("mongoose")
-const colors = require('colors')
 
 // ----- Database models
 const PreadvisedTender = require("./models/preadvisedTender.js")
