@@ -1,6 +1,7 @@
 // ----- App
 const express = require("express")
 const app = express()
+const colors = require('colors')
 const ejs = require("ejs")
 const path = require("path")
 const ejsMate = require("ejs-mate")
@@ -16,6 +17,9 @@ const Office = require("./models/office.js")
 // ----- Ressources
 const countriesData = require('./public/ressources/countries.json')
 const monthsData = require('./public/ressources/months.json')
+const tradelanes = require('./public/ressources/tradelanes.json')
+const history = require('./public/ressources/history.json')
+const transportModes = require('./public/ressources/transportModes.json')
 
 // ----- Middlewares
 app.use(express.static(path.join(__dirname, 'public')))
@@ -32,10 +36,10 @@ mongoose.connect("mongodb://localhost:27017/moonshot", {
     useUnifiedTopology: true
 })
     .then(function () {
-        console.log("MOONSHOT PROJECT - Database connection OK (Mongoose)")
+        console.log(`${colors.black.bgBrightGreen('* OK *')} MOONSHOT PROJECT - Database connection OK (Mongoose)`)
     })
     .catch(function (err) {
-        console.log("MOONSHOT PROJECT - Database connection ERROR (Mongoose)")
+        console.log(`${colors.brightYellow.bgBrightRed('*!* WARNING *!*')} MOONSHOT PROJECT - Database connection ERROR (Mongoose)`)
         console.log(err)
     })
 
@@ -254,8 +258,9 @@ app.get("/moonshot/preadvised", async function (req, res) {
 app.get("/moonshot/preadvised/:id", async function (req, res) {
     let matchingId = req.params.id
     let matchingTender = await PreadvisedTender.findById(matchingId)
-    console.log(matchingTender)
-    res.render("preadvised_show.ejs", {countriesData, monthsData, matchingTender})
+    // ----- For debugging purposes
+    // console.log(matchingTender)
+    res.render("preadvised_show.ejs", {countriesData, monthsData, tradelanes, transportModes, history, matchingTender})
 })
 
 app.delete("/moonshot/preadvised/:id", async function (req, res) {
@@ -415,5 +420,5 @@ app.patch("/moonshot/office/edit/:id", async function (req, res){
 })
 
 app.listen(3000, function () {
-    console.log("MOONSHOT PROJECT - App is listening on port 3000")
+    console.log(`${colors.black.bgBrightGreen('* OK *')} MOONSHOT PROJECT - App is listening on port 3000`)
 })
