@@ -8,7 +8,10 @@ const ejsMate = require("ejs-mate")
 const methodOverride = require("method-override")
 const mongoose = require("mongoose")
 const nodemailer = require("nodemailer")
-const axios = require("axios")
+const Joi = require("joi")
+
+// ----- Extended error class
+const ExpressError = require('./Utilities/ExpressError.js')
 
 // ----- Database models
 const PreadvisedTender = require("./models/preadvisedTender.js")
@@ -29,6 +32,38 @@ app.use(methodOverride("_method"))
 app.set("views", path.join(__dirname, "views"))
 app.set("view engine", "ejs")
 app.engine("ejs", ejsMate)
+
+// ----- catchAsync middleware used to handle Async functions errors
+const catchAsync = require('./Utilities/catchAsync.js')
+
+// ----- validatePreadvised middleware used with JOI to validate new preavised tenders according to JOI schema
+const validatePreadvised = function (req, res, next) {
+
+    const preadvisedSchema = Joi.object({
+        companyName: Joi.string().required(),
+        sugarID: Joi.string().required(),
+        expectedReceiveDate: Joi.date().required(),
+        keyTradelanes: Joi.alternatives().try(Joi.string().required(), Joi.array().required()),
+        transportMode: Joi.alternatives().try(Joi.string().required(), Joi.array().required()),
+        history: Joi.alternatives().try(Joi.string().required(), Joi.array().required()),
+        existingCustomerSegment: Joi.optional(),
+        additionalComment: Joi.optional(),
+        countryLocation: Joi.string().required()
+        })
+
+    const result = preadvisedSchema.validate(req.body)
+    if (result.error) {
+        const errorMsg = result.error.details.map(
+            function (element) {
+                return element.message
+            }
+        ).join(",")
+        throw new ExpressError(errorMsg, 400)
+    }
+    else {
+        next()
+    }
+}
 
 // ----- Database connection
 mongoose.connect("mongodb://localhost:27017/moonshot", {
@@ -63,10 +98,6 @@ app.get("/moonshot/start", function (req, res){
 
 // ----- Routes MOONSHOT PREADVISED
 
-app.get("/moonshot/preadvised/index", async function(req, res){
-    res.render("preadvised_index.ejs")
-})
-
 app.get("/moonshot/preadvised/start", function(req, res){
     res.render("preadvised_start.ejs")
 })
@@ -75,7 +106,8 @@ app.get("/moonshot/preadvised/new", function (req, res) {
     res.render("preadvised_new.ejs", {countriesData})
 })
 
-app.post("/moonshot/preadvised/new", async function(req,res){
+app.post("/moonshot/preadvised/new", validatePreadvised, catchAsync(async function(req,res, next){
+        
     console.log(`A new TENDER PRE-ADVISE submit has been done with the following data:`)
     console.log(req.body)
     let {
@@ -88,7 +120,7 @@ app.post("/moonshot/preadvised/new", async function(req,res){
         seaFreightLCLVolume,
         railFreightVolume,
         keyTradelanes,
-        relashionship,
+        history,
         existingCustomerSegment,
         additionalComment,
         countryLocation
@@ -114,7 +146,7 @@ app.post("/moonshot/preadvised/new", async function(req,res){
         seaFreightLCLVolume: seaFreightLCLVolume,
         railFreightVolume: railFreightVolume,
         keyTradelanes: keyTradelanes,
-        history: relashionship,
+        history: history,
         existingCustomerSegment: existingCustomerSegment,
         additionalComment: additionalComment,
         countryLocation: countryLocation,
@@ -163,10 +195,10 @@ app.post("/moonshot/preadvised/new", async function(req,res){
     //     res.send("ERROR ! Check console...")
     // }
     
-})
+}))
 
 
-app.get("/moonshot/preadvised", async function (req, res) {
+app.get("/moonshot/preadvised", catchAsync(async function (req, res) {
     const d = new Date()
     const today = new Date(d.getFullYear(), d.getMonth(), d.getDate())
     const d30 = new Date (d.setDate(d.getDate() + 30))
@@ -253,17 +285,17 @@ app.get("/moonshot/preadvised", async function (req, res) {
         // console.log(`"preadvised_inEU" results are ${preadvised_inEU}`)
 
     res.render("preadvised_index.ejs", {countriesData, monthsData, today, next30days, next90days, allPreadvisedTenders, preadvised_past, preadvised_inM, preadvised_inQ, preadvised_inY, preadvised_inAM, preadvised_inAP, preadvised_inEU})
-})
+}))
 
-app.get("/moonshot/preadvised/:id", async function (req, res) {
+app.get("/moonshot/preadvised/:id", catchAsync(async function (req, res) {
     let matchingId = req.params.id
     let matchingTender = await PreadvisedTender.findById(matchingId)
     // ----- For debugging purposes
     // console.log(matchingTender)
     res.render("preadvised_show.ejs", {countriesData, monthsData, tradelanes, transportModes, history, matchingTender})
-})
+}))
 
-app.delete("/moonshot/preadvised/:id", async function (req, res) {
+app.delete("/moonshot/preadvised/:id", catchAsync(async function (req, res) {
     let matchingId = req.params.id
     let matchingTender = await PreadvisedTender.findById(matchingId)
     console.log("A TENDER PRE-ADVISE has been selected for deletion...")
@@ -271,15 +303,15 @@ app.delete("/moonshot/preadvised/:id", async function (req, res) {
     await PreadvisedTender.findByIdAndDelete(matchingId)
     console.log("... and has been deleted.")
     res.redirect("/moonshot/preadvised")
-})
+}))
 
-app.get("/moonshot/preadvised/edit/:id", async function (req, res){
+app.get("/moonshot/preadvised/edit/:id", catchAsync(async function (req, res){
     let matchingId = req.params.id
     let matchingTender = await PreadvisedTender.findById(matchingId)
     res.render("preadvised_edit.ejs", {countriesData, monthsData, matchingTender})
-})
+}))
 
-app.patch("/moonshot/preadvised/edit/:id", async function (req, res){
+app.patch("/moonshot/preadvised/edit/:id", catchAsync(async function (req, res){
     let matchingId = req.params.id
 
     let newCompanyName = req.body.companyName
@@ -326,7 +358,7 @@ app.patch("/moonshot/preadvised/edit/:id", async function (req, res){
     })
     console.log(`The tender related to the company ${newCompanyName} has been UPDATED`)
     res.redirect(`/moonshot/preadvised/${matchingId}`)
-})
+}))
 
 // ----- Routes MOONSHOT OFFICES
 
@@ -334,16 +366,16 @@ app.get("/moonshot/office/start", function (req, res){
     res.render("office_start.ejs")
 })
 
-app.get("/moonshot/office/index", async function (req, res){
+app.get("/moonshot/office/index", catchAsync(async function (req, res){
     let allOffices = await Office.find({})
     res.render("office_index.ejs", {countriesData, monthsData, allOffices})
-})
+}))
 
 app.get("/moonshot/office/new", function (req, res) {
 res.render("office_new.ejs", {countriesData, monthsData})
 })
 
-app.post("/moonshot/office/new", async function (req, res) {
+app.post("/moonshot/office/new", catchAsync(async function (req, res) {
     let {
         countryLocation,
         officeSetup,
@@ -373,23 +405,23 @@ app.post("/moonshot/office/new", async function (req, res) {
     })
     await newEntry.save()
     res.redirect(`/moonshot/office/${newEntry._id}`)
-})
+}))
 
-app.get("/moonshot/office/:id", async function (req, res){
+app.get("/moonshot/office/:id", catchAsync(async function (req, res){
     let matchingId = req.params.id
     let matchingOffice = await Office.findById(matchingId)
     console.log(matchingOffice)
     res.render("office_show.ejs", {countriesData, monthsData, matchingOffice})
-})
+}))
 
-app.get("/moonshot/office/edit/:id", async function (req, res){
+app.get("/moonshot/office/edit/:id", catchAsync(async function (req, res){
     let matchingId = req.params.id
     let matchingOffice = await Office.findById(matchingId)
     console.log(matchingOffice)
     res.render("office_edit.ejs", {countriesData, monthsData, matchingOffice})
-})
+}))
 
-app.patch("/moonshot/office/edit/:id", async function (req, res){
+app.patch("/moonshot/office/edit/:id", catchAsync(async function (req, res){
     let matchingId = req.params.id
     console.log(req.body)
     let {
@@ -417,7 +449,22 @@ app.patch("/moonshot/office/edit/:id", async function (req, res){
     })
     console.log(`The office related to the company ${newCompanyName} has been UPDATED`)
     res.redirect(`/moonshot/office/${matchingId}`)
+}))
+
+// ----- Routes for ERROR HANDLING
+
+app.all("*", function (req, res, next) {
+    next(new ExpressError("Page not found", 404))
 })
+
+app.use(function (err, req, res, next) {
+    const {statusCode = 500, message = "Something went wrong"} = err
+    res.status(statusCode).send(message)
+    console.log(`ERROR - Status Code ${statusCode} - Message ${message}`)
+    console.log(err)
+})
+
+// ----- Port listening
 
 app.listen(3000, function () {
     console.log(`${colors.black.bgBrightGreen('* OK *')} MOONSHOT PROJECT - App is listening on port 3000`)
