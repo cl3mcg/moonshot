@@ -4,7 +4,7 @@
 
 ### Introduction
 
-The handling of tenders in freight forwarding industry is a complicated task often handled with simple tools.
+The handling of tenders in freight forwarding industry is a complicated task often handled with primitive tools.
 The purpose of the project is to digitalize the tendering process as much as it can be.
 
 ### Main parts

@@ -2,15 +2,25 @@ const mongoose = require("mongoose")
 const Schema = mongoose.Schema
 
 const preAdvisedTenderSchema = new Schema({
-    recordDate: Date,
+    recordDate: {
+        type: Date,
+        required: true
+    },
     lastModifiedDate: Date,
-    companyName: String,
+    companyName: {
+        type: String,
+        required: true
+    },
     sugarID: String,
     expectedReceiveDate: {
         type: Date,
-        min: "2021-10-01"
+        min: "2021-10-01",
+        required: true
     },
-    transportMode: Array,
+    transportMode: {
+        type: Array,
+        required: true
+    },
     airFreightVolume: {
         type: Number,
         min: 0
@@ -27,11 +37,22 @@ const preAdvisedTenderSchema = new Schema({
         type: Number,
         min: 0
     },
-    keyTradelanes: Array,
-    history: Array,
-    existingCustomerSegment: String,
+    keyTradelanes: {
+        type: Array,
+        required: true
+    },
+    history: {
+        type: Array,
+        required: true
+    },
+    existingCustomerSegment: {
+        type: String,
+    },
     additionalComment: String,
-    countryLocation: String,
+    countryLocation: {
+        type: String,
+        required: true
+    }
 })
 
 module.exports = mongoose.model("PreadvisedTender", preAdvisedTenderSchema)

@@ -1,17 +1,18 @@
 // ----- App
 const express = require("express")
 const app = express()
-const colors = require('colors')
+const colors = require("colors")
 const ejs = require("ejs")
 const path = require("path")
 const ejsMate = require("ejs-mate")
 const methodOverride = require("method-override")
 const mongoose = require("mongoose")
 const nodemailer = require("nodemailer")
-const Joi = require("joi")
+// const Joi = require("joi") // Joi is exported in its own file called joiSchema.js, no need to require it again here.
+const {preadvisedSchema, officeSchema} = require("./Utilities/joiSchemas.js")
 
 // ----- Extended error class
-const ExpressError = require('./Utilities/ExpressError.js')
+const ExpressError = require("./Utilities/ExpressError.js")
 
 // ----- Database models
 const PreadvisedTender = require("./models/preadvisedTender.js")
@@ -39,20 +40,9 @@ const catchAsync = require('./Utilities/catchAsync.js')
 // ----- validatePreadvised middleware used with JOI to validate new preavised tenders according to JOI schema
 const validatePreadvised = function (req, res, next) {
 
-    const preadvisedSchema = Joi.object({
-        companyName: Joi.string().required(),
-        sugarID: Joi.string().required(),
-        expectedReceiveDate: Joi.date().required(),
-        keyTradelanes: Joi.alternatives().try(Joi.string().required(), Joi.array().required()),
-        transportMode: Joi.alternatives().try(Joi.string().required(), Joi.array().required()),
-        history: Joi.alternatives().try(Joi.string().required(), Joi.array().required()),
-        existingCustomerSegment: Joi.optional(),
-        additionalComment: Joi.optional(),
-        countryLocation: Joi.string().required()
-        })
-
     const result = preadvisedSchema.validate(req.body)
     if (result.error) {
+        console.log(`${colors.brightYellow.bgBrightRed('*!* WARNING *!*')} JOI validation failed - validatePreadvised`)
         const errorMsg = result.error.details.map(
             function (element) {
                 return element.message
@@ -61,6 +51,25 @@ const validatePreadvised = function (req, res, next) {
         throw new ExpressError(errorMsg, 400)
     }
     else {
+        console.log(`${colors.black.bgBrightGreen('* OK *')} JOI validation passed - validatePreadvised`)
+        next()
+    }
+}
+
+const validateOffice = function (req, res, next) {
+
+    const result = officeSchema.validate(req.body)
+    if (result.error) {
+        console.log(`${colors.brightYellow.bgBrightRed('*!* WARNING *!*')} JOI validation failed - validateOffice`)
+        const errorMsg = result.error.details.map(
+            function (element) {
+                return element.message
+            }
+        ).join(",")
+        throw new ExpressError(errorMsg, 400)
+    }
+    else {
+        console.log(`${colors.black.bgBrightGreen('* OK *')} JOI validation passed - validateOffice`)
         next()
     }
 }
@@ -79,13 +88,13 @@ mongoose.connect("mongodb://localhost:27017/moonshot", {
     })
 
 // ----- Commonly used functions
-const currentTimeAndDate = function () {return new Date(Date.now())}
+const currentDateAndTime = function () {return new Date(Date.now())}
 const findCountryName = function (cca2) {for (country of countriesData) {if (country.cca2 === cca2) {return country.name.common}}}
 const findcca2 = function (countryName) {for (country of countriesData) {if (country.common.name === countryName) {return country.cca2}}}
 
 // ----- Routes MOONSHOT HOME & START
 app.get("/", function(req, res){
-    res.send("Hello world !")
+    res.render("homepage.ejs")
 })
 
 app.get("/moonshot", function (req, res) {
@@ -110,32 +119,31 @@ app.post("/moonshot/preadvised/new", validatePreadvised, catchAsync(async functi
         
     console.log(`A new TENDER PRE-ADVISE submit has been done with the following data:`)
     console.log(req.body)
-    let {
-        companyName,
-        sugarID,
-        expectedReceiveDate,
-        transportMode,
-        airFreightVolume,
-        seaFreightFCLVolume,
-        seaFreightLCLVolume,
-        railFreightVolume,
-        keyTradelanes,
-        history,
-        existingCustomerSegment,
-        additionalComment,
-        countryLocation
-    } = req.body
-    let volValidation = [
-        airFreightVolume,
-        seaFreightFCLVolume,
-        seaFreightLCLVolume,
-        railFreightVolume]
-        for (let entry of volValidation) {if (!entry) {entry = 0}}
-    let arrayValidation = [transportMode,
-        keyTradelanes]
-    for (let entry of arrayValidation) {if (typeof(entry) != "object") {entry = [entry]}}
+
+    let companyName = req.body.companyName
+    let sugarID = req.body.sugarID
+    let expectedReceiveDate = req.body.expectedReceiveDate
+    let transportMode = req.body.transportMode
+    if (typeof(transportMode) != "object") {transportMode = [transportMode]}
+    let airFreightVolume
+    if(!req.body.airFreightVol) {airFreightVolume = 0} else {airFreightVolume = req.body.airFreightVol}
+    let seaFreightFCLVolume
+    if(!req.body.seaFreightFCLVol) {seaFreightFCLVolume = 0} else {seaFreightFCLVolume = req.body.seaFreightFCLVol}
+    let seaFreightLCLVolume
+    if(!req.body.seaFreightLCLVol) {seaFreightLCLVolume = 0} else {seaFreightLCLVolume = req.body.seaFreightLCLVol}
+    let railFreightVolume
+    if(!req.body.railFreightVol) {railFreightVolume = 0} else {railFreightVolume = req.body.railFreightVol}
+    let keyTradelanes = req.body.keyTradelanes
+    if (typeof(keyTradelanes) != "object") {keyTradelanes = [keyTradelanes]}
+    let history = req.body.history
+    let existingCustomerSegment
+    if(!req.body.existingCustomerSegment) {existingCustomerSegment = null} else {existingCustomerSegment = req.body.existingCustomerSegment}
+    let additionalComment
+    if(!req.body.additionalComment) {additionalComment = null} else {additionalComment = req.body.additionalComment}
+    let countryLocation = req.body.countryLocation
+
     let newEntry = new PreadvisedTender({
-        recordDate: currentTimeAndDate(),
+        recordDate: currentDateAndTime(),
         lastModifiedDate: null,
         companyName: companyName,
         sugarID: sugarID,
@@ -152,39 +160,39 @@ app.post("/moonshot/preadvised/new", validatePreadvised, catchAsync(async functi
         countryLocation: countryLocation,
     })
     await newEntry.save()
-    console.log(`A new TENDER PRE-ADVISE has been registered in the database: ${companyName}`)
-    res.redirect("/moonshot/preadvised/new")
+    console.log(`A new TENDER PRE-ADVISE has been registered in the database: ${newEntry}`)
+    res.redirect(`/moonshot/preadvised/${newEntry.id}`)
 
-        let from = '"Tender registration" <appareil_en_ligne@outlook.com>'
-        let subject = "Your tender has been pre-advised"
-        let attachement = null
+        // let from = '"Tender registration" <appareil_en_ligne@outlook.com>'
+        // let subject = "Your tender has been pre-advised"
+        // let attachement = null
         // let attachement = [{
         //     filename: 'Jean-Marie.jpg',
         //     path: 'public/data/dummyAttachements/jm.jpg'
         // }]
-        let emailBody = "<b>Hello world?</b><br><p>J'ai une rage incroyable</p>"
+        // let emailBody = "<b>Hello world?</b><br><p>J'ai une rage incroyable</p>"
     
-    const send = async function () {
+    // const send = async function () {
 
-        let transporter = nodemailer.createTransport({
-            host: "smtp.office365.com",
-            port: 587,
-            secure: false, // true for 465, false for other ports
-            auth: {
-                user: "appareil_en_ligne@outlook.com", // generated ethereal user
-                pass: "XxXxXxXxXxXxXx", // generated ethereal password
-            },
-        });
+    //     let transporter = nodemailer.createTransport({
+    //         host: "smtp.office365.com",
+    //         port: 587,
+    //         secure: false, // true for 465, false for other ports
+    //         auth: {
+    //             user: "appareil_en_ligne@outlook.com", // generated ethereal user
+    //             pass: "XxXxXxXxXxXxXx", // generated ethereal password
+    //         },
+    //     });
 
-        let info = await transporter.sendMail({
-            from: from, // sender address
-            to: selectedEmail, // list of receivers
-            subject: subject, // Subject line
-            html: emailBody, // html body
-            attachments: attachement
-        });
+    //     let info = await transporter.sendMail({
+    //         from: from, // sender address
+    //         to: selectedEmail, // list of receivers
+    //         subject: subject, // Subject line
+    //         html: emailBody, // html body
+    //         attachments: attachement
+    //     });
 
-    }
+    // }
 
     // Nodemailer launch function - Uncomment below to enable to email launch.
     // try {
@@ -281,8 +289,8 @@ app.get("/moonshot/preadvised", catchAsync(async function (req, res) {
     // console.log(`"preadvised_inQ" results are ${preadvised_inQ}`)
     // console.log(`"preadvised_inY" results are ${preadvised_inY}`)
     // console.log(`"preadvised_inAM" results are ${preadvised_inAM}`)
-      // console.log(`"preadvised_inAP" results are ${preadvised_inAP}`)
-        // console.log(`"preadvised_inEU" results are ${preadvised_inEU}`)
+    // console.log(`"preadvised_inAP" results are ${preadvised_inAP}`)
+    // console.log(`"preadvised_inEU" results are ${preadvised_inEU}`)
 
     res.render("preadvised_index.ejs", {countriesData, monthsData, today, next30days, next90days, allPreadvisedTenders, preadvised_past, preadvised_inM, preadvised_inQ, preadvised_inY, preadvised_inAM, preadvised_inAP, preadvised_inEU})
 }))
@@ -311,37 +319,34 @@ app.get("/moonshot/preadvised/edit/:id", catchAsync(async function (req, res){
     res.render("preadvised_edit.ejs", {countriesData, monthsData, matchingTender})
 }))
 
-app.patch("/moonshot/preadvised/edit/:id", catchAsync(async function (req, res){
-    let matchingId = req.params.id
+app.patch("/moonshot/preadvised/edit/:id", validatePreadvised, catchAsync(async function (req, res){
+    console.log(`A new tender as been selected TO BE UPDATED ${req.body}`)
 
+    let matchingId = req.params.id
     let newCompanyName = req.body.companyName
     let newSugarID = req.body.sugarID
     let newExpectedReceiveDate = req.body.expectedReceiveDate
     let newTransportMode = req.body.transportMode
-    let newAirFreightVolume = req.body.airFreightVolume
-    let newSeaFreightFCLVolume = req.body.seaFreightFCLVolume
-    let newSeaFreightLCLVolume = req.body.seaFreightLCLVolume
-    let newRailFreightVolume = req.body.railFreightVolume
+    if (typeof(newTransportMode) != "object") {newTransportMode = [newTransportMode]}
+    let newAirFreightVolume
+    if(!req.body.airFreightVol) {newAirFreightVolume = 0} else {newAirFreightVolume = req.body.airFreightVol}
+    let newSeaFreightFCLVolume
+    if(!req.body.seaFreightFCLVol) {newSeaFreightFCLVolume = 0} else {newSeaFreightFCLVolume = req.body.seaFreightFCLVol}
+    let newSeaFreightLCLVolume
+    if(!req.body.seaFreightLCLVol) {newSeaFreightLCLVolume = 0} else {newSeaFreightLCLVolume = req.body.seaFreightLCLVol}
+    let newRailFreightVolume
+    if(!req.body.railFreightVol) {newRailFreightVolume = 0} else {newRailFreightVolume = req.body.railFreightVol}
     let newKeyTradelanes = req.body.keyTradelanes
-    let newRelashionship = req.body.relashionship
-    let newExistingCustomerSegment = req.body.existingCustomerSegment
-    let newAdditionalComment = req.body.additionalComment
+    if (typeof(newKeyTradelanes) != "object") {newKeyTradelanes = [newKeyTradelanes]}
+    let newHistory = req.body.history
+    let newExistingCustomerSegment
+    if(!req.body.existingCustomerSegment) {newExistingCustomerSegment = null} else {newExistingCustomerSegment = req.body.existingCustomerSegment}
+    let newAdditionalComment
+    if(!req.body.additionalComment) {newAdditionalComment = null} else {newAdditionalComment = req.body.additionalComment}
     let newCountryLocation = req.body.countryLocation
-   
-    console.log(req.body)
-    console.log(newExpectedReceiveDate)
-
-    let volValidation = [
-        newAirFreightVolume,
-        newSeaFreightFCLVolume,
-        newSeaFreightLCLVolume,
-        newRailFreightVolume]
-        for (let entry of volValidation) {if (!entry) {entry = 0}}
-    let arrayValidation = [newTransportMode, newKeyTradelanes]
-    for (let entry of arrayValidation) {if (typeof(entry) != "object") {entry = [entry]}}
 
     await PreadvisedTender.findByIdAndUpdate(matchingId, {
-        lastModifiedDate: currentTimeAndDate(),
+        lastModifiedDate: currentDateAndTime(),
         companyName: newCompanyName,
         sugarID: newSugarID,
         expectedReceiveDate: newExpectedReceiveDate,
@@ -351,7 +356,7 @@ app.patch("/moonshot/preadvised/edit/:id", catchAsync(async function (req, res){
         seaFreightLCLVolume: newSeaFreightLCLVolume,
         railFreightVolume: newRailFreightVolume,
         keyTradelanes: newKeyTradelanes,
-        history: newRelashionship,
+        history: newHistory,
         existingCustomerSegment: newExistingCustomerSegment,
         additionalComment: newAdditionalComment,
         countryLocation: newCountryLocation
@@ -375,33 +380,31 @@ app.get("/moonshot/office/new", function (req, res) {
 res.render("office_new.ejs", {countriesData, monthsData})
 })
 
-app.post("/moonshot/office/new", catchAsync(async function (req, res) {
-    let {
-        countryLocation,
-        officeSetup,
-        companyName,
-        address,
-        postCode,
-        city,
-        countryName,
-        latlng,
-        tenderDesk,
-    } = req.body
+app.post("/moonshot/office/new", validateOffice, catchAsync(async function (req, res) {
     console.log(req.body)
-    console.log(`Maching country is ${findCountryName(req.body.countryLocation)}`)
+    let cca2 = req.body.countryLocation
+    let officeSetup = req.body.officeSetup
+    let companyName = req.body.companyName
+    let address = req.body.address
+    let address_postCode = req.body.postCode
+    let address_city = req.body.city
+    let address_cca2 = req.body.countryName
+    let tenderDesk = req.body.tenderDesk
+    let lat = req.body.lat
+    let lng = req.body.lng
     let newEntry = new Office({
-        recordDate: currentTimeAndDate(),
+        recordDate: currentDateAndTime(),
         lastModifiedDate: null,
-        officeRelatedCountry: findCountryName(countryLocation),
-        cca2: countryLocation,
+        cca2: cca2,
         officeSetup: officeSetup,
         companyName: companyName,
         address: address,
-        address_postCode: postCode,
-        address_city: city,
-        address_cca2: countryName,
+        address_postCode: address_postCode,
+        address_city: address_city,
+        address_cca2: address_cca2,
         tenderDesk: tenderDesk,
-        latlng: latlng
+        lat: lat,
+        lng: lng
     })
     await newEntry.save()
     res.redirect(`/moonshot/office/${newEntry._id}`)
@@ -421,34 +424,45 @@ app.get("/moonshot/office/edit/:id", catchAsync(async function (req, res){
     res.render("office_edit.ejs", {countriesData, monthsData, matchingOffice})
 }))
 
-app.patch("/moonshot/office/edit/:id", catchAsync(async function (req, res){
+app.patch("/moonshot/office/edit/:id", validateOffice, catchAsync(async function (req, res){
     let matchingId = req.params.id
-    console.log(req.body)
-    let {
-        newCountryLocation,
-        newOfficeSetup,
-        newCompanyName,
-        newAddress,
-        newPostCode,
-        newCity,
-        newCountryName,
-        newLatlng,
-        newTenderDesk,
-    } = req.body
-    let updateOffice = await Office.findByIdAndUpdate(matchingId, {
-        lastModifiedDate: currentTimeAndDate(),
-        cca2: newCountryLocation,
+
+    let newcca2 = req.body.countryLocation
+    let newOfficeSetup = req.body.officeSetup
+    let newCompanyName = req.body.companyName
+    let newAddress = req.body.address
+    let newAddress_postCode = req.body.postCode
+    let newAddress_city = req.body.city
+    let newAddress_cca2 = req.body.countryName
+    let newTenderDesk = req.body.tenderDesk
+    let newLat = req.body.lat
+    let newLng = req.body.lng
+    
+    let updatedOffice = await Office.findByIdAndUpdate(matchingId, {
+        lastModifiedDate: currentDateAndTime(),
+        cca2: newcca2,
         officeSetup: newOfficeSetup,
         companyName: newCompanyName,
         address: newAddress,
-        address_postCode: newPostCode,
-        address_city: newCity,
-        address_cca2: newCountryName,
+        address_postCode: newAddress_postCode,
+        address_city: newAddress_city,
+        address_cca2: newAddress_cca2,
         tenderDesk: newTenderDesk,
-        latlng: newLatlng
+        lat: newLat,
+        lng: newLng
     })
-    console.log(`The office related to the company ${newCompanyName} has been UPDATED`)
+    console.log(`The office related to the company ${newCompanyName} has been UPDATED with the following data: ${updatedOffice}`)
     res.redirect(`/moonshot/office/${matchingId}`)
+}))
+
+app.delete("/moonshot/office/:id", catchAsync(async function (req, res) {
+    let matchingId = req.params.id
+    let matchingOffice = await Office.findById(matchingId)
+    console.log("An OFFICE has been selected for deletion...")
+    console.log(matchingOffice)
+    await Office.findByIdAndDelete(matchingId)
+    console.log("... and has been deleted.")
+    res.redirect("/moonshot/office/index")
 }))
 
 // ----- Routes for ERROR HANDLING
@@ -459,8 +473,8 @@ app.all("*", function (req, res, next) {
 
 app.use(function (err, req, res, next) {
     const {statusCode = 500, message = "Something went wrong"} = err
-    res.status(statusCode).send(message)
-    console.log(`ERROR - Status Code ${statusCode} - Message ${message}`)
+    res.status(statusCode).render("error500.ejs", {err})
+    console.log(`${colors.brightYellow.bgBrightRed('*!* ERROR *!*')} - Status Code: ${statusCode} - Message: ${message}`)
     console.log(err)
 })
 

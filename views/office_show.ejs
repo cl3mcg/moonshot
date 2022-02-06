@@ -13,12 +13,42 @@
 <div class="container">
     <h1><%= matchingOffice.companyName %></h1>
     <h2><%= matchingOffice.address_city %>, <%= matchingOffice.address_cca2 %></h2>
+    <p><a class="btn btn-light btn-sm border" href="/moonshot/office/index"><i class="bi bi-arrow-left-circle me-1"></i>Back</a></p>
     <h3>Address</h3>
     <p><%= matchingOffice.address %><br>
     <%= matchingOffice.address_postCode %>, <%= matchingOffice.address_city %><br>
     <% for (let country of countriesData) { if (country.cca2 === matchingOffice.address_cca2) { %> <%= country.name.common %> <% }} %></p>
-    <a href="/moonshot/office/edit/<%= matchingOffice._id %>">Edit</a>
+    <h3>Actions</h3>
+    <div class="row">
+        <div class="col-12">
+            <a class="btn btn-light btn-sm border me-3" href="/moonshot/office/edit/<%= matchingOffice._id %>"><i class="bi bi-pencil-square me-1"></i>Edit</a>
+            <button class="btn btn-outline-danger btn-sm border-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal"><i class="bi bi-trash me-1"></i>Delete</button>
+        </div>
+    </div>
 </div>
+<!-- Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteConfirmModalLabel">Delete confirmation</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-danger" role="alert">
+            <p>Are you sure you want to delete the data related to <%= matchingOffice.companyName %> ?</p>
+            <strong>This action is irreversible !</strong>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary position-relative top-50 start-0" id="mod_returnBtn" data-bs-dismiss="modal"><i class="bi bi-arrow-left-circle me-2"></i>Cancel</button>
+          <form method="POST" action="/moonshot/office/<%= matchingOffice.id %>?_method=DELETE">
+            <button class="btn btn-outline-danger border-danger"><i class="bi bi-trash me-2"></i>Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
     <%- include("partials/commonBootstrap.ejs") %>
     <script src="/js/office_new.js"></script>
 </body>

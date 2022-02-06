@@ -2,23 +2,53 @@ const mongoose = require("mongoose")
 const Schema = mongoose.Schema
 
 const officeSchema = new Schema({
-    recordDate: Date,
+    recordDate: {
+        type: Date,
+        required: true
+    },
     lastModifiedDate: Date,
     cca2: {
         type: String,
-        maxlength: 2
+        maxlength: 2,
+        required: true
     },
-    officeSetup: String,
-    companyName: String,
-    address: String,
-    address_postCode: String,
-    address_city: String,
+    officeSetup: {
+        type: String,
+        required: true
+    },
+    companyName: {
+        type: String,
+        required: true
+    },
+    address: {
+        type: String,
+        required: true
+    },
+    address_postCode: {
+        type: String,
+        required: true
+    },
+    address_city: {
+        type: String,
+        required: true
+    },
     address_cca2: {
         type: String,
-        maxlength: 2
+        maxlength: 2,
+        required: true
     },
-    tenderDesk: String,
-    latlng: String
+    tenderDesk: {
+        type: String,
+        required: true
+    },
+    lat: {
+        type: Number,
+        required: true
+    },
+    lng: {
+        type: Number,
+        required: true
+    }
 })
 
 module.exports = mongoose.model("Office", officeSchema)

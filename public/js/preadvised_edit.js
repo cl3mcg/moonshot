@@ -1,6 +1,7 @@
 // ---- ---- Declaration of elements
 const confirmBtn = document.querySelector("#confirmBtn")
 const mod_submitBtn = document.querySelector("#mod_submitBtn")
+const mod_cancelBtn = document.querySelector("#mod_cancelBtn")
 const transportModeBoxes = document.querySelectorAll(".transportModeBox")
 const transportModeVolumes = document.querySelectorAll(".transportModeVolume")
 const keyTradelaneBoxes = document.querySelectorAll(".keyTradelaneBox")
@@ -219,7 +220,7 @@ const launchModal = function () {
 
         const adjustmod_countryLocation = async function () { 
                 try { 
-                    const result = await axios.get("../../ressources/countries.json")
+                        const result = await axios.get("../../ressources/countries.json")
                     const countriesData = result.data
                     let matchingCountry = null
                     for (let country of countriesData) {
@@ -260,10 +261,10 @@ const launchModal = function () {
         mod_rhenusHistory.innerText = historyArray.join(", ")
     }
 
-const removeModalTriggers = function () {
-    confirmBtn.removeAttribute("data-bs-toggle")
-    confirmBtn.removeAttribute("data-bs-target")
-}
+    const removeModalTriggers = function () {
+        confirmBtn.removeAttribute("data-bs-toggle")
+        confirmBtn.removeAttribute("data-bs-target")
+    }
 
     addingModalTriggers()
     addingModalFields()
@@ -331,7 +332,7 @@ for (let transportModeBox of transportModeBoxes) {
     }
 })
 
-// ---- Controling the requiered attribute of transport modes checkboxes & volumes fields
+// ---- Controling the required attribute of transport modes checkboxes & volumes fields
 // ---- NOTE: In practice it is working, but I noticed some descrpencies in the way the requiered attribute is set. In practice this should note lead to bugs.
 const validationArray1 = []
 
@@ -373,13 +374,18 @@ for (let transportModesCheckbox of transportModesCheckboxes) {
     })
 }
 
+// ---- Controling the required attribute of transport modes checkboxes & volumes fields directly after the page loading finishes
 window.addEventListener("load", function () {
     for (let transportModesCheckbox of transportModesCheckboxes) {
-        transportModesCheckbox.checked = false
-    }
-    for (let transportModesVolume of transportModesVolumes) {
-        transportModesVolume.value = null
-        transportModesVolume.setAttribute("disabled", true)
+        let index = transportModesCheckboxes.indexOf(transportModesCheckbox)
+        if (transportModesCheckbox.checked){ 
+            validationArray1.push(transportModesVolumes[`${index}`])
+            transportModesCheckbox.setAttribute("required", true)
+            transportModesVolumes[`${index}`].setAttribute("required", true)
+        } else {
+            transportModesCheckbox.removeAttribute("required")
+            transportModesVolumes[`${index}`].removeAttribute("required")
+        }
     }
 })
 
@@ -402,7 +408,13 @@ for (let route of routes) {
 
 window.addEventListener("load", function () {
     for (let route of routes) {
-        route.checked = false
+        if (route.checked) {
+            lanesBoxCheckedAmount += 1
+        }
+    }
+    for (let route of routes) {
+        if (lanesBoxCheckedAmount > 0) {route.removeAttribute("required")}
+        else {route.setAttribute("required", true)}
     }
 })
 
@@ -425,7 +437,13 @@ for (let history of histories) {
 
 window.addEventListener("load", function () {
     for (let history of histories) {
-        history.checked = false
+        if (history.checked === true) {
+            historyBoxCheckedAmount += 1
+        }
+    }
+    for (let history of histories) {
+        if (historyBoxCheckedAmount > 0) {history.removeAttribute("required")}
+        else {history.setAttribute("required", true)}
     }
 })
 
@@ -438,6 +456,19 @@ historyAirOcean.addEventListener("click", function () {
         }
         else {
             radio.removeAttribute("required")   
+        }
+    }
+})
+
+window.addEventListener("load", function () {
+    if (historyAirOcean.checked) {
+        for (let radio of customerSegmentRadios) {
+        radio.setAttribute("required", true)
+        }
+    }
+    else {
+        for (let radio of customerSegmentRadios) {
+        radio.removeAttribute("required")
         }
     }
 })
@@ -481,15 +512,17 @@ for (let historyBox of historyBoxes) {
 }
 
 window.addEventListener("load", function () {
-    for (let customerSegmentRadio of customerSegmentRadios) {
+    if (!historyAirOcean.checked) {
+        for (let customerSegmentRadio of customerSegmentRadios) {
             customerSegmentRadio.setAttribute("disabled", "true")
     }
-    for (let historyBox of historyBoxes) {
-        historyBox.checked = false
     }
-    for (let radio of customerSegmentRadios) {
-        radio.checked = false
-    }
+    // for (let historyBox of historyBoxes) {
+    //     historyBox.checked = false
+    // }
+    // for (let radio of customerSegmentRadios) {
+    //     radio.checked = false
+    // }
 })
 
 // ---- ---- Bootstrap form validation

@@ -67,9 +67,8 @@ const launchModal = function () {
         // ---- Special display for Country registering the pre-advise
         const adjustmod_countryLocation = async function () { 
                 try { 
-                    const result = await axios.get("../../ressources/countries.json")
+                    const result = await axios.get("../../../ressources/countries.json")
                     const countriesData = result.data
-                    let matchingCountry = null
                     for (let country of countriesData) {
                         if (country.cca2 === getValue(countryLocation)) {
                             mod_countryLocationcca2.innerText = `${country.cca2}`

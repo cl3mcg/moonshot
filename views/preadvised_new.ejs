@@ -19,7 +19,7 @@
         Please invest the following 2-5 minutes to announce your tender. <br>
         Thank you!</p>
     <div class="container mb-5 py-4 border rounded-5">
-        <form class="mb-5 needs-validation " id="preadviseForm" action="/moonshot/preadvised/new" method="POST" novalidate>
+        <form class="mb-5 needs-validation" id="preadviseForm" action="/moonshot/preadvised/new" method="POST" novalidate>
             <div class="row justify-content-md-center">
                 <div class="col-12">
                     <h2>Location & handling of the tender preadvise</h2>
@@ -81,7 +81,7 @@
                             </div>
                             <div class="col">
                                 <div class="input-group mb-3">
-                                    <input type="number" class="form-control transportModeVolume" id="airFreightVol" placeholder="Air volumes in Tons" aria-label="Air freight volumes in Tons" required>
+                                    <input type="number" class="form-control transportModeVolume" id="airFreightVol" name="airFreightVol" placeholder="Air volumes in Tons" aria-label="Air freight volumes in Tons" required>
                                     <span class="input-group-text">Tons</span>
                                     <span class="input-group-text"><i>(estimated)</i></span>
                                 </div>
@@ -96,7 +96,7 @@
                             </div>
                             <div class="col">
                                 <div class="input-group mb-3">
-                                    <input type="number" class="form-control transportModeVolume" id="seaFreightFCLVol" placeholder="FCL volumes in TEUs" aria-label="FCL volumes in TEUs" required>
+                                    <input type="number" class="form-control transportModeVolume" id="seaFreightFCLVol" name="seaFreightFCLVol" placeholder="FCL volumes in TEUs" aria-label="FCL volumes in TEUs" required>
                                     <span class="input-group-text">TEUs</span>
                                     <span class="input-group-text"><i>(estimated)</i></span>
                                 </div>
@@ -111,7 +111,7 @@
                             </div>
                             <div class="col">
                                 <div class="input-group mb-3">
-                                    <input type="number" class="form-control transportModeVolume" id="seaFreightLCLVol" placeholder="LCL volumes in CBMs" aria-label="LCL volumes in CBMs" required>
+                                    <input type="number" class="form-control transportModeVolume" id="seaFreightLCLVol" name="seaFreightLCLVol" placeholder="LCL volumes in CBMs" aria-label="LCL volumes in CBMs" required>
                                     <span class="input-group-text">CBMs</span>
                                     <span class="input-group-text"><i>(estimated)</i></span>
                                 </div>
@@ -126,7 +126,7 @@
                             </div>
                             <div class="col">
                                 <div class="input-group mb-3">
-                                    <input type="number" class="form-control transportModeVolume" id="railFreightVol" placeholder="Rail volumes in TEUs" aria-label="Rail volumes in TEUs" required>
+                                    <input type="number" class="form-control transportModeVolume" id="railFreightVol" name="railFreightVol" placeholder="Rail volumes in TEUs" aria-label="Rail volumes in TEUs" required>
                                     <span class="input-group-text">TEUs</span>
                                     <span class="input-group-text"><i>(estimated)</i></span>
                                 </div>
@@ -259,7 +259,7 @@
         </form>
     </div>
            <!-- Modal -->
-           <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-fullscreen-md-down modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
@@ -267,7 +267,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                <p><strong>You are about to preadvise a new tender.</strong> Take a few minutes to reiew the information below and ammend it if necessary.<br>
+                <p><strong>You are about to preadvise a new tender.</strong> Take a few minutes to review the information below and ammend it if necessary.<br>
                     Once everything is OK, you can submit your preadvise.
                 </p>
                 <hr>
