@@ -18,5 +18,6 @@ The project evolves around 3 main tools.
      The purpose of the tender registration is to launch a new project. The tender registration process consists in collecting information related to the tender as well as informing the tender management team about the upcoming task.
 2. Tender dashboard.
    - The tender dashboard is a single webpage gathering the information stored in the tender database and displaying it in a proper way.
+   - The tender dashboard offers the option to download all registered entries in an Excel format for custom manipulation of the data.
 3. Office and contact lists.
    - The office and contact lists is a tool gathering in a single space the contact list useful to launch a tender.
