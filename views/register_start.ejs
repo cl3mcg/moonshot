@@ -11,45 +11,36 @@
 <body>
     <%- include("partials/navbar.ejs") %>
 <div class="container">
-    <h1>Offices</h1>
+    <h1>Tender registration</h1>
     <p><a href="/start">Go back to the start page</a></p>
 
     <div class="container mt-3">
-        <h2>Registration</h2>
+        <h2>Register</h2>
         <div class="container rounded-3 border border-2 p-3">
             <div class="row row-cols-1 row-cols-md-2 g-4">
                 <div class="col-sm-6">
                     <div class="card">
                         <div class="card-body">
-                        <h5 class="card-title">Register a new office</h5>
-                        <p class="card-text">Add a new office in the database.</p>
-                        <a href="/moonshot/office/new" class="btn btn-primary">Go</a>
+                        <h5 class="card-title">Form</h5>
+                        <p class="card-text">Fill a form and provide key information related to the tender.</p>
+                        <a href="/register/new" class="btn btn-primary">Go</a>
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="card">
                         <div class="card-body">
-                        <h5 class="card-title">Office List</h5>
-                        <p class="card-text">Check the list of offices around the world.</p>
-                        <a href="/moonshot/office/index" class="btn btn-primary">Go</a>
+                        <h5 class="card-title">Dashboard</h5>
+                        <p class="card-text">Quick look on the tenders registered.</p>
+                        <a href="/register" class="btn btn-primary disabled">Soon</a>
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="card">
                         <div class="card-body">
-                        <h5 class="card-title">Contact List</h5>
-                        <p class="card-text">Find the right person... hopefully at the right time.</p>
-                        <a href="#" class="btn btn-primary disabled">Soon</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="card">
-                        <div class="card-body">
-                        <h5 class="card-title">Mailing</h5>
-                        <p class="card-text">Ready, set, launch your mails !</p>
+                        <h5 class="card-title">History</h5>
+                        <p class="card-text">Check the information provided, modify or delete a tender registration.</p>
                         <a href="#" class="btn btn-primary disabled">Soon</a>
                         </div>
                     </div>
@@ -60,6 +51,5 @@
 
 </div>
     <%- include("partials/commonBootstrap.ejs") %>
-    <script src="/js/office_new.js"></script>
 </body>
 </html>

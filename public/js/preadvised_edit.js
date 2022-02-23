@@ -180,7 +180,7 @@ const launchModal = function () {
         mod_companyName.innerText = getValue(companyName)
         mod_sugarID.innerText = getValue(sugarID)
         mod_expectedReceiveDate.innerText = getValue(expectedReceiveDate)
-        if(getValue(hasAirFreight)){mod_hasAirFreight.innerHTML = "\u2705"} else {mod_hasAirFreight.innerText = "-"}
+        if(getValue(hasAirFreight)){mod_hasAirFreight.innerText = "\u2705"} else {mod_hasAirFreight.innerText = "-"}
         if(getValue(hasSeaFreightFCL)){mod_hasSeaFreightFCL.innerText = "\u2705"} else {mod_hasSeaFreightFCL.innerText = "-"}
         if(getValue(hasSeaFreightLCL)){mod_hasSeaFreightLCL.innerText = "\u2705"} else {mod_hasSeaFreightLCL.innerText = "-"}
         if(getValue(hasRailFreight)){mod_hasRailFreight.innerText = "\u2705"} else {mod_hasRailFreight.innerText = "-"}

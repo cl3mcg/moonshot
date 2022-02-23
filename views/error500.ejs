@@ -4,23 +4,37 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moonshot | Error</title>
+    <title>The Moonshot Project | Home</title>
     <%- include("partials/commonStyles.ejs") %>
     <%- include("partials/commonFonts.ejs") %>
+    <link rel="stylesheet" href="/css/error.css">
 </head>
 <body>
-    <%- include("partials/navbar.ejs") %>
-    <div class="row">
-        <div class="col-6 offset-3">
-          <div class="alert alert-danger" role="alert">
-              <h4 class="alert-heading">There's a problem !</h4>
-              <h5><%= err.message  %></h5>
-              <p><%= err.stack  %></p>
-              <hr>
-              <p class="mb-0"><a class="btn btn-light" href="/">Go back to the home page</a></p>
+    <div class="container-fluid position-absolute top-50 start-0 translate-middle-y my-5">
+        <div class="row align-items-center">
+            <div class="col-12 col-md-6 ps-3 ps-md-5">
+                <h1 class="text mb-3">The Moonshot project</h1>
+                <p class="text">Trajectory lost...</p>
             </div>
+        </div>
+        <div class="row align-items-end justify-content-center mt-5">
+            <div class="col-12 col-md-6 px-3 px-md-5">
+              <div class="alert alert-danger" role="alert">
+                  <h4 class="alert-heading">There's a problem !</h4>
+                  <h5><%= err.message  %></h5>
+                  <p class="font-monospace errStack"><%= err.stack  %></p>
+                  <hr>
+                  <p class="mb-0"><a class="btn btn-light" href="/">Go back to the home page</a></p>
+                </div>
+              </div>
           </div>
-      </div>
-    <%- include("partials/commonBootstrap.ejs") %>
+    </div>
+    <footer class=" container position-absolute bottom-0 start-0 translate-x-middle ps-3 ms-5 mb-5">
+        <div class="text-light text-small font-monospace">
+            Development release 0.0.1<br>
+            For test purposes only
+        </div>
+    </footer>
 </body>
+<%- include("partials/commonBootstrap.ejs") %>
 </html>

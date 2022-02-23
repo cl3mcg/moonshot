@@ -7,6 +7,10 @@ const preAdvisedTenderSchema = new Schema({
         required: true
     },
     lastModifiedDate: Date,
+    countryLocation: {
+        type: String,
+        required: true
+    },
     companyName: {
         type: String,
         required: true
@@ -48,11 +52,7 @@ const preAdvisedTenderSchema = new Schema({
     existingCustomerSegment: {
         type: String,
     },
-    additionalComment: String,
-    countryLocation: {
-        type: String,
-        required: true
-    }
+    additionalComment: String
 })
 
 module.exports = mongoose.model("PreadvisedTender", preAdvisedTenderSchema)
