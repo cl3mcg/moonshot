@@ -473,7 +473,6 @@ window.addEventListener("load", function () {
     }
 })
 
-
 // ---- Controling the availability of customer segment radio depending on the customer history
 const validationArray2 = []
 const hasHistoryArray = ["historyAirOcean","historyRoadFreight","historyContractLog","historyPortLog"]

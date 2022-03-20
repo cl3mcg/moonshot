@@ -12,7 +12,7 @@
 </head>
 <body>
     <%- include("partials/navbar.ejs") %>
-    <h1 class="text-center mt-5">Register a tender to be launched</h1>
+    <h1 class="text-center mt-5"><% if (preadviseTender) { %>Convert the preadvised tender in a registered tender<% } else { %> Register a tender to be launched<% } %></h1>
     <div class="container">
         <p class="lead mt-5 mb-2">
             Dear Account Owner,<br>
@@ -42,7 +42,7 @@
           </nav>
     </div>
     <div class="container mb-3 py-4 overflow-hidden">
-        <form class="mb-5 needs-validation" id="registerForm" action="/register/new" method="POST" enctype="multipart/form-data" novalidate>
+        <form class="mb-5 needs-validation" id="registerForm" action="/register/new" method="POST" enctype="multipart/form-data" novalidate autocomplete="off">
             <div class="tile needs-validation">
                 <div class="row justify-content-md-center mb-3">
                     <div class="col-12">
@@ -56,7 +56,7 @@
                             <select class="form-select" id="countryLocation" name="countryLocation" required>
                                 <option selected disabled value="">Choose...</option>
                                 <% for (let country of countriesData) { %>
-                                <option value="<%= country.cca2 %>"><%= country.cca2 %> - <%= country.name.common %> <% if (!country.flag) { %>🇺🇳<% } else { %> <%=country.flag%> <% } %></option>
+                                <option value="<%= country.cca2 %>" <% if (preadviseTender) { %><% if(preadviseTender.countryLocation === country.cca2) {%>selected<% } } %> ><%= country.cca2 %> - <%= country.name.common %> <% if (!country.flag) { %>🇺🇳<% } else { %> <%=country.flag%> <% } %></option>
                                 <% } %>
                             </select>
                             <div class="invalid-feedback">Please make a selection.</div>
@@ -75,10 +75,10 @@
                     <div class="col-12 mb-3">
                         <label class="form-label" for="isPreadvised">Was the tender announced prior to launch?</label>
                         <div class="input-group has-validation">
-                            <select class="form-select" id="isPreadvised" name="isPreadvised" autocomplete="off" required>
-                                <option selected disabled value="">Choose...</option>
-                                <option value="yes">Yes</option>
-                                <option value="no">No</option>
+                            <select class="form-select" id="isPreadvised" name="isPreadvised" required>
+                                <option <% if (!preadviseTender) { %>selected<% } %> disabled value="">Choose...</option>
+                                <option value="yes" <% if (preadviseTender) { %>selected<% } %> >Yes</option>
+                                <option value="no" <% if (preadviseTender) { %>disabled<% } %>>No</option>
                             </select>
                             <div class="invalid-feedback">Please make a selection.</div>
                         </div>
@@ -86,7 +86,7 @@
                     <div class="col-12 mb-3" id="opt_preadviseID">
                         <div>
                             <label class="form-label" for="preadviseID">What is the tender pre-advise ID?</label>
-                            <input class="form-control" type="text" id="preadviseID" name="preadviseID" autocomplete="off">
+                            <input class="form-control" type="text" id="preadviseID" name="preadviseID"  <% if (preadviseTender) { %>value="<%= preadviseTender.id %>" readonly<% } else { %>required<% } %> >
                             <div class="form-text">Enter the tender pre-advise ID received by email when you pre-advised the tender.</div>
                             <div class="invalid-feedback">Please fill this field.</div>
                         </div>
@@ -103,13 +103,13 @@
                             </div>
                             <div class="col-12 mb-3">
                                 <label class="form-label" for="companyName">Company Name (Customer)</label>
-                                <input class="form-control" type="text" id="companyName" name="companyName" required>
+                                <input class="form-control" type="text" id="companyName" name="companyName" <% if (preadviseTender) { %>value="<%= preadviseTender.companyName %>"<% } %> required>
                                 <div class="form-text">Enter the "group company name" of your customer / prospect.</div>
                                 <div class="invalid-feedback">Please fill this field.</div>
                             </div>
                             <div class="col-12 mb-3">
                                 <label class="form-label" for="sugarID">Sugar ID</label>
-                                <input class="form-control" type="text" id="sugarID" name="sugarID" required>
+                                <input class="form-control" type="text" id="sugarID" name="sugarID" <% if (preadviseTender) { %>value="<%= preadviseTender.sugarID %>"<% } %> required>
                                 <div class="form-text">Only enter ONE correct "main" <i>Indent Number</i> from the Sugar CRM system:</div>
                                 <div class="invalid-feedback">Please fill this field.</div>
                             </div>
@@ -179,13 +179,13 @@
                             <div class="row mb-3">
                                 <div class="col-4 d-flex align-items-center">
                                     <div class="form-check">
-                                        <input class="form-check-input transportModeBox" id="hasAirFreight" type="checkbox" value="hasAirFreight" name="transportMode" required>
+                                        <input class="form-check-input transportModeBox" id="hasAirFreight" type="checkbox" value="hasAirFreight" name="transportMode" <% if (preadviseTender) { %><% if(preadviseTender.transportMode.includes("hasAirFreight")) {%>checked<% } } %> required>
                                         <label class="form-check-label" for="hasAirFreight">Air freight</label>
                                     </div>
                                 </div>
                                 <div class="col d-flex align-items-center">
                                     <div class="input-group">
-                                        <input type="number" class="form-control transportModeVolume" id="airFreightVol" name="airFreightVol" placeholder="Air volumes in Tons" aria-label="Air freight volumes in Tons" min="1" required>
+                                        <input type="number" class="form-control transportModeVolume" id="airFreightVol" name="airFreightVol" placeholder="Air volumes in Tons" aria-label="Air freight volumes in Tons" min="1" <% if (preadviseTender && preadviseTender.airFreightVolume) { %>value="<%= preadviseTender.airFreightVolume %>"<% } %> required>
                                         <span class="input-group-text">Tons</span>
                                         <span class="input-group-text"><i>(estimated)</i></span>
                                     </div>
@@ -194,13 +194,13 @@
                             <div class="row mb-3">
                                 <div class="col-4 d-flex align-items-center">
                                     <div class="form-check">
-                                        <input class="form-check-input transportModeBox" id="hasSeaFreightFCL" type="checkbox" value="hasSeaFreightFCL" name="transportMode" required>
+                                        <input class="form-check-input transportModeBox" id="hasSeaFreightFCL" type="checkbox" value="hasSeaFreightFCL" name="transportMode" <% if (preadviseTender) { %><% if(preadviseTender.transportMode.includes("hasSeaFreightFCL")) {%>checked<% } } %> required>
                                         <label class="form-check-label" for="hasSeaFreightFCL">Sea freight FCL</label>
                                     </div>
                                 </div>
                                 <div class="col d-flex align-items-center">
                                     <div class="input-group">
-                                        <input type="number" class="form-control transportModeVolume" id="seaFreightFCLVol" name="seaFreightFCLVol" placeholder="FCL volumes in TEUs" aria-label="FCL volumes in TEUs" min="1" required>
+                                        <input type="number" class="form-control transportModeVolume" id="seaFreightFCLVol" name="seaFreightFCLVol" placeholder="FCL volumes in TEUs" aria-label="FCL volumes in TEUs" min="1" <% if (preadviseTender && preadviseTender.seaFreightFCLVolume) { %>value="<%= preadviseTender.seaFreightFCLVolume %>"<% } %> required>
                                         <span class="input-group-text">TEUs</span>
                                         <span class="input-group-text"><i>(estimated)</i></span>
                                     </div>
@@ -209,13 +209,13 @@
                             <div class="row mb-3">
                                 <div class="col-4 d-flex align-items-center">
                                     <div class="form-check">
-                                        <input class="form-check-input transportModeBox" id="hasSeaFreightLCL" type="checkbox" value="hasSeaFreightLCL" name="transportMode" required>
+                                        <input class="form-check-input transportModeBox" id="hasSeaFreightLCL" type="checkbox" value="hasSeaFreightLCL" name="transportMode" <% if (preadviseTender) { %><% if(preadviseTender.transportMode.includes("hasSeaFreightLCL")) {%>checked<% } } %> required>
                                         <label class="form-check-label" for="hasSeaFreightLCL">Sea freight LCL</label>
                                     </div>
                                 </div>
                                 <div class="col d-flex align-items-center">
                                     <div class="input-group">
-                                        <input type="number" class="form-control transportModeVolume" id="seaFreightLCLVol" name="seaFreightLCLVol" placeholder="LCL volumes in CBMs" aria-label="LCL volumes in CBMs" min="1" required>
+                                        <input type="number" class="form-control transportModeVolume" id="seaFreightLCLVol" name="seaFreightLCLVol" placeholder="LCL volumes in CBMs" aria-label="LCL volumes in CBMs" min="1" <% if (preadviseTender && preadviseTender.seaFreightLCLVolume) { %>value="<%= preadviseTender.seaFreightLCLVolume %>"<% } %> required>
                                         <span class="input-group-text">CBMs</span>
                                         <span class="input-group-text"><i>(estimated)</i></span>
                                     </div>
@@ -224,13 +224,13 @@
                             <div class="row mb-3">
                                 <div class="col-4 d-flex align-items-center">
                                     <div class="form-check">
-                                        <input class="form-check-input transportModeBox" id="hasRailFreight" type="checkbox" value="hasRailFreight" name="transportMode" required>
+                                        <input class="form-check-input transportModeBox" id="hasRailFreight" type="checkbox" value="hasRailFreight" name="transportMode" <% if (preadviseTender) { %><% if(preadviseTender.transportMode.includes("hasRailFreight")) {%>checked<% } } %> required>
                                         <label class="form-check-label" for="hasRailFreight">Rail freight</label>
                                     </div>
                                 </div>
                                 <div class="col d-flex align-items-center">
                                     <div class="input-group">
-                                        <input type="number" class="form-control transportModeVolume" id="railFreightVol" name="railFreightVol" placeholder="Rail volumes in TEUs" aria-label="Rail volumes in TEUs" min="1" required>
+                                        <input type="number" class="form-control transportModeVolume" id="railFreightVol" name="railFreightVol" placeholder="Rail volumes in TEUs" aria-label="Rail volumes in TEUs" min="1" <% if (preadviseTender && preadviseTender.railFreightVolume) { %>value="<%= preadviseTender.railFreightVolume %>"<% } %> required>
                                         <span class="input-group-text">TEUs</span>
                                         <span class="input-group-text"><i>(estimated)</i></span>
                                     </div>
@@ -293,7 +293,7 @@
                     <div class="col-12 col-md-6 mb-3">
                         <label class="form-label" for="linkedRFI">Is there an RFI related to this tender?</label>
                         <div class="input-group has-validation">
-                            <select class="form-select" id="linkedRFI" name="linkedRFI" autocomplete="off" required>
+                            <select class="form-select" id="linkedRFI" name="linkedRFI" required>
                                 <option selected disabled value="">Choose...</option>
                                 <option value="yes">Yes</option>
                                 <option value="no">No</option>
@@ -357,43 +357,43 @@
                             <tbody>
                                 <tr>
                                 <th scope="row">From Africa</th>
-                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="africaToAfrica" name="keyTradelanes" value="africaToAfrica" required></td>
-                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="africaToAmericas" name="keyTradelanes" value="africaToAmericas" required></td>
-                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="africaToAsia" name="keyTradelanes" value="africaToAsia" required></td>
-                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="africaToEurope" name="keyTradelanes" value="africaToEurope" required></td>
-                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="africaToOceania" name="keyTradelanes" value="africaToOceania" required></td>
+                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="africaToAfrica" name="keyTradelanes" value="africaToAfrica" <% if (preadviseTender) { %><% if(preadviseTender.keyTradelanes.includes("africaToAfrica")) {%>checked<% } } %> required></td>
+                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="africaToAmericas" name="keyTradelanes" value="africaToAmericas" <% if (preadviseTender) { %><% if(preadviseTender.keyTradelanes.includes("africaToAmericas")) {%>checked<% } } %> required></td>
+                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="africaToAsia" name="keyTradelanes" value="africaToAsia" <% if (preadviseTender) { %><% if(preadviseTender.keyTradelanes.includes("africaToAsia")) {%>checked<% } } %> required></td>
+                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="africaToEurope" name="keyTradelanes" value="africaToEurope" <% if (preadviseTender) { %><% if(preadviseTender.keyTradelanes.includes("africaToEurope")) {%>checked<% } } %> required></td>
+                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="africaToOceania" name="keyTradelanes" value="africaToOceania" <% if (preadviseTender) { %><% if(preadviseTender.keyTradelanes.includes("africaToOceania")) {%>checked<% } } %> required></td>
                                 </tr>
                                 <tr>
                                 <th scope="row">From Americas</th>
-                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="americasToAfrica" name="keyTradelanes" value="americasToAfrica" required></td>
-                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="americasToAmericas" name="keyTradelanes" value="americasToAmericas" required></td>
-                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="americasToAsia" name="keyTradelanes" value="americasToAsia" required></td>
-                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="americasToEurope" name="keyTradelanes" value="americasToEurope" required></td>
-                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="americasToOceania" name="keyTradelanes" value="americasToOceania" required></td>
+                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="americasToAfrica" name="keyTradelanes" value="americasToAfrica" <% if (preadviseTender) { %><% if(preadviseTender.keyTradelanes.includes("americasToAfrica")) {%>checked<% } } %> required></td>
+                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="americasToAmericas" name="keyTradelanes" value="americasToAmericas" <% if (preadviseTender) { %><% if(preadviseTender.keyTradelanes.includes("americasToAmericas")) {%>checked<% } } %> required></td>
+                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="americasToAsia" name="keyTradelanes" value="americasToAsia" <% if (preadviseTender) { %><% if(preadviseTender.keyTradelanes.includes("americasToAsia")) {%>checked<% } } %> required></td>
+                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="americasToEurope" name="keyTradelanes" value="americasToEurope" <% if (preadviseTender) { %><% if(preadviseTender.keyTradelanes.includes("americasToEurope")) {%>checked<% } } %> required></td>
+                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="americasToOceania" name="keyTradelanes" value="americasToOceania" <% if (preadviseTender) { %><% if(preadviseTender.keyTradelanes.includes("americasToOceania")) {%>checked<% } } %> required></td>
                                 </tr>
                                 <tr>
                                 <th scope="row">From Asia</th>
-                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="asiaToAfrica" name="keyTradelanes" value="asiaToAfrica" required></td>
-                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="asiaToAmericas" name="keyTradelanes" value="asiaToAmericas" required></td>
-                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="asiaToAsia" name="keyTradelanes" value="asiaToAsia" required></td>
-                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="asiaToEurope" name="keyTradelanes" value="asiaToEurope" required></td>
-                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="asiaToOceania" name="keyTradelanes" value="asiaToOceania" required></td>
+                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="asiaToAfrica" name="keyTradelanes" value="asiaToAfrica" <% if (preadviseTender) { %><% if(preadviseTender.keyTradelanes.includes("asiaToAfrica")) {%>checked<% } } %> required></td>
+                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="asiaToAmericas" name="keyTradelanes" value="asiaToAmericas" <% if (preadviseTender) { %><% if(preadviseTender.keyTradelanes.includes("asiaToAmericas")) {%>checked<% } } %> required></td>
+                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="asiaToAsia" name="keyTradelanes" value="asiaToAsia" <% if (preadviseTender) { %><% if(preadviseTender.keyTradelanes.includes("asiaToAsia")) {%>checked<% } } %> required></td>
+                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="asiaToEurope" name="keyTradelanes" value="asiaToEurope" <% if (preadviseTender) { %><% if(preadviseTender.keyTradelanes.includes("asiaToEurope")) {%>checked<% } } %> required></td>
+                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="asiaToOceania" name="keyTradelanes" value="asiaToOceania" <% if (preadviseTender) { %><% if(preadviseTender.keyTradelanes.includes("asiaToOceania")) {%>checked<% } } %> required></td>
                                 </tr>
                                 <tr>
                                 <th scope="row">From Europe</th>
-                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="europeToAfrica" name="keyTradelanes" value="europeToAfrica" required></td>
-                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="europeToAmericas" name="keyTradelanes" value="europeToAmericas" required></td>
-                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="europeToAsia" name="keyTradelanes" value="europeToAsia" required></td>
-                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="europeToEurope" name="keyTradelanes" value="europeToEurope" required></td>
-                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="europeToOceania" name="keyTradelanes" value="europeToOceania" required></td>
+                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="europeToAfrica" name="keyTradelanes" value="europeToAfrica" <% if (preadviseTender) { %><% if(preadviseTender.keyTradelanes.includes("europeToAfrica")) {%>checked<% } } %> required></td>
+                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="europeToAmericas" name="keyTradelanes" value="europeToAmericas" <% if (preadviseTender) { %><% if(preadviseTender.keyTradelanes.includes("europeToAmericas")) {%>checked<% } } %> required></td>
+                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="europeToAsia" name="keyTradelanes" value="europeToAsia" <% if (preadviseTender) { %><% if(preadviseTender.keyTradelanes.includes("europeToAsia")) {%>checked<% } } %> required></td>
+                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="europeToEurope" name="keyTradelanes" value="europeToEurope" <% if (preadviseTender) { %><% if(preadviseTender.keyTradelanes.includes("europeToEurope")) {%>checked<% } } %> required></td>
+                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="europeToOceania" name="keyTradelanes" value="europeToOceania" <% if (preadviseTender) { %><% if(preadviseTender.keyTradelanes.includes("europeToOceania")) {%>checked<% } } %> required></td>
                                 </tr>
                                 <tr>
                                 <th scope="row">From Oceania</th>
-                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="oceaniaToAfrica" name="keyTradelanes" value="oceaniaToAfrica" required></td>
-                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="oceaniaToAmericas" name="keyTradelanes" value="oceaniaToAmericas" required></td>
-                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="oceaniaToAsia" name="keyTradelanes" value="oceaniaToAsia" required></td>
-                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="oceaniaToEurope" name="keyTradelanes" value="oceaniaToEurope" required></td>
-                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="oceaniaToOceania" name="keyTradelanes" value="oceaniaToOceania" required></td>
+                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="oceaniaToAfrica" name="keyTradelanes" value="oceaniaToAfrica" <% if (preadviseTender) { %><% if(preadviseTender.keyTradelanes.includes("oceaniaToAfrica")) {%>checked<% } } %> required></td>
+                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="oceaniaToAmericas" name="keyTradelanes" value="oceaniaToAmericas" <% if (preadviseTender) { %><% if(preadviseTender.keyTradelanes.includes("oceaniaToAmericas")) {%>checked<% } } %> required></td>
+                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="oceaniaToAsia" name="keyTradelanes" value="oceaniaToAsia" <% if (preadviseTender) { %><% if(preadviseTender.keyTradelanes.includes("oceaniaToAsia")) {%>checked<% } } %> required></td>
+                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="oceaniaToEurope" name="keyTradelanes" value="oceaniaToEurope" <% if (preadviseTender) { %><% if(preadviseTender.keyTradelanes.includes("oceaniaToEurope")) {%>checked<% } } %> required></td>
+                                <td><input class="form-check-input keyTradelaneBox" type="checkbox" id="oceaniaToOceania" name="keyTradelanes" value="oceaniaToOceania" <% if (preadviseTender) { %><% if(preadviseTender.keyTradelanes.includes("oceaniaToOceania")) {%>checked<% } } %> required></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -416,25 +416,25 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" id="dtod" type="checkbox" value="dtod" name="transportationScope" autocomplete="off" required>
+                                    <input class="form-check-input" id="dtod" type="checkbox" value="dtod" name="transportationScope"  required>
                                     <label class="form-check-label" for="dtod">Door to Door</label>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" id="dtop" type="checkbox" value="dtop" name="transportationScope" autocomplete="off" required>
+                                    <input class="form-check-input" id="dtop" type="checkbox" value="dtop" name="transportationScope"  required>
                                     <label class="form-check-label" for="dtop">Door to Port</label>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" id="ptop" type="checkbox" value="ptop" name="transportationScope" autocomplete="off" required>
+                                    <input class="form-check-input" id="ptop" type="checkbox" value="ptop" name="transportationScope"  required>
                                     <label class="form-check-label" for="ptop">Port to Port</label>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-check">
-                                    <input class="form-check-input" id="ptod" type="checkbox" value="ptod" name="transportationScope" autocomplete="off" required>
+                                    <input class="form-check-input" id="ptod" type="checkbox" value="ptod" name="transportationScope"  required>
                                     <label class="form-check-label" for="ptod">Port to Door</label>
                                 </div>
                             </div>
@@ -454,7 +454,7 @@
                     <div class="col-12 col-md mb-3" id="opt_ratesValidityAir">
                         <label class="form-label" for="ratesValidityAir">Air freight</label>
                         <div class="input-group has-validation">
-                            <select class="form-select" id="ratesValidityAir" name="ratesValidityAir" autocomplete="off">
+                            <select class="form-select" id="ratesValidityAir" name="ratesValidityAir" >
                                 <option selected disabled value="">Choose...</option>
                                 <option value="1">1 month validity</option>
                                 <option value="3">3 months validity</option>
@@ -469,7 +469,7 @@
                     <div class="col-12 col-md mb-3" id="opt_ratesValidityFCL">
                         <label class="form-label" for="ratesValidityFCL">Sea freight FCL</label>
                         <div class="input-group has-validation">
-                            <select class="form-select" id="ratesValidityFCL" name="ratesValidityFCL" autocomplete="off">
+                            <select class="form-select" id="ratesValidityFCL" name="ratesValidityFCL" >
                                 <option selected disabled value="">Choose...</option>
                                 <option value="1">1 month validity</option>
                                 <option value="3">3 months validity</option>
@@ -484,7 +484,7 @@
                     <div class="col-12 col-md mb-3" id="opt_ratesValidityLCL">
                         <label class="form-label" for="ratesValidityLCL">Sea freight LCL</label>
                         <div class="input-group has-validation">
-                            <select class="form-select" id="ratesValidityLCL" name="ratesValidityLCL" autocomplete="off">
+                            <select class="form-select" id="ratesValidityLCL" name="ratesValidityLCL" >
                                 <option selected disabled value="">Choose...</option>
                                 <option value="1">1 month validity</option>
                                 <option value="3">3 months validity</option>
@@ -499,7 +499,7 @@
                     <div class="col-12 col-md mb-3" id="opt_ratesValidityRail">
                         <label class="form-label" for="ratesValidityRail">Rail freight</label>
                         <div class="input-group has-validation">
-                            <select class="form-select" id="ratesValidityRail" name="ratesValidityRail" autocomplete="off">
+                            <select class="form-select" id="ratesValidityRail" name="ratesValidityRail" >
                                 <option selected disabled value="">Choose...</option>
                                 <option value="1">1 month validity</option>
                                 <option value="3">3 months validity</option>
@@ -693,23 +693,23 @@
                         <p>Is the tendering company an existing customer to the Rhenus Group (locally or globally) ?</p>
                         <div class="container mb-3">
                             <div class="form-check mb-3">
-                                <input class="form-check-input historyBox" id="historyAirOcean" type="checkbox" value="historyAirOcean" name="history" required>
+                                <input class="form-check-input historyBox" id="historyAirOcean" type="checkbox" value="historyAirOcean" name="history" <% if (preadviseTender) { %><% if(preadviseTender.history.includes("historyAirOcean")) {%>checked<% } } %> required>
                                 <label class="form-check-label" for="historyAirOcean">Yes - Rhenus Air & Ocean</label>
                             </div>
                             <div class="form-check mb-3">
-                                <input class="form-check-input historyBox" id="historyRoadFreight" type="checkbox" value="historyRoadFreight" name="history" required>
+                                <input class="form-check-input historyBox" id="historyRoadFreight" type="checkbox" value="historyRoadFreight" name="history" <% if (preadviseTender) { %><% if(preadviseTender.history.includes("historyRoadFreight")) {%>checked<% } } %> required>
                                 <label class="form-check-label" for="historyRoadFreight">Yes - Rhenus Road</label>
                             </div>
                             <div class="form-check mb-3">
-                                <input class="form-check-input historyBox" id="historyContractLog" type="checkbox" value="historyContractLog" name="history" required>
+                                <input class="form-check-input historyBox" id="historyContractLog" type="checkbox" value="historyContractLog" name="history" <% if (preadviseTender) { %><% if(preadviseTender.history.includes("historyContractLog")) {%>checked<% } } %> required>
                                 <label class="form-check-label" for="historyContractLog">Yes - Rhenus Contract Logistics</label>
                             </div>
                             <div class="form-check mb-3">
-                                <input class="form-check-input historyBox" id="historyPortLog" type="checkbox" value="historyPortLog" name="history" required>
+                                <input class="form-check-input historyBox" id="historyPortLog" type="checkbox" value="historyPortLog" name="history" <% if (preadviseTender) { %><% if(preadviseTender.history.includes("historyPortLog")) {%>checked<% } } %> required>
                                 <label class="form-check-label" for="historyPortLog">Yes - Rhenus Port Logistics</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input historyBox" id="historyNone" type="checkbox" value="historyNone" name="history" required>
+                                <input class="form-check-input historyBox" id="historyNone" type="checkbox" value="historyNone" name="history" <% if (preadviseTender) { %><% if(preadviseTender.history.includes("historyNone")) {%>checked<% } } %> required>
                                 <label class="form-check-label" for="historyNone">No history</label>
                             </div>
                         </div>
@@ -719,15 +719,15 @@
                         <p>If existing customer in Air & Ocean, please choose from the segmentation below (only estimate):</p>
                         <div class="container mb-5">
                             <div class="form-check mb-3">
-                                <input class="form-check-input customerSegment" id="segmentA" type="radio" value="A-customer" name="existingCustomerSegment">
+                                <input class="form-check-input customerSegment" id="segmentA" type="radio" value="A-customer" name="existingCustomerSegment" <% if (preadviseTender && preadviseTender.existingCustomerSegment === "A-customer") { %>checked<% } %> >
                                 <label class="form-check-label" for="segmentA">A-customer: > 100 K€ gross profit p. a.</label>
                             </div>
                             <div class="form-check mb-3">
-                                <input class="form-check-input customerSegment" id="segmentB" type="radio" value="B-customer" name="existingCustomerSegment">
+                                <input class="form-check-input customerSegment" id="segmentB" type="radio" value="B-customer" name="existingCustomerSegment" <% if (preadviseTender && preadviseTender.existingCustomerSegment === "B-customer") { %>checked<% } %> >
                                 <label class="form-check-label" for="segmentB">B-customer: > 50 K€ gross profit p. a.</label>
                             </div>                
                             <div class="form-check">
-                                <input class="form-check-input customerSegment" id="segmentC" type="radio" value="C-customer" name="existingCustomerSegment">
+                                <input class="form-check-input customerSegment" id="segmentC" type="radio" value="C-customer" name="existingCustomerSegment" <% if (preadviseTender && preadviseTender.existingCustomerSegment === "C-customer") { %>checked<% } %> >
                                 <label class="form-check-label" for="segmentC">C-customer: > 10 K€ gross profit p. a.</label>
                             </div>
                         </div>

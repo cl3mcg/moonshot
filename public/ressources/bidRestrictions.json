@@ -1,0 +1,7 @@
+{
+    "noRestriction": "Cherry picking allowed",
+    "allLanesQuoted": "All lanes must be quoted",
+    "countryLanesQuoted": "All lanes per country must be quoted",
+    "regionLanesQuoted": "All lanes per region must be quoted",
+    "trspModeLanesQuoted": "All lanes per transport mode must be quoted"
+}

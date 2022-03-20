@@ -42,7 +42,7 @@
           </nav>
     </div>
     <div class="container mb-3 py-4 overflow-hidden">
-        <form class="mb-5 needs-validation" id="registerForm" action="/register/new" method="POST" enctype="multipart/form-data" novalidate>
+        <form class="mb-5 needs-validation" id="registerForm" action="/register/edit/<%= matchingTender.id %>?_method=PATCH" method="POST" enctype="multipart/form-data" autocomplete="off" novalidate>
             <div class="tile needs-validation">
                 <div class="row justify-content-md-center mb-3">
                     <div class="col-12">
@@ -74,7 +74,7 @@
                     <div class="col-12 mb-3">
                         <label class="form-label" for="isPreadvised">Was the tender announced prior to launch?</label>
                         <div class="input-group has-validation">
-                            <select class="form-select" id="isPreadvised" name="isPreadvised" autocomplete="off" required>
+                            <select class="form-select" id="isPreadvised" name="isPreadvised" required>
                                 <option value="yes"<% if (matchingTender.isPreadvised) {%>selected<% } %>>Yes</option>
                                 <option value="no"<% if (!matchingTender.isPreadvised) {%>selected<% } %>>No</option>
                             </select>
@@ -84,7 +84,7 @@
                     <div class="col-12 mb-3" id="opt_preadviseID">
                         <div>
                             <label class="form-label" for="preadviseID">What is the tender pre-advise ID?</label>
-                            <input class="form-control" type="text" id="preadviseID" name="preadviseID" autocomplete="off" <% if (matchingTender.isPreadvised && matchingTender.preadviseID) {%>value="<%= matchingTender.preadviseID %>"<% } %>>
+                            <input class="form-control" type="text" id="preadviseID" name="preadviseID" <% if (matchingTender.isPreadvised && matchingTender.preadviseID) {%>value="<%= matchingTender.preadviseID %>"<% } %>>
                             <div class="form-text">Enter the tender pre-advise ID received by email when you pre-advised the tender.</div>
                             <div class="invalid-feedback">Please fill this field.</div>
                         </div>
@@ -289,7 +289,7 @@
                     <div class="col-12 col-md-6 mb-3">
                         <label class="form-label" for="linkedRFI">Is there an RFI related to this tender?</label>
                         <div class="input-group has-validation">
-                            <select class="form-select" id="linkedRFI" name="linkedRFI" autocomplete="off" required>
+                            <select class="form-select" id="linkedRFI" name="linkedRFI" required>
                                 <option value="yes" <% if (matchingTender.linkedRFI) {%>selected<% } %>>Yes</option>
                                 <option value="no" <% if (!matchingTender.linkedRFI) {%>selected<% } %>>No</option>
                             </select>
@@ -411,25 +411,25 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" id="dtod" type="checkbox" value="dtod" name="transportationScope" autocomplete="off" <% if(matchingTender.transportationScope.includes("dtod")) { %>checked<% } %> required>
+                                    <input class="form-check-input" id="dtod" type="checkbox" value="dtod" name="transportationScope" <% if(matchingTender.transportationScope.includes("dtod")) { %>checked<% } %> required>
                                     <label class="form-check-label" for="dtod">Door to Door</label>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" id="dtop" type="checkbox" value="dtop" name="transportationScope" autocomplete="off" <% if(matchingTender.transportationScope.includes("dtop")) { %>checked<% } %> required>
+                                    <input class="form-check-input" id="dtop" type="checkbox" value="dtop" name="transportationScope" <% if(matchingTender.transportationScope.includes("dtop")) { %>checked<% } %> required>
                                     <label class="form-check-label" for="dtop">Door to Port</label>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" id="ptop" type="checkbox" value="ptop" name="transportationScope" autocomplete="off" <% if(matchingTender.transportationScope.includes("ptop")) { %>checked<% } %> required>
+                                    <input class="form-check-input" id="ptop" type="checkbox" value="ptop" name="transportationScope" <% if(matchingTender.transportationScope.includes("ptop")) { %>checked<% } %> required>
                                     <label class="form-check-label" for="ptop">Port to Port</label>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-check">
-                                    <input class="form-check-input" id="ptod" type="checkbox" value="ptod" name="transportationScope" autocomplete="off" <% if(matchingTender.transportationScope.includes("ptod")) { %>checked<% } %> required>
+                                    <input class="form-check-input" id="ptod" type="checkbox" value="ptod" name="transportationScope" <% if(matchingTender.transportationScope.includes("ptod")) { %>checked<% } %> required>
                                     <label class="form-check-label" for="ptod">Port to Door</label>
                                 </div>
                             </div>
@@ -536,12 +536,12 @@
                                     <div class="input-group has-validation">
                                         <select class="form-select" id="paymentTerms" name="paymentTerms" required>
                                             <option selected disabled value="">Choose...</option>
-                                            <option value="0.5" <% if(matchingTender.contractPeriod === 0.5) { %>selected<% } %>>15 days</option>
-                                            <option value="1" <% if(matchingTender.contractPeriod === 1) { %>selected<% } %>>30 days</option>
-                                            <option value="1.5" <% if(matchingTender.contractPeriod === 1.5) { %>selected<% } %>>45 days</option>
-                                            <option value="2" <% if(matchingTender.contractPeriod === 2) { %>selected<% } %>>60 days</option>
-                                            <option value="3" <% if(matchingTender.contractPeriod === 3) { %>selected<% } %>>90 days</option>
-                                            <option value="6" <% if(matchingTender.contractPeriod === 6) { %>selected<% } %>>180 days</option>
+                                            <option value="0.5" <% if(matchingTender.paymentTerms === 0.5) { %>selected<% } %>>15 days</option>
+                                            <option value="1" <% if(matchingTender.paymentTerms === 1) { %>selected<% } %>>30 days</option>
+                                            <option value="1.5" <% if(matchingTender.paymentTerms === 1.5) { %>selected<% } %>>45 days</option>
+                                            <option value="2" <% if(matchingTender.paymentTerms === 2) { %>selected<% } %>>60 days</option>
+                                            <option value="3" <% if(matchingTender.paymentTerms === 3) { %>selected<% } %>>90 days</option>
+                                            <option value="6" <% if(matchingTender.paymentTerms === 6) { %>selected<% } %>>180 days</option>
                                         </select>
                                         <div class="invalid-feedback">Please make a selection.</div>
                                     </div>
@@ -845,12 +845,87 @@
                             Documents will be reviewed by the tender team.<br>
                             <small>Files allowed are: .doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, OpenDocument formats and images</small>
                         </p>
-                        <div class="row justify-content-md-center">
+                        <% if (!filesUploaded) { %> 
+                            <div class="row justify-content-md-center">
+                                <div class="col-12 px-3">
+                                    <label for="fileUpload" class="form-label">Upload</label>
+                                    <input class="form-control" type="file" id="fileUpload" name="fileUpload" multiple>
+                                </div>
+                            </div>
+                        <% } else { %>
+                            <div class="row justify-content-md-center mt-3 py-3">
+                                <div class="col-12 px-3">
+                                    <ul class="nav nav-pills justify-content-center mb-3" id="pills-tab" role="tablist">
+                                        <li class="nav-item border-primary" role="presentation">
+                                          <button class="nav-link active" id="pills-add-tab" data-bs-toggle="pill" data-bs-target="#pills-add" type="button" role="tab" aria-controls="pills-add" aria-selected="true">Add additional docs.</button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="btn btn-outline-secondary mx-3 border-0" id="pills-or" data-bs-toggle="pill" data-bs-target="#pills-or" type="button" role="tab" aria-controls="pills-" aria-selected="false" disabled>or</button>
+                                          </li>
+                                        <li class="nav-item border-primary" role="presentation">
+                                          <button class="nav-link" id="pills-new-tab" data-bs-toggle="pill" data-bs-target="#pills-new" type="button" role="tab" aria-controls="pills-new" aria-selected="false">Re-upload a set of docs.</button>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content border rounded-3 mt-3 py-3" id="pills-tabContent">
+                                        <div class="tab-pane fade show active" id="pills-add" role="tabpanel" aria-labelledby="pills-home-tab">
+                                            <div class="col-12 px-3">
+                                                <h3 class="h5">Use this feature to add documents on top of those uploaded previously.</h3>
+                                                The following documents were previously uploaded:
+                                                <ul>
+                                                    <% for (let file of filesUploaded) { %>
+                                                        <li><%= file %></li>
+                                                    <% } %>  
+                                                </ul>
+                                                <label for="addFileUpload" class="form-label">Upload</label>
+                                                <input class="form-control" type="file" id="addFileUpload" name="addFileUpload" multiple>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="pills-new" role="tabpanel" aria-labelledby="pills-profile-tab">
+                                            <div class="col-12 px-3">
+                                                <h3 class="h5">Use this feature to re-upload a full set of documents.</h3>
+                                                <div class="alert alert-danger" role="alert">
+                                                    Documents previously uploaded (if any) will be erased and replaced by the documents uploaded in this step.
+                                                </div>
+                                                The following documents were previously uploaded and will be erased by the newly uploaded documents:
+                                                <ul>
+                                                    <% for (let file of filesUploaded) { %>
+                                                        <li><%= file %></li>
+                                                    <% } %>  
+                                                </ul>
+                                                <label for="newFileUpload" class="form-label">Upload</label>
+                                                <input class="form-control" type="file" id="newFileUpload" name="newFileUpload" multiple>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% } %>
+                       
+
+
+                        <!-- <div class="row justify-content-md-center">
                             <div class="col-12 px-3">
                                 <label for="fileUpload" class="form-label">Upload</label>
                                 <input class="form-control" type="file" id="fileUpload" name="fileUpload" multiple>
                             </div>
-                        </div>
+                            <% if (filesUploaded) { %> 
+                                <div class="col-12 px-3 mt-3">
+                                    <div class="container border rounded-3 bg-secondary bg-opacity-25 pt-2">
+                                        <p>The following documents were previously uploaded</p>
+                                        <ul>
+                                            <% for (let file of filesUploaded) { %>
+                                            <li><%= file %></li>
+                                            <% } %> 
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-12 px-3 mt-3">
+                                    <div class="container border rounded-3 bg-danger bg-opacity-25 py-2">
+                                        It is recommended to re-upload all the files in the upload.
+                                    </div>
+                                </div>
+                            <% } %> 
+                        </div> -->
                     </div>
                 </div>
             </div>

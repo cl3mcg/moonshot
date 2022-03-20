@@ -116,6 +116,10 @@ const decisionCritera = document.querySelector("#decisionCritera")
 const feedbackAvailable = document.querySelector("#feedbackAvailable")
 const potential = document.querySelector("#potential")
 const fileUpload = document.querySelector("#fileUpload")
+const addFileUpload = document.querySelector("#addFileUpload")
+const newFileUpload = document.querySelector("#newFileUpload")
+const addFilePill = document.querySelector("#pills-add-tab")
+const newFilePill = document.querySelector("#pills-new-tab")
 const additionalComment = document.querySelector("#additionalComment")
 
 // ---- ---- Declaration of modal values
@@ -363,7 +367,7 @@ const launchModal = function () {
         mod_receptionDate.innerText = getValue(receptionDate)
         mod_deadlineRFQ.innerText = getValue(deadlineRFQ)
         mod_linkedRFI.innerText = getValue(linkedRFI)
-        if (getValue(linkedRFI) === "Yes"){mod_deadlineRFI.innertext = `${getValue(deadlineRFI)}`} else {mod_deadlineRFI.innertext = "-"}
+        if (getValue(linkedRFI) === "Yes"){mod_deadlineRFI.innerText = `${getValue(deadlineRFI)}`} else {mod_deadlineRFI.innertext = "-"}
         mod_decisionDate.innerText = getValue(decisionDate)
         mod_decisionCritera.innerText = `Based on: ${getValue(decisionCritera)}`
         if (getValue(feedbackAvailable) === "Yes"){mod_feedbackAvailable.innerText = "Feedback provided"}else{mod_feedbackAvailable.innerText = "Feedback not provided"}
@@ -500,13 +504,75 @@ const launchModal = function () {
         }
 
         // ---- Special display for Document uploads
-        if(getValue(fileUpload)){
+        if(fileUpload && getValue(fileUpload)){
             let fileNameArray = []
             let files = fileUpload.files
             for (let file of files) {
-                fileNameArray.push(`📄 ${file.name}`)
+                if (file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+                    fileNameArray.push(`<i class="bi bi-file-earmark-richtext me-2"></i>${file.name}`)
+                }
+                else if (file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+                    fileNameArray.push(`<i class="bi bi-file-earmark-spreadsheet me-2"></i>${file.name}`)
+                }
+                else if (file.type === "application/pdf") {
+                    fileNameArray.push(`<i class="bi bi-file-earmark-pdf me-2"></i>${file.name}`)
+                }
+                else if (file.type === "application/vnd.openxmlformats-officedocument.presentationml.presentation") {
+                    fileNameArray.push(`<i class="bi bi-file-earmark-easel me-2"></i>${file.name}`)
+                }
+                else if (file.type === "image/png" || file.type === "image/jpg" || file.type === "image/jpeg" || file.type === "image/tiff") {
+                    fileNameArray.push(`<i class="bi bi-file-earmark-image me-2"></i>${file.name}`)
+                }
+                else {
+                    fileNameArray.push(`<i class="bi bi-file-earmark-text me-2"></i>${file.name}`)
+                }
             }
-            mod_fileUpload.innerText = fileNameArray.join(", ")
+            mod_fileUpload.innerHTML = fileNameArray.join("<br>")
+        } else if ((addFileUpload && getValue(addFileUpload)) || (newFileUpload && getValue(newFileUpload))) {
+            let fileNameArray = []
+            let filesAdd = addFileUpload.files
+            for (let file of filesAdd) {
+                if (file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+                    fileNameArray.push(`<i class="bi bi-file-earmark-richtext me-2"></i>${file.name}`)
+                }
+                else if (file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+                    fileNameArray.push(`<i class="bi bi-file-earmark-spreadsheet me-2"></i>${file.name}`)
+                }
+                else if (file.type === "application/pdf") {
+                    fileNameArray.push(`<i class="bi bi-file-earmark-pdf me-2"></i>${file.name}`)
+                }
+                else if (file.type === "application/vnd.openxmlformats-officedocument.presentationml.presentation") {
+                    fileNameArray.push(`<i class="bi bi-file-earmark-easel me-2"></i>${file.name}`)
+                }
+                else if (file.type === "image/png" || file.type === "image/jpg" || file.type === "image/jpeg" || file.type === "image/tiff") {
+                    fileNameArray.push(`<i class="bi bi-file-earmark-image me-2"></i>${file.name}`)
+                }
+                else {
+                    fileNameArray.push(`<i class="bi bi-file-earmark-text me-2"></i>${file.name}`)
+                }
+            }
+            let filesNew = newFileUpload.files
+            for (let file of filesNew) {
+                if (file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+                    fileNameArray.push(`<i class="bi bi-file-earmark-richtext me-2"></i>${file.name}`)
+                }
+                else if (file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+                    fileNameArray.push(`<i class="bi bi-file-earmark-spreadsheet me-2"></i>${file.name}`)
+                }
+                else if (file.type === "application/pdf") {
+                    fileNameArray.push(`<i class="bi bi-file-earmark-pdf me-2"></i>${file.name}`)
+                }
+                else if (file.type === "application/vnd.openxmlformats-officedocument.presentationml.presentation") {
+                    fileNameArray.push(`<i class="bi bi-file-earmark-easel me-2"></i>${file.name}`)
+                }
+                else if (file.type === "image/png" || file.type === "image/jpg" || file.type === "image/jpeg" || file.type === "image/tiff") {
+                    fileNameArray.push(`<i class="bi bi-file-earmark-image me-2"></i>${file.name}`)
+                }
+                else {
+                    fileNameArray.push(`<i class="bi bi-file-earmark-text me-2"></i>${file.name}`)
+                }
+            }
+            mod_fileUpload.innerHTML = fileNameArray.join("<br>")
         } else {
             mod_fileUpload.innerText = "No document uploaded"
         }
@@ -675,6 +741,8 @@ for (let requirement of allRequirements) {
     requirement.addEventListener("input", adjust_requirements)
 }
 
+window.addEventListener("load", adjust_requirements)
+
 // ---- Controling the requiered attribute of the preadvise ID field
 const adjust_preadvisedIDField = function () {
     if (isPreadvised.value === "no" || !isPreadvised.value) {
@@ -710,10 +778,6 @@ const adjust_rfiField = function () {
 }
 
 linkedRFI.addEventListener("input", adjust_rfiField)
-window.addEventListener("load", function () {
-    deadlineRFI.value = ""
-    opt_deadlineRFI.classList.add("d-none")
-})
 
 window.addEventListener("load", adjust_rfiField)
 
@@ -745,12 +809,6 @@ window.addEventListener("load", function () {
         else {route.setAttribute("required", true)}
     }
 })
-
-// window.addEventListener("load", function () {
-//     for (let route of routes) {
-//         route.checked = false
-//     }
-// })
 
 // ---- Controling the requiered attribute of the Transportation scopes checkboxes
 let transportScopeCheckedAmount = 0
@@ -819,11 +877,17 @@ for (let history of histories) {
     })
 }
 
-// window.addEventListener("load", function () {
-//     for (let history of histories) {
-//         history.checked = false
-//     }
-// })
+window.addEventListener("load", function () {
+    for (let history of histories) {
+        if (history.checked === true) {
+            historyBoxCheckedAmount += 1
+        }
+    }
+    for (let history of histories) {
+        if (historyBoxCheckedAmount > 0) {history.removeAttribute("required")}
+        else {history.setAttribute("required", true)}
+    }
+})
 
 // ---- Adding the requiered attribute of the Customer Segment radios if "Air & Ocean History" is checked
 historyAirOcean.addEventListener("click", function () {
@@ -837,6 +901,18 @@ historyAirOcean.addEventListener("click", function () {
     }
 })
 
+window.addEventListener("load", function () {
+    if (historyAirOcean.checked) {
+        for (let radio of customerSegmentRadios) {
+        radio.setAttribute("required", true)
+        }
+    }
+    else {
+        for (let radio of customerSegmentRadios) {
+        radio.removeAttribute("required")
+        }
+    }
+})
 
 // ---- Controling the availability of customer segment radio depending on the customer history
 const validationArray2 = []
@@ -844,9 +920,31 @@ const hasHistoryArray = ["historyAirOcean","historyRoadFreight","historyContract
 
 for (let historyBox of historyBoxes) {
     historyBox.addEventListener("click", function () {
+        if (historyBox.value === "historyNone" && historyBox.checked) {
+                for (let historyBox of historyBoxes) {
+                    if (hasHistoryArray.includes(historyBox.value) && !historyBox.checked) {
+                        historyBox.removeAttribute("required")
+                }
+            }
+        }
+        else if (historyBox.value === "historyNone" && !historyBox.checked) {
+            for (let historyBox of historyBoxes) {
+                if (hasHistoryArray.includes(historyBox.value)) {
+                    historyBox.setAttribute("required", "true")
+                }
+            }
+        }
         if (historyBox.checked && hasHistoryArray.includes(historyBox.value)) {
             validationArray2.push(historyBox.value)
-            if (validationArray2.length > 0) {document.querySelector("#historyNone").setAttribute("disabled", "true"), document.querySelector("#historyNone").checked = false}
+            if (validationArray2.length > 0) {
+                historyNone.setAttribute("disabled", "true")
+                historyNone.checked = false
+                for (let historyBox of historyBoxes) {
+                    if (!historyBox.checked) {
+                        historyBox.removeAttribute("required")
+                    }
+                }
+            }
             for (let customerSegmentRadio of customerSegmentRadios) {
                 if (historyAirOcean.checked) {
                     customerSegmentRadio.removeAttribute("disabled")
@@ -860,7 +958,19 @@ for (let historyBox of historyBoxes) {
         } else if (!historyBox.checked && hasHistoryArray.includes(historyBox.value)) {
             let removalIndex = validationArray2.indexOf(historyBox.value)
             validationArray2.splice(removalIndex, 1)
-            if (validationArray2.length === 0) {document.querySelector("#historyNone").removeAttribute("disabled")}
+            if (validationArray2.length === 0) {
+                historyNone.removeAttribute("disabled")
+                    for (let historyBox of historyBoxes) {
+                        historyBox.setAttribute("required", "true")
+                    }
+                }
+            else if (validationArray2.length > 0) {
+                for (let historyBox of historyBoxes) {
+                    if (!historyBox.checked) {
+                        historyBox.removeAttribute("required")
+                    }
+                }
+            }
             for (let customerSegmentRadio of customerSegmentRadios) {
                 if (!historyAirOcean.checked) {
                     customerSegmentRadio.setAttribute("disabled", "true")
@@ -875,17 +985,54 @@ for (let historyBox of historyBoxes) {
     })
 }
 
-// window.addEventListener("load", function () {
-//     for (let customerSegmentRadio of customerSegmentRadios) {
-//             customerSegmentRadio.setAttribute("disabled", "true")
-//     }
-//     for (let historyBox of historyBoxes) {
-//         historyBox.checked = false
-//     }
-//     for (let radio of customerSegmentRadios) {
-//         radio.checked = false
-//     }
-// })
+window.addEventListener("load", function () {
+    if (!historyAirOcean.checked) {
+        for (let customerSegmentRadio of customerSegmentRadios) {
+            customerSegmentRadio.setAttribute("disabled", "true")
+        }
+    }
+
+    for (let historyBox of historyBoxes) {
+        if (historyBox.checked && hasHistoryArray.includes(historyBox.value)) {
+            validationArray2.push(historyBox.value)
+            if (validationArray2.length > 0) {
+                historyNone.setAttribute("disabled", "true")
+                historyNone.checked = false
+                for (let historyBox of historyBoxes) {
+                    if (!historyBox.checked && hasHistoryArray.includes(historyBox.value)) {
+                        historyBox.removeAttribute("required")
+                    }
+                }
+            }
+        }
+    }   
+
+    if (historyNone.checked) {
+        for (let historyBox of historyBoxes) {
+            if (hasHistoryArray.includes(historyBox.value)) {
+                historyBox.checked = false
+                historyBox.removeAttribute("required")
+            }
+        }
+    }
+
+})
+
+// ---- <Controlling the document upload display
+if (!fileUpload) {
+addFilePill.addEventListener("click", function () {
+    addFileUpload.removeAttribute("disabled")
+    newFileUpload.setAttribute("disabled", "true")
+    newFileUpload.value = null
+    newFileUpload.files = null
+})
+newFilePill.addEventListener("click", function () {
+    newFileUpload.removeAttribute("disabled")
+    addFileUpload.setAttribute("disabled", "true")
+    addFileUpload.value = null
+    addFileUpload.files = null
+})
+}
 
 
 // ---- Function to display the requiered question tile
@@ -1005,7 +1152,6 @@ let loadTileDisplay = function () {
 }
 
 window.addEventListener("load", loadTileDisplay())
-
 
 // ---- ---- Bootstrap form validation
 const bootsrapValidation = function () {

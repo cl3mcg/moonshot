@@ -173,7 +173,7 @@ const registeredTenderSchema = new Schema({
         required: true
     },
     feedbackAvailable: {
-        type: Boolean,
+        type: String,
         required: true
     },
     documentUpload: Array,

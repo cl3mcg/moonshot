@@ -1,6 +1,6 @@
 const Joi = require("joi")
 
-module.exports.preadvisedSchema = Joi.object({
+module.exports.preadviseSchema = Joi.object({
     companyName: Joi.string().required(),
     sugarID: Joi.string().required(),
     expectedReceiveDate: Joi.date().required(),
@@ -14,7 +14,58 @@ module.exports.preadvisedSchema = Joi.object({
     existingCustomerSegment: Joi.optional(),
     additionalComment: Joi.optional(),
     countryLocation: Joi.string().required()
-    })
+})
+
+module.exports.registerSchema = Joi.object({
+    countryLocation: Joi.string().required(),
+    isPreadvised: Joi.string().required(),
+    preadviseID: Joi.alternatives().conditional("isPreadvised", { is: "yes", then: Joi.string().required(), otherwise: Joi.any()}),
+    companyName: Joi.string().required(),
+    sugarID: Joi.string().required(),
+    businessVertical: Joi.string().required(),
+    contactName: Joi.string().required(),
+    contactJobTitle: Joi.string().required(),
+    contactEmail: Joi.string().required(),
+    decisionMaker: Joi.string().required(),
+    transportMode: Joi.alternatives().try(Joi.string().required(), Joi.array().required()),
+    airFreightVol: Joi.number().optional(),
+    seaFreightFCLVol: Joi.number().optional(),
+    seaFreightLCLVol: Joi.number().optional(),
+    railFreightVol: Joi.number().optional(),
+    specialHandling: Joi.alternatives().try(Joi.string().required(), Joi.array().required()),
+    commodity: Joi.string().required(),
+    linkedRFI: Joi.string().required(),
+    deadlineRFI: Joi.alternatives().conditional("linkedRFI", { is: "yes", then: Joi.date().required(), otherwise: Joi.any()}),
+    receptionDate: Joi.date().required(),
+    deadlineRFQ: Joi.date().required(),
+    decisionDate: Joi.date().required(),
+    startBusinessDate: Joi.string().required(),
+    keyTradelanes: Joi.alternatives().try(Joi.string().required(), Joi.array().required()),
+    lanesAmount: Joi.number().required(),
+    transportationScope: Joi.alternatives().try(Joi.string().required(), Joi.array().required()),
+    ratesValidityAir: Joi.number().optional(),
+    ratesValidityFCL: Joi.number().optional(),
+    ratesValidityLCL: Joi.number().optional(),
+    ratesValidityRail: Joi.number().optional(),
+    contractPeriod: Joi.number().required(),
+    paymentTerms: Joi.number().required(),
+    bidRestrictions: Joi.alternatives().try(Joi.string().required(), Joi.array().required()),
+    bidRequirements: Joi.alternatives().try(Joi.string().required(), Joi.array().required()),
+    roundsAmount: Joi.number().required(),
+    tenderLaunchMethod: Joi.string().required(),
+    history: Joi.alternatives().try(Joi.string().required(), Joi.array().required()),
+    existingCustomerSegment: Joi.optional(),
+    visitFrequency: Joi.string().required(),
+    visitHistory: Joi.string().required(),
+    currentServiceProvider: Joi.string().required(),
+    competitorAmount: Joi.string().required(),
+    volumeSplit: Joi.string().required(),
+    reasonForTender: Joi.string().required(),
+    decisionCritera: Joi.string().required(),
+    feedbackAvailable: Joi.string().required(),
+    potential: Joi.string().required(),
+    additionalComment: Joi.optional(),
+})
 
 module.exports.officeSchema = Joi.object({
     countryLocation: Joi.string().required(),
@@ -27,4 +78,4 @@ module.exports.officeSchema = Joi.object({
     lng: Joi.number().required(),
     officeSetup: Joi.string().required(),
     tenderDesk: Joi.string().required()
-    })
+})

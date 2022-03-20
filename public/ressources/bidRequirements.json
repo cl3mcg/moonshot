@@ -1,0 +1,10 @@
+{
+    "noRequirement": "No specific requirement",
+    "trackTrace": "Track & Trace",
+    "docsMgmt": "Documents management",
+    "basicReports": "Basic reporting",
+    "leadTimeReports": "Lead time reports",
+    "ediConnection": "EDI connection",
+    "orderManagement": "Order management",
+    "controlTower": "Control tower"
+}

@@ -6,7 +6,18 @@ const preAdvisedTenderSchema = new Schema({
         type: Date,
         required: true
     },
-    lastModifiedDate: Date,
+    lastModifiedDate: {
+        type: Date,
+        min: "2021-10-01"
+    },
+    launched: {
+        type: Boolean,
+        required: true
+    },
+    launchedTime: {
+        type: Date,
+        min: "2021-10-01"
+    },
     countryLocation: {
         type: String,
         required: true

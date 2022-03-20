@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moonshot | Home</title>
+    <%- include("partials/commonStyles.ejs") %>
+    <%- include("partials/commonFonts.ejs") %>
+</head>
+
+<body>
+    <%- include("partials/navbar.ejs") %>
+<div class="container">
+  <div class="row align-items-center my-3">
+    <div class="col">
+      <p><a class="btn btn-light btn-sm border" href="/register/index"><i class="bi bi-arrow-left-circle me-1"></i>Back</a></p>
+    </div>
+    <div class="col d-flex justify-content-end">
+      <a class="btn btn-outline-success btn-sm border-success me-1 disabled" href=""><i class="bi bi-send-check me-1"></i>Feedback</a>
+      <a class="btn btn-light btn-sm border me-3" href="/register/edit/<%= matchingTender.id %>"><i class="bi bi-pencil-square me-1"></i>Edit</a>
+      <button class="btn btn-outline-danger btn-sm border-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal"><i class="bi bi-trash me-1"></i>Delete</button>
+    </div>
+  </div>
+    <div class="container mb-3">
+    <h1><%= matchingTender.companyName %></h1>
+    <h2>Tender registered</h2>
+  </div>
+  <div class="d-flex align-items-start sticky-top pt-3">
+    <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+      <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="true">Profile</button>
+      <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-modes" type="button" role="tab" aria-controls="v-pills-modes" aria-selected="false">Modes & Vol.</button>
+      <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-details" type="button" role="tab" aria-controls="v-pills-details" aria-selected="false">Details</button>
+      <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-schedule" type="button" role="tab" aria-controls="v-pills-schedule" aria-selected="false">Schedule</button>
+      <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-commercial" type="button" role="tab" aria-controls="v-pills-commercial" aria-selected="false">Commercial</button>
+      <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-docs" type="button" role="tab" aria-controls="v-pills-docs" aria-selected="false">Docs & other</button>
+    </div>
+    <div class="tab-content flex-grow-1" id="v-pills-tabContent">
+      <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+        <div class="container ps-5">
+          <table class="table">
+            <tbody>
+              <tr>
+                <th scope="row">Company name</th>
+                <td><%= matchingTender.companyName %></td>
+              </tr>
+              <tr>
+                <th scope="row">Country related</th>
+                <td><% for (let country of countriesData) { if (country.cca2 === matchingTender.countryLocation) { %> <span><%=`${country.flag}`%></span><span class="font-monospace ms-2"><%=`${country.cca2}`%></span><%}}%></td>
+              </tr>
+              <tr>
+                <th scope="row">Registered by</th>
+                <td>Some person</td>
+              </tr>
+              <tr>
+                <th scope="row">Registration date</th>
+                <td><%= matchingTender.recordDate.getDate() %>-<%=monthsData[matchingTender.recordDate.getMonth() + 1]%>-<%=matchingTender.recordDate.getFullYear() %><br>
+                <span class="font-monospace"><%= matchingTender.id %></span>
+                <!-- Uncomment below to display the hour of registration -->
+                <!-- at <%=matchingTender.recordDate.getHours()%>:<%=matchingTender.recordDate.getMinutes()%> -->
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Preadvised</th>
+                <td><% if (matchingTender.isPreadvised) { %>Tender was preadvised<br><span class="font-monospace me-2"><%= matchingTender.preadviseID %></span><% } else { %><i class="twa twa-warning me-2"></i>Tender was not preadvised<% } %></td>
+              </tr>
+              <tr>
+                <th scope="row">Sugar ID</th>
+                <td><span class="font-monospace"><%= matchingTender.sugarID %></span></td>
+              </tr>
+              <tr>
+                <th scope="row">Business vertical</th>
+                <td><%= matchingTender.businessVertical %></td>
+              </tr>
+              <tr>
+                <th scope="row">Tender launch method</th>
+                <td><%= matchingTender.tenderLaunchMethod %></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="v-pills-modes" role="tabpanel" aria-labelledby="v-pills-modes-tab">
+        <div class="container ps-5">
+          <table class="table">
+            <tbody>
+              <tr>
+                <th scope="row">Transport Mode</th>
+                <td> <% for (i=0; i < matchingTender.transportMode.length; i++) { if (i!==matchingTender.transportMode.length -1){%><%=`${transportModes[matchingTender.transportMode[i]]}`%><br><% } else { %><%=`${transportModes[matchingTender.transportMode[i]]}`%><%} }%></td>
+              </tr>
+              <tr>
+                <th scope="row">Transportation scope</th>
+                <td>
+                  <% for (i=0; i < matchingTender.transportationScope.length; i++) { if (i!==matchingTender.transportationScope.length -1){%><%=`${transportScope[matchingTender.transportationScope[i]]}`%><br><% } else { %><%=`${transportScope[matchingTender.transportationScope[i]]}`%><%} }%>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Expected volumes</th>
+                <td><% if (matchingTender.airFreightVolume) { %><%=`${(matchingTender.airFreightVolume).toLocaleString('en-US', { minimumFractionDigits: 2 })} Tons `%><br><%}%><% if (matchingTender.seaFreightFCLVolume) { %><%=`${(matchingTender.seaFreightFCLVolume).toLocaleString('en-US', { minimumFractionDigits: 2 })} TEUs `%><br><%}%><% if (matchingTender.seaFreightLCLVolume) { %><%=`${(matchingTender.seaFreightLCLVolume).toLocaleString('en-US', { minimumFractionDigits: 2 })} CBMs `%><br><%}%><% if (matchingTender.railFreightVolume) { %><%=`${(matchingTender.railFreightVolume).toLocaleString('en-US', { minimumFractionDigits: 2 })} TEUs `%><%}%></td>
+              </tr>
+              <tr>
+                <th scope="row">Key Tradelanes</th>
+                <td>
+                  <% for (i=0; i < matchingTender.keyTradelanes.length; i++) { if (i!==matchingTender.keyTradelanes.length -1){%><%=`${tradelanes[matchingTender.keyTradelanes[i]]}`%><br><% } else { %><%=`${tradelanes[matchingTender.keyTradelanes[i]]}`%><%} }%>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Number of lanes</th>
+                <td><% if (matchingTender.lanesAmount > 1) {%><%= matchingTender.lanesAmount %> lanes<% } else { %><%= matchingTender.lanesAmount %> lane<% } %></td>
+              </tr>
+              <tr>
+                <th scope="row">Volume split</th>
+                <td><%= matchingTender.volumeSplit %></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="v-pills-details" role="tabpanel" aria-labelledby="v-pills-details-tab">
+        <div class="container ps-5">
+          <table class="table">
+            <tbody>
+              <tr>
+                <th scope="row">Commodity</th>
+                <td><%= matchingTender.commodity %></td>
+              </tr>
+              <tr>
+                <th scope="row">Special Handling</th>
+                <td> <% if (!matchingTender.specialHandling) { %>None<% } else { for (i=0; i < matchingTender.specialHandling.length; i++) { if (i!==matchingTender.specialHandling.length -1){%><%=`${specialHandling[matchingTender.specialHandling[i]]}`%><br><% } else { %><%=`${specialHandling[matchingTender.specialHandling[i]]}`%><%} } }%></td>
+              </tr>
+              <tr>
+                <th scope="row">Bidding restrictions</th>
+                <td>
+                  <% for (i=0; i < matchingTender.bidRestrictions.length; i++) { if (i!==matchingTender.bidRestrictions.length -1){%><%=`${bidRestrictions[matchingTender.bidRestrictions[i]]}`%><br><% } else { %><%=`${bidRestrictions[matchingTender.bidRestrictions[i]]}`%><%} }%>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Bidding requirements</th>
+                <td>
+                  <% for (i=0; i < matchingTender.bidRequirements.length; i++) { if (i!==matchingTender.bidRequirements.length -1){%><%=`${bidRequirements[matchingTender.bidRequirements[i]]}`%><br><% } else { %><%=`${bidRequirements[matchingTender.bidRequirements[i]]}`%><%} }%>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Number of rounds</th>
+                <td><% if (matchingTender.roundsAmount > 1) {%><%= matchingTender.roundsAmount %> rounds<% } else { %><%= matchingTender.roundsAmount %> round<% } %></td>
+              </tr>
+              <tr>
+                <th scope="row">Rates validity requested</th>
+                <td>
+                  <% if (matchingTender.ratesValidityAir) { %><%= matchingTender.ratesValidityAir %><% if(matchingTender.ratesValidityAir>1) { %> months (Air)<% } else { %> month (Air)<% } %><br><%} if (matchingTender.ratesValidityFCL) { %><%= matchingTender.ratesValidityFCL %><% if(matchingTender.ratesValidityFCL>1) { %> months (FCL)<% } else { %> month (FCL)<% } %><br><%} if (matchingTender.ratesValidityLCL) { %><%= matchingTender.ratesValidityLCL %><% if(matchingTender.ratesValidityLCL>1) { %> months (LCL)<% } else { %> month (LCL)<% } %><br><%} if (matchingTender.ratesValidityRail) { %><%= matchingTender.ratesValidityRail %><% if(matchingTender.ratesValidityRail>1) { %> months (Rail)<% } else { %> month (Rail)<% } } %>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Contract period</th>
+                <td><% if (matchingTender.contractPeriod > 1) {%><%= matchingTender.contractPeriod %> months<% } else { %><%= matchingTender.contractPeriod %> month<% } %></td>
+              </tr>
+              <tr>
+                <th scope="row">Payment terms</th>
+                <td><%= matchingTender.paymentTerms*30 %> days</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="v-pills-schedule" role="tabpanel" aria-labelledby="v-pills-schedule-tab">
+        <div class="container ps-5">
+          <table class="table">
+            <tbody>
+              <tr>
+                <th scope="row">RFI</th>
+                <td> <% if (!matchingTender.linkedRFI) { %>None<% } else { %>RFI to be completed<% } %></td>
+              </tr>
+              <% if (matchingTender.linkedRFI) { %>
+                <tr>
+                  <th scope="row">RFI deadline</th>
+                  <td><% if (matchingTender.deadlineRFI.getDate() < 10) {%><%=`0${matchingTender.deadlineRFI.getDate()}`%><% } else { %><%=matchingTender.deadlineRFI.getDate()%><% } %>-<%=monthsData[matchingTender.deadlineRFI.getMonth() + 1]%>-<%=matchingTender.deadlineRFI.getFullYear() %></td>
+                </tr>
+              <% } %>
+              <tr>
+                <th scope="row">Tender reception date</th>
+                <td><% if (matchingTender.receptionDate.getDate() < 10) {%><%=`0${matchingTender.receptionDate.getDate()}`%><% } else { %><%=matchingTender.receptionDate.getDate()%><% } %>-<%=monthsData[matchingTender.receptionDate.getMonth() + 1]%>-<%=matchingTender.receptionDate.getFullYear() %></td>
+              </tr>
+              <tr>
+                <tr>
+                  <th scope="row">Tender deadline</th>
+                  <td><% if (matchingTender.deadlineRFQ.getDate() < 10) {%><%=`0${matchingTender.deadlineRFQ.getDate()}`%><% } else { %><%=matchingTender.deadlineRFQ.getDate()%><% } %>-<%=monthsData[matchingTender.deadlineRFQ.getMonth() + 1]%>-<%=matchingTender.deadlineRFQ.getFullYear() %></td>
+                </tr>
+              </tr>
+              <tr>
+                <tr>
+                  <th scope="row">Decision date</th>
+                  <td><% if (matchingTender.decisionDate.getDate() < 10) {%><%=`0${matchingTender.decisionDate.getDate()}`%><% } else { %><%=matchingTender.decisionDate.getDate()%><% } %>-<%=monthsData[matchingTender.decisionDate.getMonth() + 1]%>-<%=matchingTender.decisionDate.getFullYear() %></td>
+                </tr>
+              </tr>
+              <tr>
+                <tr>
+                  <th scope="row">Business start date</th>
+                  <td><% if (matchingTender.startBusinessDate.getDate() < 10) {%><%=`0${matchingTender.startBusinessDate.getDate()}`%><% } else { %><%=matchingTender.startBusinessDate.getDate()%><% } %>-<%=monthsData[matchingTender.startBusinessDate.getMonth() + 1]%>-<%=matchingTender.startBusinessDate.getFullYear() %></td>
+                </tr>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="v-pills-commercial" role="tabpanel" aria-labelledby="v-pills-commercial-tab">
+        <div class="container ps-5">
+          <table class="table">
+            <tbody>
+              <tr>
+                <th scope="row">Current service provider</th>
+                <td><%= matchingTender.currentServiceProvider %></td>
+              </tr>
+              <tr>
+                <th scope="row">History</th>
+                <td><% if (matchingTender.history[0]==="historyNone" ) { %><i class="twa twa-warning me-2"></i>No history<% } else { for (i=0; i < matchingTender.history.length; i++) { if (i!==matchingTender.history.length -1){ if (matchingTender.history[i] === "historyAirOcean") {%><%=`${history[matchingTender.history[i]]}`%> (<i><%=`${matchingTender.existingCustomerSegment}`%></i>)<br><% } else {%><%=`${history[matchingTender.history[i]]}`%><br><% }} else { %><%=`${history[matchingTender.history[i]]}`%><%} } }%></td>
+              </tr>
+              <tr>
+                <th scope="row">Visit frequency</th>
+                <td><%= matchingTender.visitFrequency %></td>
+              </tr>
+              <tr>
+                <th scope="row">Visit history</th>
+                <td><%= matchingTender.visitHistory %></td>
+              </tr>
+              <tr>
+                <th scope="row">Reason for launching the tender</th>
+                <td><%= matchingTender.reasonForTender %></td>
+              </tr>
+              <tr>
+                <th scope="row">Decision criteria</th>
+                <td><%= matchingTender.decisionCritera %></td>
+              </tr>
+              <tr>
+                <th scope="row">Feedback availability</th>
+                <td><% if (matchingTender.feedbackAvailable === "yes") {%>Yes<%} else if (matchingTender.feedbackAvailable === "no") {%><i class="twa twa-warning me-2"></i>No<%} else {%><i class="twa twa-warning me-2"></i>Unknown<%}%></td>
+              </tr>
+              <tr>
+                <th scope="row">Contact name</th>
+                <td><%= matchingTender.contactName %></td>
+              </tr>
+              <tr>
+                <th scope="row">Contact job title</th>
+                <td><%= matchingTender.contactJobTitle %></td>
+              </tr>
+              <tr>
+                <th scope="row">Contact email</th>
+                <td><%= matchingTender.contactEmail %></td>
+              </tr>
+              <tr>
+                <th scope="row">Contact is decision maker</th>
+                <td><% if (matchingTender.decisionMaker === "yes") {%>Yes<% }else if (matchingTender.decisionMaker === "partly") { %>Partly<% } else { %><i class="twa twa-warning me-2"></i>No<% } %></td>
+              </tr>
+              <tr>
+                <th scope="row">Potential</th>
+                <td><%= matchingTender.potential %></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="v-pills-docs" role="tabpanel" aria-labelledby="v-pills-docs-tab">
+        <div class="container ps-5">
+          <table class="table">
+            <tbody>
+              <tr>
+                <th scope="row">Documents uploaded</th>
+                <td><% if (filesUploaded.length) {for (i=0; i < filesUploaded.length; i++) { if (i!==filesUploaded.length -1){%><%=`${filesUploaded[i]}`%><br><% } else { %><%=`${filesUploaded[i]}`%><% } } } else { %><i class="twa twa-warning me-2"></i>No files uploaded<% } %></td>
+              </tr>
+              <tr>
+                <th scope="row">Additional comments</th>
+                <td><% if (!matchingTender.additionalComment) {%><i class="twa twa-warning me-2"></i>No comments added<%} else { %>matchingTender.additionalComment<% } %></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="deleteConfirmModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-fullscreen-md-down modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteConfirmModalLabel"><i class="twa twa-warning me-2"></i>Delete confirmation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-danger" role="alert">
+          <p>
+            Are you sure you want to delete the registration of this tender related to <%= matchingTender.companyName %> ?<br>
+            All of the registration data and documents uploaded (if any) will be <u>permanently erased</u> from the database.
+          </p>
+          <strong>This action is irreversible !</strong>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary position-relative top-50 start-0" id="mod_returnBtn" data-bs-dismiss="modal"><i class="bi bi-arrow-left-circle me-2"></i>Cancel</button>
+        <form method="POST" action="/preadvise/<%= matchingTender.id %>?_method=DELETE">
+          <button class="btn btn-outline-danger border-danger"><i class="bi bi-trash me-2"></i>Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+    <%- include("partials/commonBootstrap.ejs") %>
+</body>
+</html>
