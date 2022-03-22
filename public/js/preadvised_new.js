@@ -179,39 +179,39 @@ const launchModal = function () {
         mod_companyName.innerText = getValue(companyName)
         mod_sugarID.innerText = getValue(sugarID)
         mod_expectedReceiveDate.innerText = getValue(expectedReceiveDate)
-        if(getValue(hasAirFreight)){mod_hasAirFreight.innerText = "\u2705"} else {mod_hasAirFreight.innerText = "-"}
-        if(getValue(hasSeaFreightFCL)){mod_hasSeaFreightFCL.innerText = "\u2705"} else {mod_hasSeaFreightFCL.innerText = "-"}
-        if(getValue(hasSeaFreightLCL)){mod_hasSeaFreightLCL.innerText = "\u2705"} else {mod_hasSeaFreightLCL.innerText = "-"}
-        if(getValue(hasRailFreight)){mod_hasRailFreight.innerText = "\u2705"} else {mod_hasRailFreight.innerText = "-"}
+        if(getValue(hasAirFreight)){mod_hasAirFreight.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_hasAirFreight.innerText = "-"}
+        if(getValue(hasSeaFreightFCL)){mod_hasSeaFreightFCL.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_hasSeaFreightFCL.innerText = "-"}
+        if(getValue(hasSeaFreightLCL)){mod_hasSeaFreightLCL.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_hasSeaFreightLCL.innerText = "-"}
+        if(getValue(hasRailFreight)){mod_hasRailFreight.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_hasRailFreight.innerText = "-"}
         mod_airFreightVol.innerText = getVolume(airFreightVol, "Tons")
         mod_seaFreightFCLVol.innerText = getVolume(seaFreightFCLVol, "TEUs")
         mod_seaFreightLCLVol.innerText = getVolume(seaFreightLCLVol, "CBMs")
         mod_railFreightVol.innerText = getVolume(railFreightVol, "TEUs")
-        if(getValue(africaToAfrica)){mod_africaToAfrica.innerText = "\u2705"} else {mod_africaToAfrica.innerText = "-"}
-        if(getValue(africaToAmericas)){mod_africaToAmericas.innerText = "\u2705"} else {mod_africaToAmericas.innerText = "-"}
-        if(getValue(africaToAsia)){mod_africaToAsia.innerText = "\u2705"} else {mod_africaToAsia.innerText = "-"}
-        if(getValue(africaToEurope)){mod_africaToEurope.innerText = "\u2705"} else {mod_africaToEurope.innerText = "-"}
-        if(getValue(africaToOceania)){mod_africaToOceania.innerText = "\u2705"} else {mod_africaToOceania.innerText = "-"}
-        if(getValue(americasToAfrica)){mod_americasToAfrica.innerText = "\u2705"} else {mod_americasToAfrica.innerText = "-"}
-        if(getValue(americasToAmericas)){mod_americasToAmericas.innerText = "\u2705"} else {mod_americasToAmericas.innerText = "-"}
-        if(getValue(americasToAsia)){mod_americasToAsia.innerText = "\u2705"} else {mod_americasToAsia.innerText = "-"}
-        if(getValue(americasToEurope)){mod_americasToEurope.innerText = "\u2705"} else {mod_americasToEurope.innerText = "-"}
-        if(getValue(americasToOceania)){mod_americasToOceania.innerText = "\u2705"} else {mod_americasToOceania.innerText = "-"}
-        if(getValue(asiaToAfrica)){mod_asiaToAfrica.innerText = "\u2705"} else {mod_asiaToAfrica.innerText = "-"}
-        if(getValue(asiaToAmericas)){mod_asiaToAmericas.innerText = "\u2705"} else {mod_asiaToAmericas.innerText = "-"}
-        if(getValue(asiaToAsia)){mod_asiaToAsia.innerText = "\u2705"} else {mod_asiaToAsia.innerText = "-"}
-        if(getValue(asiaToEurope)){mod_asiaToEurope.innerText = "\u2705"} else {mod_asiaToEurope.innerText = "-"}
-        if(getValue(asiaToOceania)){mod_asiaToOceania.innerText = "\u2705"} else {mod_asiaToOceania.innerText = "-"}   
-        if(getValue(europeToAfrica)){mod_europeToAfrica.innerText = "\u2705"} else {mod_europeToAfrica.innerText = "-"}   
-        if(getValue(europeToAmericas)){mod_europeToAmericas.innerText = "\u2705"} else {mod_europeToAmericas.innerText = "-"}   
-        if(getValue(europeToAsia)){mod_europeToAsia.innerText = "\u2705"} else {mod_europeToAsia.innerText = "-"}   
-        if(getValue(europeToEurope)){mod_europeToEurope.innerText = "\u2705"} else {mod_europeToEurope.innerText = "-"}   
-        if(getValue(europeToOceania)){mod_europeToOceania.innerText = "\u2705"} else {mod_europeToOceania.innerText = "-"}   
-        if(getValue(oceaniaToAfrica)){mod_oceaniaToAfrica.innerText = "\u2705"} else {mod_oceaniaToAfrica.innerText = "-"}   
-        if(getValue(oceaniaToAmericas)){mod_oceaniaToAmericas.innerText = "\u2705"} else {mod_oceaniaToAmericas.innerText = "-"}   
-        if(getValue(oceaniaToAsia)){mod_oceaniaToAsia.innerText = "\u2705"} else {mod_oceaniaToAsia.innerText = "-"}
-        if(getValue(oceaniaToEurope)){mod_oceaniaToEurope.innerText = "\u2705"} else {mod_oceaniaToEurope.innerText = "-"}
-        if(getValue(oceaniaToOceania)){mod_oceaniaToOceania.innerText = "\u2705"} else {mod_oceaniaToOceania.innerText = "-"}
+        if(getValue(africaToAfrica)){mod_africaToAfrica.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_africaToAfrica.innerText = "-"}
+        if(getValue(africaToAmericas)){mod_africaToAmericas.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_africaToAmericas.innerText = "-"}
+        if(getValue(africaToAsia)){mod_africaToAsia.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_africaToAsia.innerText = "-"}
+        if(getValue(africaToEurope)){mod_africaToEurope.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_africaToEurope.innerText = "-"}
+        if(getValue(africaToOceania)){mod_africaToOceania.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_africaToOceania.innerText = "-"}
+        if(getValue(americasToAfrica)){mod_americasToAfrica.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_americasToAfrica.innerText = "-"}
+        if(getValue(americasToAmericas)){mod_americasToAmericas.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_americasToAmericas.innerText = "-"}
+        if(getValue(americasToAsia)){mod_americasToAsia.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_americasToAsia.innerText = "-"}
+        if(getValue(americasToEurope)){mod_americasToEurope.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_americasToEurope.innerText = "-"}
+        if(getValue(americasToOceania)){mod_americasToOceania.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_americasToOceania.innerText = "-"}
+        if(getValue(asiaToAfrica)){mod_asiaToAfrica.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_asiaToAfrica.innerText = "-"}
+        if(getValue(asiaToAmericas)){mod_asiaToAmericas.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_asiaToAmericas.innerText = "-"}
+        if(getValue(asiaToAsia)){mod_asiaToAsia.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_asiaToAsia.innerText = "-"}
+        if(getValue(asiaToEurope)){mod_asiaToEurope.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_asiaToEurope.innerText = "-"}
+        if(getValue(asiaToOceania)){mod_asiaToOceania.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_asiaToOceania.innerText = "-"}   
+        if(getValue(europeToAfrica)){mod_europeToAfrica.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_europeToAfrica.innerText = "-"}   
+        if(getValue(europeToAmericas)){mod_europeToAmericas.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_europeToAmericas.innerText = "-"}   
+        if(getValue(europeToAsia)){mod_europeToAsia.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_europeToAsia.innerText = "-"}   
+        if(getValue(europeToEurope)){mod_europeToEurope.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_europeToEurope.innerText = "-"}   
+        if(getValue(europeToOceania)){mod_europeToOceania.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_europeToOceania.innerText = "-"}   
+        if(getValue(oceaniaToAfrica)){mod_oceaniaToAfrica.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_oceaniaToAfrica.innerText = "-"}   
+        if(getValue(oceaniaToAmericas)){mod_oceaniaToAmericas.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_oceaniaToAmericas.innerText = "-"}   
+        if(getValue(oceaniaToAsia)){mod_oceaniaToAsia.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_oceaniaToAsia.innerText = "-"}
+        if(getValue(oceaniaToEurope)){mod_oceaniaToEurope.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_oceaniaToEurope.innerText = "-"}
+        if(getValue(oceaniaToOceania)){mod_oceaniaToOceania.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_oceaniaToOceania.innerText = "-"}
         if(getValue(segmentA)) {mod_existingCustomerSegment.innerText = "A-customer"} else if (getValue(segmentB)) {mod_existingCustomerSegment.innerText = "B-customer"} else if (getValue(segmentC)) {mod_existingCustomerSegment.innerText = "C-customer"} else {mod_existingCustomerSegment.innerText = "-"}
         if(getValue(additionalComment)) {mod_additionalComment.innerText = getValue(additionalComment)} else {mod_additionalComment.innerText = "-"}
 

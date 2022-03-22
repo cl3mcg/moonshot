@@ -372,27 +372,27 @@ const launchModal = function () {
         mod_competitorAmount.innerText = getValue(competitorAmount)
         mod_volumeSplit.innerText = `${getValue(volumeSplit)} awarded`
         mod_commodity.innerText = getValue(commodity)
-        if(getValue(dtod)){mod_dtod.innerText = "\u2705"} else {mod_dtod.innerText = "-"}
-        if(getValue(dtop)){mod_dtop.innerText = "\u2705"} else {mod_dtop.innerText = "-"}
-        if(getValue(ptod)){mod_ptod.innerText = "\u2705"} else {mod_ptod.innerText = "-"}
-        if(getValue(ptop)){mod_ptop.innerText = "\u2705"} else {mod_ptop.innerText = "-"}
-        if(getValue(noRestriction)){mod_noRestriction.innerText = "\u2705"} else {mod_noRestriction.innerText = "-"}
-        if(getValue(allLanesQuoted)){mod_allLanesQuoted.innerText = "\u2705"} else {mod_allLanesQuoted.innerText = "-"}
-        if(getValue(countryLanesQuoted)){mod_countryLanesQuoted.innerText = "\u2705"} else {mod_countryLanesQuoted.innerText = "-"}
-        if(getValue(regionLanesQuoted)){mod_regionLanesQuoted.innerText = "\u2705"} else {mod_regionLanesQuoted.innerText = "-"}
-        if(getValue(trspModeLanesQuoted)){mod_trspModeLanesQuoted.innerText = "\u2705"} else {mod_trspModeLanesQuoted.innerText = "-"}
-        if(getValue(noRequirement)){mod_noRequirement.innerText = "\u2705"} else {mod_noRequirement.innerText = "-"}
-        if(getValue(trackTrace)){mod_trackTrace.innerText = "\u2705"} else {mod_trackTrace.innerText = "-"}
-        if(getValue(docsMgmt)){mod_docsMgmt.innerText = "\u2705"} else {mod_docsMgmt.innerText = "-"}
-        if(getValue(basicReports)){mod_basicReports.innerText = "\u2705"} else {mod_basicReports.innerText = "-"}
-        if(getValue(leadTimeReports)){mod_leadTimeReports.innerText = "\u2705"} else {mod_leadTimeReports.innerText = "-"}
-        if(getValue(ediConnection)){mod_ediConnection.innerText = "\u2705"} else {mod_ediConnection.innerText = "-"}
-        if(getValue(orderManagement)){mod_orderManagement.innerText = "\u2705"} else {mod_orderManagement.innerText = "-"}
-        if(getValue(controlTower)){mod_controlTower.innerText = "\u2705"} else {mod_controlTower.innerText = "-"}
-        if(getValue(hasAirFreight)){mod_hasAirFreight.innerText = "\u2705"} else {mod_hasAirFreight.innerText = "-"}
-        if(getValue(hasSeaFreightFCL)){mod_hasSeaFreightFCL.innerText = "\u2705"} else {mod_hasSeaFreightFCL.innerText = "-"}
-        if(getValue(hasSeaFreightLCL)){mod_hasSeaFreightLCL.innerText = "\u2705"} else {mod_hasSeaFreightLCL.innerText = "-"}
-        if(getValue(hasRailFreight)){mod_hasRailFreight.innerText = "\u2705"} else {mod_hasRailFreight.innerText = "-"}
+        if(getValue(dtod)){mod_dtod.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_dtod.innerText = "-"}
+        if(getValue(dtop)){mod_dtop.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_dtop.innerText = "-"}
+        if(getValue(ptod)){mod_ptod.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_ptod.innerText = "-"}
+        if(getValue(ptop)){mod_ptop.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_ptop.innerText = "-"}
+        if(getValue(noRestriction)){mod_noRestriction.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_noRestriction.innerText = "-"}
+        if(getValue(allLanesQuoted)){mod_allLanesQuoted.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_allLanesQuoted.innerText = "-"}
+        if(getValue(countryLanesQuoted)){mod_countryLanesQuoted.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_countryLanesQuoted.innerText = "-"}
+        if(getValue(regionLanesQuoted)){mod_regionLanesQuoted.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_regionLanesQuoted.innerText = "-"}
+        if(getValue(trspModeLanesQuoted)){mod_trspModeLanesQuoted.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_trspModeLanesQuoted.innerText = "-"}
+        if(getValue(noRequirement)){mod_noRequirement.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_noRequirement.innerText = "-"}
+        if(getValue(trackTrace)){mod_trackTrace.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_trackTrace.innerText = "-"}
+        if(getValue(docsMgmt)){mod_docsMgmt.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_docsMgmt.innerText = "-"}
+        if(getValue(basicReports)){mod_basicReports.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_basicReports.innerText = "-"}
+        if(getValue(leadTimeReports)){mod_leadTimeReports.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_leadTimeReports.innerText = "-"}
+        if(getValue(ediConnection)){mod_ediConnection.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_ediConnection.innerText = "-"}
+        if(getValue(orderManagement)){mod_orderManagement.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_orderManagement.innerText = "-"}
+        if(getValue(controlTower)){mod_controlTower.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_controlTower.innerText = "-"}
+        if(getValue(hasAirFreight)){mod_hasAirFreight.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_hasAirFreight.innerText = "-"}
+        if(getValue(hasSeaFreightFCL)){mod_hasSeaFreightFCL.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_hasSeaFreightFCL.innerText = "-"}
+        if(getValue(hasSeaFreightLCL)){mod_hasSeaFreightLCL.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_hasSeaFreightLCL.innerText = "-"}
+        if(getValue(hasRailFreight)){mod_hasRailFreight.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_hasRailFreight.innerText = "-"}
         mod_airFreightVol.innerText = getVolume(airFreightVol, "Tons")
         mod_seaFreightFCLVol.innerText = getVolume(seaFreightFCLVol, "TEUs")
         mod_seaFreightLCLVol.innerText = getVolume(seaFreightLCLVol, "CBMs")
@@ -401,31 +401,31 @@ const launchModal = function () {
         if(getValue(ratesValidityFCL) !== "Choose..."){mod_ratesValidityFCL.innerText = getValue(ratesValidityFCL)} else {mod_ratesValidityFCL.innerText = "-"}
         if(getValue(ratesValidityLCL) !== "Choose..."){mod_ratesValidityLCL.innerText = getValue(ratesValidityLCL)} else {mod_ratesValidityLCL.innerText = "-"}
         if(getValue(ratesValidityRail) !== "Choose..."){mod_ratesValidityRail.innerText = getValue(ratesValidityRail)} else {mod_ratesValidityRail.innerText = "-"}
-        if(getValue(africaToAfrica)){mod_africaToAfrica.innerText = "\u2705"} else {mod_africaToAfrica.innerText = "-"}
-        if(getValue(africaToAmericas)){mod_africaToAmericas.innerText = "\u2705"} else {mod_africaToAmericas.innerText = "-"}
-        if(getValue(africaToAsia)){mod_africaToAsia.innerText = "\u2705"} else {mod_africaToAsia.innerText = "-"}
-        if(getValue(africaToEurope)){mod_africaToEurope.innerText = "\u2705"} else {mod_africaToEurope.innerText = "-"}
-        if(getValue(africaToOceania)){mod_africaToOceania.innerText = "\u2705"} else {mod_africaToOceania.innerText = "-"}
-        if(getValue(americasToAfrica)){mod_americasToAfrica.innerText = "\u2705"} else {mod_americasToAfrica.innerText = "-"}
-        if(getValue(americasToAmericas)){mod_americasToAmericas.innerText = "\u2705"} else {mod_americasToAmericas.innerText = "-"}
-        if(getValue(americasToAsia)){mod_americasToAsia.innerText = "\u2705"} else {mod_americasToAsia.innerText = "-"}
-        if(getValue(americasToEurope)){mod_americasToEurope.innerText = "\u2705"} else {mod_americasToEurope.innerText = "-"}
-        if(getValue(americasToOceania)){mod_americasToOceania.innerText = "\u2705"} else {mod_americasToOceania.innerText = "-"}
-        if(getValue(asiaToAfrica)){mod_asiaToAfrica.innerText = "\u2705"} else {mod_asiaToAfrica.innerText = "-"}
-        if(getValue(asiaToAmericas)){mod_asiaToAmericas.innerText = "\u2705"} else {mod_asiaToAmericas.innerText = "-"}
-        if(getValue(asiaToAsia)){mod_asiaToAsia.innerText = "\u2705"} else {mod_asiaToAsia.innerText = "-"}
-        if(getValue(asiaToEurope)){mod_asiaToEurope.innerText = "\u2705"} else {mod_asiaToEurope.innerText = "-"}
-        if(getValue(asiaToOceania)){mod_asiaToOceania.innerText = "\u2705"} else {mod_asiaToOceania.innerText = "-"}   
-        if(getValue(europeToAfrica)){mod_europeToAfrica.innerText = "\u2705"} else {mod_europeToAfrica.innerText = "-"}   
-        if(getValue(europeToAmericas)){mod_europeToAmericas.innerText = "\u2705"} else {mod_europeToAmericas.innerText = "-"}   
-        if(getValue(europeToAsia)){mod_europeToAsia.innerText = "\u2705"} else {mod_europeToAsia.innerText = "-"}   
-        if(getValue(europeToEurope)){mod_europeToEurope.innerText = "\u2705"} else {mod_europeToEurope.innerText = "-"}   
-        if(getValue(europeToOceania)){mod_europeToOceania.innerText = "\u2705"} else {mod_europeToOceania.innerText = "-"}   
-        if(getValue(oceaniaToAfrica)){mod_oceaniaToAfrica.innerText = "\u2705"} else {mod_oceaniaToAfrica.innerText = "-"}   
-        if(getValue(oceaniaToAmericas)){mod_oceaniaToAmericas.innerText = "\u2705"} else {mod_oceaniaToAmericas.innerText = "-"}   
-        if(getValue(oceaniaToAsia)){mod_oceaniaToAsia.innerText = "\u2705"} else {mod_oceaniaToAsia.innerText = "-"}
-        if(getValue(oceaniaToEurope)){mod_oceaniaToEurope.innerText = "\u2705"} else {mod_oceaniaToEurope.innerText = "-"}
-        if(getValue(oceaniaToOceania)){mod_oceaniaToOceania.innerText = "\u2705"} else {mod_oceaniaToOceania.innerText = "-"}
+        if(getValue(africaToAfrica)){mod_africaToAfrica.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_africaToAfrica.innerText = "-"}
+        if(getValue(africaToAmericas)){mod_africaToAmericas.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_africaToAmericas.innerText = "-"}
+        if(getValue(africaToAsia)){mod_africaToAsia.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_africaToAsia.innerText = "-"}
+        if(getValue(africaToEurope)){mod_africaToEurope.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_africaToEurope.innerText = "-"}
+        if(getValue(africaToOceania)){mod_africaToOceania.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_africaToOceania.innerText = "-"}
+        if(getValue(americasToAfrica)){mod_americasToAfrica.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_americasToAfrica.innerText = "-"}
+        if(getValue(americasToAmericas)){mod_americasToAmericas.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_americasToAmericas.innerText = "-"}
+        if(getValue(americasToAsia)){mod_americasToAsia.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_americasToAsia.innerText = "-"}
+        if(getValue(americasToEurope)){mod_americasToEurope.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_americasToEurope.innerText = "-"}
+        if(getValue(americasToOceania)){mod_americasToOceania.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_americasToOceania.innerText = "-"}
+        if(getValue(asiaToAfrica)){mod_asiaToAfrica.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_asiaToAfrica.innerText = "-"}
+        if(getValue(asiaToAmericas)){mod_asiaToAmericas.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_asiaToAmericas.innerText = "-"}
+        if(getValue(asiaToAsia)){mod_asiaToAsia.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_asiaToAsia.innerText = "-"}
+        if(getValue(asiaToEurope)){mod_asiaToEurope.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_asiaToEurope.innerText = "-"}
+        if(getValue(asiaToOceania)){mod_asiaToOceania.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_asiaToOceania.innerText = "-"}   
+        if(getValue(europeToAfrica)){mod_europeToAfrica.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_europeToAfrica.innerText = "-"}   
+        if(getValue(europeToAmericas)){mod_europeToAmericas.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_europeToAmericas.innerText = "-"}   
+        if(getValue(europeToAsia)){mod_europeToAsia.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_europeToAsia.innerText = "-"}   
+        if(getValue(europeToEurope)){mod_europeToEurope.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_europeToEurope.innerText = "-"}   
+        if(getValue(europeToOceania)){mod_europeToOceania.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_europeToOceania.innerText = "-"}   
+        if(getValue(oceaniaToAfrica)){mod_oceaniaToAfrica.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_oceaniaToAfrica.innerText = "-"}   
+        if(getValue(oceaniaToAmericas)){mod_oceaniaToAmericas.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_oceaniaToAmericas.innerText = "-"}   
+        if(getValue(oceaniaToAsia)){mod_oceaniaToAsia.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_oceaniaToAsia.innerText = "-"}
+        if(getValue(oceaniaToEurope)){mod_oceaniaToEurope.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_oceaniaToEurope.innerText = "-"}
+        if(getValue(oceaniaToOceania)){mod_oceaniaToOceania.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_oceaniaToOceania.innerText = "-"}
         if(getValue(segmentA)) {mod_existingCustomerSegment.innerText = "A-customer"} else if (getValue(segmentB)) {mod_existingCustomerSegment.innerText = "B-customer"} else if (getValue(segmentC)) {mod_existingCustomerSegment.innerText = "C-customer"} else {mod_existingCustomerSegment.innerText = "-"}
         if(getValue(additionalComment)) {mod_additionalComment.innerText = getValue(additionalComment)} else {mod_additionalComment.innerText = "-"}
         if(getValue(potential)) {mod_potential.innerText = getValue(potential)} else {mod_potential.innerText = "-"}
@@ -1112,3 +1112,8 @@ const bootsrapValidation = function () {
 
 mod_submitBtn.addEventListener("click", bootsrapValidation())
 
+// ---- ---- Bootstrap / Popper popover initialization
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+  return new bootstrap.Tooltip(tooltipTriggerEl)
+})
