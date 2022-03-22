@@ -12,7 +12,8 @@
 </head>
 <body>
     <%- include("partials/navbar.ejs") %>
-    <h1 class="text-center mt-5"><% if (preadviseTender) { %>Convert the preadvised tender in a registered tender<% } else { %> Register a tender to be launched<% } %></h1>
+    <a href="/register/start" class="btn btn-secondary btn-sm d-inline-block z-index-1 position-relatisve top-0 start-0 mt-3 ms-3"><i class="bi bi-arrow-left-circle me-2"></i>Abort</a>
+    <h1 class="text-center mt-2"><% if (preadviseTender) { %>Convert the preadvised tender in a registered tender<% } else { %> Register a tender to be launched<% } %></h1>
     <div class="container">
         <p class="lead mt-5 mb-2">
             Dear Account Owner,<br>
@@ -47,11 +48,11 @@
                 <div class="row justify-content-md-center mb-3">
                     <div class="col-12">
                         <h2>Location & handling of the tender registration</h2>
-                        <p>For a more efficient handling of this tender, select your location.</p>
                     </div>
                 </div>
                 <div class="row justify-content-md-center mb-5">
                     <div class="col-12">
+                        <label class="form-label" for="countryLocation">For a more efficient handling of this tender, select your location.<% if (preadviseTender) { %><span class="badge align-top bg-secondary bg-opacity-75 fw-normal fs-7 ms-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Data provided in preadvise"><% for (let country of countriesData) { if (country.cca2 === preadviseTender.countryLocation) {%><%= country.name.common %> <%=country.flag%><% } } %></span><% } %></label>
                         <div class="input-group has-validation">
                             <select class="form-select" id="countryLocation" name="countryLocation" required>
                                 <option selected disabled value="">Choose...</option>
@@ -76,16 +77,20 @@
                         <label class="form-label" for="isPreadvised">Was the tender announced prior to launch?</label>
                         <div class="input-group has-validation">
                             <select class="form-select" id="isPreadvised" name="isPreadvised" required>
-                                <option <% if (!preadviseTender) { %>selected<% } %> disabled value="">Choose...</option>
-                                <option value="yes" <% if (preadviseTender) { %>selected<% } %> >Yes</option>
-                                <option value="no" <% if (preadviseTender) { %>disabled<% } %>>No</option>
+                                <% if (!preadviseTender) { %>
+                                    <option selected disabled value="">Choose...</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                <% } else { %>
+                                    <option value="yes" selected>Yes</option>
+                                <% } %>
                             </select>
                             <div class="invalid-feedback">Please make a selection.</div>
                         </div>
                     </div>
                     <div class="col-12 mb-3" id="opt_preadviseID">
                         <div>
-                            <label class="form-label" for="preadviseID">What is the tender pre-advise ID?</label>
+                            <label class="form-label" for="preadviseID">What is the tender pre-advise ID?<% if (preadviseTender) { %><span class="badge align-top bg-secondary bg-opacity-75 fw-normal font-monospace ms-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Data provided in preadvise"><%= preadviseTender.id %></span><% } %></label>
                             <input class="form-control" type="text" id="preadviseID" name="preadviseID"  <% if (preadviseTender) { %>value="<%= preadviseTender.id %>" readonly<% } else { %>required<% } %> >
                             <div class="form-text">Enter the tender pre-advise ID received by email when you pre-advised the tender.</div>
                             <div class="invalid-feedback">Please fill this field.</div>
@@ -102,13 +107,13 @@
                                 <p>Complete the details about your customer / prospect</p>
                             </div>
                             <div class="col-12 mb-3">
-                                <label class="form-label" for="companyName">Company Name (Customer)</label>
+                                <label class="form-label" for="companyName">Company Name (Customer)<% if (preadviseTender) { %><span class="badge align-top bg-secondary bg-opacity-75 fw-normal ms-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Data provided in preadvise"><%= preadviseTender.companyName %></span><% } %></label>
                                 <input class="form-control" type="text" id="companyName" name="companyName" <% if (preadviseTender) { %>value="<%= preadviseTender.companyName %>"<% } %> required>
                                 <div class="form-text">Enter the "group company name" of your customer / prospect.</div>
                                 <div class="invalid-feedback">Please fill this field.</div>
                             </div>
                             <div class="col-12 mb-3">
-                                <label class="form-label" for="sugarID">Sugar ID</label>
+                                <label class="form-label" for="sugarID">Sugar ID<% if (preadviseTender) { %><span class="badge align-top bg-secondary bg-opacity-75 fw-normal ms-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Data provided in preadvise"><%= preadviseTender.sugarID %></span><% } %></label>
                                 <input class="form-control" type="text" id="sugarID" name="sugarID" <% if (preadviseTender) { %>value="<%= preadviseTender.sugarID %>"<% } %> required>
                                 <div class="form-text">Only enter ONE correct "main" <i>Indent Number</i> from the Sugar CRM system:</div>
                                 <div class="invalid-feedback">Please fill this field.</div>
@@ -1341,7 +1346,8 @@
 </div>
 
 </div>
-    <%- include("partials/commonBootstrap.ejs") %>
-    <script src="/js/register_new.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+<%- include("partials/commonBootstrap.ejs") %>
+<script src="/js/register_new.js"></script>
 </body>
 </html>
