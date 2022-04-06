@@ -207,14 +207,20 @@ app.post("/preadvise/new", validatePreadvise, catchAsync(async function(req,res,
     console.log(`${colors.black.bgBrightGreen('* OK *')} A new TENDER PRE-ADVISE has been registered in the database: ${companyName}`)
     res.redirect(`/preadvise/${newEntry.id}`)
 
-        // let from = '"Tender registration" <appareil_en_ligne@outlook.com>'
-        // let subject = "Your tender has been pre-advised"
-        // let attachement = null
-        // let attachement = [{
-        //     filename: 'Jean-Marie.jpg',
-        //     path: 'public/data/dummyAttachements/jm.jpg'
-        // }]
-        // let emailBody = "<b>Hello world?</b><br><p>J'ai une rage incroyable</p>"
+
+    // let from = '"Tender registration" <appareil_en_ligne@outlook.com>'
+    // let selectedEmail = "TESTrecipientemail@outlook.com" // Enter the recipient email here
+    // let subject = "Your tender has been preadvised"
+    // let attachement = null
+    // // let attachement = [{
+    // //     filename: 'Jean-Marie.jpg',
+    // //     path: 'public/data/dummyAttachements/jm.jpg'
+    // // }]
+    // let emailBody = await ejs.renderFile("./emails/preadviseConfirm.ejs", {
+    //     userName: "Jean-Marie", // Enter the user name here
+    //     companyName: companyName, // Enter the company name here, it should be gathered from the form
+    //     preadviseId: newEntry.id // Enter the preadvise ID here, it should be gathered after being saved in the database
+    // });
     
     // const send = async function () {
 
@@ -224,7 +230,7 @@ app.post("/preadvise/new", validatePreadvise, catchAsync(async function(req,res,
     //         secure: false, // true for 465, false for other ports
     //         auth: {
     //             user: "appareil_en_ligne@outlook.com", // generated ethereal user
-    //             pass: "XxXxXxXxXxXxXx", // generated ethereal password
+    //             pass: "XXXXXXXX", // generated ethereal password
     //         },
     //     });
 
@@ -238,7 +244,7 @@ app.post("/preadvise/new", validatePreadvise, catchAsync(async function(req,res,
 
     // }
 
-    // Nodemailer launch function - Uncomment below to enable to email launch.
+    // // Nodemailer launch function - Uncomment below to enable to email launch.
     // try {
     //     send()
     //     console.log(`An email with the information related to the TENDER PRE-ADVISE of the company ${companyName}, has been sent`)
