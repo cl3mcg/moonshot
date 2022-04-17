@@ -613,6 +613,53 @@ app.post("/register/new", validateRegister, async function (req, res) {
     console.log(newEntry)
     console.log(`${colors.black.bgBrightGreen('* OK *')} A new TENDER has been registered in the database: ${companyName}`)
     res.redirect("/register/start")
+
+//  let from = '"Tender registration" <appareil_en_ligne@outlook.com>'
+//     let selectedEmail = "TESTrecipientemail@outlook.com" // Enter the recipient email here
+//     let subject = "Your tender has been registered"
+//     let attachement = null
+//     // let attachement = [{
+//     //     filename: 'Jean-Marie.jpg',
+//     //     path: 'public/data/dummyAttachements/jm.jpg'
+//     // }]
+//     let emailBody = await ejs.renderFile("./emails/registerConfirm.ejs", {
+//         userName: "Jean-Marie", // Enter the user name here
+//         companyName: companyName, // Enter the company name here, it should be gathered from the form
+//         registerId: newEntry.id, // Enter the registered ID here, it should be gathered after being saved in the database
+//         isPreadvised: isPreadvised
+//     });
+    
+//     const send = async function () {
+
+//         let transporter = nodemailer.createTransport({
+//             host: "smtp.office365.com",
+//             port: 587,
+//             secure: false, // true for 465, false for other ports
+//             auth: {
+//                 user: "appareil_en_ligne@outlook.com", // generated ethereal user
+//                 pass: "XXXXXXXX", // generated ethereal password
+//             },
+//         });
+
+//         let info = await transporter.sendMail({
+//             from: from, // sender address
+//             to: selectedEmail, // list of receivers
+//             subject: subject, // Subject line
+//             html: emailBody, // html body
+//             attachments: attachement
+//         });
+
+//     }
+
+//     // Nodemailer launch function - Uncomment below to enable to email launch.
+//     try {
+//         send()
+//         console.log(`An email with the information related to the TENDER REGISTRATION of the company ${companyName}, has been sent`)
+//     } catch (error) {
+//         console.log(error)
+//         res.send("ERROR ! Check console...")
+//     }
+
 })
 
 app.get("/register/index", catchAsync(async function (req, res){
