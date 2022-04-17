@@ -75,26 +75,26 @@ const registeredTenderSchema = new Schema({
     },
     deadlineRFI: {
         type: Date,
-        min: "2021-10-01",
+        min: "2021-01-01",
     },
     receptionDate: {
         type: Date,
-        min: "2021-10-01",
+        min: "2021-01-01",
         required: true
     },
     deadlineRFQ: {
         type: Date,
-        min: "2021-10-01",
+        min: "2021-01-01",
         required: true
     },
     decisionDate: {
         type: Date,
-        min: "2021-10-01",
+        min: "2021-01-01",
         required: true
     },
     startBusinessDate: {
         type: Date,
-        min: "2021-10-01",
+        min: "2021-01-01",
         required: true
     },
     keyTradelanes: {

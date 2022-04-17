@@ -8,7 +8,7 @@ const preAdvisedTenderSchema = new Schema({
     },
     lastModifiedDate: {
         type: Date,
-        min: "2021-10-01"
+        min: "2021-01-01"
     },
     launched: {
         type: Boolean,
@@ -16,7 +16,7 @@ const preAdvisedTenderSchema = new Schema({
     },
     launchedTime: {
         type: Date,
-        min: "2021-10-01"
+        min: "2021-01-01"
     },
     countryLocation: {
         type: String,
@@ -29,7 +29,7 @@ const preAdvisedTenderSchema = new Schema({
     sugarID: String,
     expectedReceiveDate: {
         type: Date,
-        min: "2021-10-01",
+        min: "2021-01-01",
         required: true
     },
     transportMode: {
