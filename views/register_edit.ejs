@@ -12,7 +12,8 @@
 </head>
 <body>
     <%- include("partials/navbar.ejs") %>
-    <h1 class="text-center mt-5">Edit a registered tender</h1>
+    <button class="btn btn-secondary btn-sm d-inline-block z-index-1 position-relative top-0 start-0 mt-3 ms-3" data-bs-toggle="modal" data-bs-target="#abortConfirmModal"><i class="bi bi-arrow-left-circle me-2"></i>Abort</button>
+    <h1 class="text-center mt-5">Edit the registered tender data of <i><%= matchingTender.companyName %></i></h1>
     <div class="container">
         <p class="lead mt-5 mb-2">
             Dear Account Owner,<br>
@@ -1400,8 +1401,28 @@
         </div>
     </div>
 </div>
-
 </div>
+<!-- Modal -->
+<div class="modal fade" id="abortConfirmModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-fullscreen-md-down modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="abortConfirmModalLabel"><i class="twa twa-warning me-2"></i>Warning</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-danger" role="alert">
+              <strong>Are you sure you want to stop editing the registration of the tender related to <i><%= matchingTender.companyName %></i> ?</strong><br>
+              All of the edits and documents uploaded (if any) so far will be not be taken in consideration.
+          </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary position-relative top-50 start-0" id="mod_returnBtn" data-bs-dismiss="modal"><i class="bi bi-arrow-left-circle me-2"></i>Cancel</button>
+            <a href="/register/<%= matchingTender.id %>" class="btn btn-outline-danger border-danger"><i class="bi bi-x-circle-fill me-2"></i>Abort</a>
+        </div>
+      </div>
+    </div>
+  </div>
     <%- include("partials/commonBootstrap.ejs") %>
     <script src="/js/register_edit.js"></script>
 </body>

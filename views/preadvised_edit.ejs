@@ -12,8 +12,9 @@
 </head>
 <body>
     <%- include("partials/navbar.ejs") %>
-<div class="container mt-5">
-    <h1 class="text-center">Edit Preadvised tender data of <%= matchingTender.companyName %></h1>
+<button class="btn btn-secondary btn-sm d-inline-block z-index-1 position-relative top-0 start-0 mt-3 ms-3" data-bs-toggle="modal" data-bs-target="#abortConfirmModal"><i class="bi bi-arrow-left-circle me-2"></i>Abort</button>
+<div class="container mt-2">
+    <h1 class="text-center">Edit Preadvised tender data of <i><%= matchingTender.companyName %></i></h1>
     <p class="lead my-5">Dear Account Owner,<br>
         The professional handling of a tender is a comprehensive task for our organization that involves substantial company resources. <br>
         Please use the form below to update the information related to the preadvised tender. <br>
@@ -420,6 +421,27 @@
         </div>
 
 </div>
+<!-- Modal -->
+<div class="modal fade" id="abortConfirmModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-fullscreen-md-down modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="abortConfirmModalLabel"><i class="twa twa-warning me-2"></i>Warning</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-danger" role="alert">
+              <strong>Are you sure you want to stop editing the preadvise of the tender related to <i><%= matchingTender.companyName %></i> ?</strong><br>
+              All of the edits provided so far will be not be taken in consideration.
+          </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary position-relative top-50 start-0" id="mod_returnBtn" data-bs-dismiss="modal"><i class="bi bi-arrow-left-circle me-2"></i>Cancel</button>
+            <a href="/preadvise/<%= matchingTender.id %>" class="btn btn-outline-danger border-danger"><i class="bi bi-x-circle-fill me-2"></i>Abort</a>
+        </div>
+      </div>
+    </div>
+  </div>
     <%- include("partials/commonBootstrap.ejs") %>
     <script src="/js/preadvised_edit.js"></script>
 </body>

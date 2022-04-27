@@ -18,9 +18,7 @@
       <p><a class="btn btn-light btn-sm border" href="/register/index"><i class="bi bi-arrow-left-circle me-1"></i>Back</a></p>
     </div>
     <div class="col d-flex justify-content-end">
-      <a class="btn btn-outline-success btn-sm border-success me-1 disabled" href=""><i class="bi bi-send-check me-1"></i>Feedback</a>
-      <a class="btn btn-light btn-sm border me-3" href="/register/edit/<%= matchingTender.id %>"><i class="bi bi-pencil-square me-1"></i>Edit</a>
-      <button class="btn btn-outline-danger btn-sm border-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal"><i class="bi bi-trash me-1"></i>Delete</button>
+      <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="bi bi-gear me-1"></i>Options</button>
     </div>
   </div>
     <div class="container mb-3">
@@ -127,7 +125,7 @@
               </tr>
               <tr>
                 <th scope="row">Special Handling</th>
-                <td> <% if (!matchingTender.specialHandling) { %>None<% } else { for (i=0; i < matchingTender.specialHandling.length; i++) { if (i!==matchingTender.specialHandling.length -1){%><%=`${specialHandling[matchingTender.specialHandling[i]]}`%><br><% } else { %><%=`${specialHandling[matchingTender.specialHandling[i]]}`%><%} } }%></td>
+                <td> <% if (!matchingTender.specialHandling || matchingTender.specialHandling.includes(null)) { %>None<% } else { for (i=0; i < matchingTender.specialHandling.length; i++) { if (i!==matchingTender.specialHandling.length -1){%><%=`${specialHandling[matchingTender.specialHandling[i]]}`%><br><% } else { %><%=`${specialHandling[matchingTender.specialHandling[i]]}`%><%} } }%></td>
               </tr>
               <tr>
                 <th scope="row">Bidding restrictions</th>
@@ -269,7 +267,7 @@
               </tr>
               <tr>
                 <th scope="row">Additional comments</th>
-                <td><% if (!matchingTender.additionalComment) {%><i class="twa twa-warning me-2"></i>No comments added<%} else { %>matchingTender.additionalComment<% } %></td>
+                <td><% if (!matchingTender.additionalComment) {%><i class="twa twa-warning me-2"></i>No comments added<%} else { %><%= matchingTender.additionalComment %><% } %></td>
               </tr>
             </tbody>
           </table>
@@ -297,11 +295,56 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-secondary position-relative top-50 start-0" id="mod_returnBtn" data-bs-dismiss="modal"><i class="bi bi-arrow-left-circle me-2"></i>Cancel</button>
-        <form method="POST" action="/preadvise/<%= matchingTender.id %>?_method=DELETE">
+        <form method="POST" action="/register/<%= matchingTender.id %>?_method=DELETE">
           <button class="btn btn-outline-danger border-danger"><i class="bi bi-trash me-2"></i>Delete</button>
         </form>
       </div>
     </div>
+  </div>
+</div>
+<!-- OFF-CANVAS MODAL below -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+  <div class="offcanvas-header">
+      <h5 id="offcanvasRightLabel">More actions</h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+      <div class="row mt-3">
+          <div class="col col-12">
+              <div class="rounded-3 border p-3 sticky-lg-top">
+                  <nav class="nav flex-column">
+                      <h5 class="text-center">Modify & delete</h5>
+                      <a class="btn btn-light btn-block btn-sm border m-1" href="/register/edit/<%= matchingTender.id %>"><i class="bi bi-pencil-square me-1"></i>Edit</a>
+                      <button class="btn btn-outline-danger btn-block btn-sm border-danger m-1" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal"><i class="bi bi-trash me-1"></i>Delete</button>
+                  </nav>
+              </div>
+              <div class="rounded-3 border my-3 p-3 sticky-lg-top">
+                <nav class="nav flex-column">
+                    <h5 class="text-center">Feedback</h5>
+                    <a class="btn btn-outline-success btn-block btn-sm border-success m-1 <%if (!isDecisionDatePassed) {%>disabled<%}%>" href=""><i class="bi bi-send-check me-1"></i>Feedback</a>
+                </nav>
+              </div>
+              <%if (!isDecisionDatePassed) {%>
+                <div class="alert alert-warning d-flex align-items-center my-3 p-3" role="alert">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
+                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                  </svg>
+                  <div>
+                    <small>Feedback cannot be provided until the decision date (<% if (matchingTender.decisionDate.getDate() < 10) {%><%=`0${matchingTender.decisionDate.getDate()}`%><% } else { %><%=matchingTender.decisionDate.getDate()%><% } %>-<%=monthsData[matchingTender.decisionDate.getMonth() + 1]%>-<%=matchingTender.decisionDate.getFullYear() %>) is passed.</small>
+                  </div>
+                </div>
+              <%}%>
+              <hr>
+              <div class="rounded-3 border my-3 p-3 sticky-lg-top">
+                <nav class="nav flex-column">
+                    <h5 class="text-center">Tender team actions</h5>
+                    <h6 class="text-start mt-3">Tender team decision</h6>
+                    <a class="btn btn-outline-success btn-block btn-sm m-1"><i class="bi bi-check-circle-fill me-1"></i>Accept participation</a>
+                    <a class="btn btn-outline-danger btn-block btn-sm m-1"><i class="bi bi-x-circle-fill me-1"></i>Decline participation</a>
+                </nav>
+              </div>
+          </div>
+      </div>
   </div>
 </div>
     <%- include("partials/commonBootstrap.ejs") %>
