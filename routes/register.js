@@ -100,11 +100,7 @@ router.get("/start", function (req, res) {
   });
   
   router.post("/new", validateRegister, async function (req, res) {
-    console.log(
-      `${colors.black.bgBrightCyan(
-        "* ATTEMPT *"
-      )} A new TENDER REGISTRATION submit has been attempted`
-    );
+    console.log(`${colors.black.bgBrightCyan("* ATTEMPT *")} A new TENDER REGISTRATION submit has been attempted`);
     console.log(req.body);
     console.log(req.files);
   
@@ -340,6 +336,7 @@ router.get("/start", function (req, res) {
   
     console.log(newEntry);
     console.log(`${colors.black.bgBrightGreen("* OK *")} A new TENDER has been registered in the database: ${companyName}`);
+    req.flash("success", "Tender is successfully registered !");
     res.redirect("/register/start");
   
     // let from = "'Sender name' <sender@email.com>";
@@ -516,55 +513,61 @@ router.get("/start", function (req, res) {
       const today = new Date(d.getFullYear(), d.getMonth(), d.getDate());
       let matchingId = req.params.id;
       let matchingTender = await RegisteredTender.findById(matchingId);
-      let filesUploaded = await listFiles(matchingId);
-      if (!filesUploaded) {
-        filesUploaded = [];
+      if (!matchingTender) {
+        req.flash("error", "Tender with the given ID was not found.");
+        return res.redirect("/register/start");
+      } else {
+        let filesUploaded = await listFiles(matchingId);
+        if (!filesUploaded) {
+          filesUploaded = [];
+        }
+    
+        //Below is a  function that checks if the decision date is passed
+        //If the decision date is passed, the function returns true
+        //If the decision date is not passed, the feedback button is disabled on the "show" page
+        const decisionDate = new Date(matchingTender.decisionDate);
+        const isDecisionDatePassed = decisionDate < today;
+    
+        res.render("register_show.ejs", {
+          isDecisionDatePassed,
+          countriesData,
+          monthsData,
+          tradelanes,
+          transportModes,
+          transportScope,
+          bidRestrictions,
+          bidRequirements,
+          history,
+          specialHandling,
+          matchingTender,
+          filesUploaded,
+        });
       }
-  
-      //Below is a  function that checks if the decision date is passed
-      //If the decision date is passed, the function returns true
-      //If the decision date is not passed, the feedback button is disabled on the "show" page
-      const decisionDate = new Date(matchingTender.decisionDate);
-      const isDecisionDatePassed = decisionDate < today;
-  
-      res.render("register_show.ejs", {
-        isDecisionDatePassed,
-        countriesData,
-        monthsData,
-        tradelanes,
-        transportModes,
-        transportScope,
-        bidRestrictions,
-        bidRequirements,
-        history,
-        specialHandling,
-        matchingTender,
-        filesUploaded,
-      });
     })
   );
   
   router.get("/edit/:id",catchAsync(async function (req, res) {
       let matchingId = req.params.id;
       let matchingTender = await RegisteredTender.findById(matchingId);
-      let filesUploaded = await listFiles(matchingId);
-      res.render("register_edit.ejs", {
-        countriesData,
-        monthsData,
-        businessVerticals,
-        matchingTender,
-        filesUploaded,
-      });
+      if (!matchingTender) {
+        req.flash("error", "The tender with the given ID was not found.");
+        return res.redirect("/register/start");
+      } else {
+        let filesUploaded = await listFiles(matchingId);
+        res.render("register_edit.ejs", {
+          countriesData,
+          monthsData,
+          businessVerticals,
+          matchingTender,
+          filesUploaded,
+        });
+      }
     })
   );
   
   router.patch("/edit/:id",validateRegister,catchAsync(async function (req, res) {
       let matchingId = req.params.id;
-      console.log(
-        `${colors.black.bgBrightCyan(
-          "* ATTEMPT *"
-        )} A new TENDER REGISTRATION edit has been attempted`
-      );
+      console.log(`${colors.black.bgBrightCyan("* ATTEMPT *")} A new TENDER REGISTRATION edit has been attempted`);
       console.log(req.body);
       console.log(req.files);
   
@@ -854,6 +857,7 @@ router.get("/start", function (req, res) {
   
       console.log(updatedEntry);
       console.log(`${colors.black.bgBrightGreen("* OK *")} The TENDER data related to ${newCompanyName} has been updated in the database`);
+      req.flash("success", "Tender is successfully modified !");
       res.redirect("/register/start");
     })
   );
@@ -861,22 +865,28 @@ router.get("/start", function (req, res) {
   router.delete("/:id",catchAsync(async function (req, res) {
       let matchingId = req.params.id;
       let matchingTender = await RegisteredTender.findById(matchingId);
-      console.log(matchingTender);
-      let matchingTenderName = matchingTender.companyName;
-      console.log(`${colors.black.bgBrightCyan("* ATTEMPT *")} A TENDER REGISTRATION has been selected for deletion: ${matchingTenderName}`);
-      console.log(matchingTender);
-      await RegisteredTender.findByIdAndDelete(matchingId);
-      console.log(
-        `${colors.black.bgBrightGreen("* OK *")} The TENDER REGISTRATION related to "${matchingTenderName}" has been deleted`
-      );
-      if (matchingTender.documentUpload.length > 0) {
-        await fs.rmdir(`./uploads/${matchingId}`, { recursive: true }, (err) => {
-          if (err) {
-            throw err;
-          }
-          console.log(`${colors.black.bgBrightGreen("* OK *")} The TENDER REGISTRATION ATTACHEMENT FOLDER related to "${matchingTenderName}" has been deleted`);});
-      }
-      res.redirect("/register/start");
+      if (!matchingTender) {
+        req.flash("error", "The tender with the given ID was not found.");
+        res.redirect("/register/start");
+      } else {
+        console.log(matchingTender);
+        let matchingTenderName = matchingTender.companyName;
+        console.log(`${colors.black.bgBrightCyan("* ATTEMPT *")} A TENDER REGISTRATION has been selected for deletion: ${matchingTenderName}`);
+        console.log(matchingTender);
+        await RegisteredTender.findByIdAndDelete(matchingId);
+        console.log(
+          `${colors.black.bgBrightGreen("* OK *")} The TENDER REGISTRATION related to "${matchingTenderName}" has been deleted`
+        );
+        if (matchingTender.documentUpload.length > 0) {
+          await fs.rmdir(`./uploads/${matchingId}`, { recursive: true }, (err) => {
+            if (err) {
+              throw err;
+            }
+            console.log(`${colors.black.bgBrightGreen("* OK *")} The TENDER REGISTRATION ATTACHEMENT FOLDER related to "${matchingTenderName}" has been deleted`);});
+        }
+        req.flash("success", "Tender has been deleted !");
+        res.redirect("/register/start");
+    }
     })
   );
 

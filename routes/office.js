@@ -90,31 +90,40 @@ router.post("/new",validateOffice,catchAsync(async function (req, res) {
     });
     await newEntry.save();
     console.log(`${colors.black.bgBrightGreen("* OK *")} A new OFFICE has been registered in the database: ${companyName}`);
-    res.redirect(`/moonshot/office/${newEntry._id}`);
+    req.flash("success", "Office is successfully created !");
+    res.redirect(`/office/${newEntry._id}`);
   })
 );
 
 router.get("/:id",catchAsync(async function (req, res) {
     let matchingId = req.params.id;
     let matchingOffice = await Office.findById(matchingId);
-    // console.log(matchingOffice)
-    res.render("office_show.ejs", {
-      countriesData,
-      monthsData,
-      matchingOffice,
-    });
+    if (!matchingOffice) {
+      req.flash("error", "The office with the given ID was not found.");
+      res.redirect("/office/start");
+    } else {
+      res.render("office_show.ejs", {
+        countriesData,
+        monthsData,
+        matchingOffice,
+      });
+    }
   })
 );
 
 router.get("/edit/:id",catchAsync(async function (req, res) {
     let matchingId = req.params.id;
     let matchingOffice = await Office.findById(matchingId);
-    // console.log(matchingOffice)
-    res.render("office_edit.ejs", {
-      countriesData,
-      monthsData,
-      matchingOffice,
-    });
+    if (!matchingOffice) {
+      req.flash("error", "The office with the given ID was not found.");
+      res.redirect("/office/start");
+    } else {
+      res.render("office_edit.ejs", {
+        countriesData,
+        monthsData,
+        matchingOffice,
+      });
+    }
   })
 );
 
@@ -146,7 +155,8 @@ router.patch("/edit/:id",validateOffice,catchAsync(async function (req, res) {
       lng: newLng,
     });
     console.log(`${colors.black.bgBrightGreen("* OK *")} The OFFICE data related to ${newCompanyName} has been UPDATED with the following data: ${updatedOffice}`);
-    res.redirect(`/moonshot/office/${matchingId}`);
+    req.flash("success", "Office is successfully modified !");
+    res.redirect(`/office/${matchingId}`);
   })
 );
 
@@ -157,7 +167,8 @@ router.delete("/:id",catchAsync(async function (req, res) {
     console.log(matchingOffice);
     await Office.findByIdAndDelete(matchingId);
     console.log("... and has been deleted.");
-    res.redirect("/moonshot/office/index");
+    req.flash("success", "Office has been deleted.");
+    res.redirect("/office/index");
   })
 );
 

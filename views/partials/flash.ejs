@@ -1,0 +1,55 @@
+<% if (success.length || error.length || warning.length || info.length) { %> 
+
+<div class="toast-container position-absolute bottom-0 end-0 mb-5 me-5">
+
+<% if (success && success.length) { %> 
+    <div role="alert" aria-live="assertive" aria-atomic="true" class="toast flashToast fade show rounded-3 border border-5 border-success border-top-0 border-end-0 border-bottom-0" data-autohide="false" data-bs-autohide="false">
+        <div class="toast-header bg-success bg-opacity-25">
+          <strong class="me-auto my-auto text-success h5"><i class="bi bi-check-circle-fill me-2"></i>Success</strong>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+          <%= success %> 
+        </div>
+      </div>
+<% } %>
+
+<% if (error && error.length) { %> 
+    <div role="alert" aria-live="assertive" aria-atomic="true" class="toast flashToast fade show rounded-3 border border-5 border-danger border-top-0 border-end-0 border-bottom-0" data-autohide="false" data-bs-autohide="false">
+        <div class="toast-header bg-danger bg-opacity-25">
+          <strong class="me-auto my-auto text-danger h5"><i class="bi bi bi-x-circle-fill me-2"></i>Error</strong>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+          <%= error %> 
+        </div>
+      </div>
+<% } %>
+
+<% if (warning && warning.length) { %> 
+    <div role="alert" aria-live="assertive" aria-atomic="true" class="toast flashToast fade show rounded-3 border border-5 border-warning border-top-0 border-end-0 border-bottom-0" data-autohide="false" data-bs-autohide="false">
+        <div class="toast-header bg-warning bg-opacity-25">
+          <strong class="me-auto my-auto text-warning h5"><i class="bi bi bi-exclamation-circle-fill me-2"></i>Warning !</strong>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+          <%= warning %> 
+        </div>
+      </div>
+<% } %>
+
+<% if (info && info.length) { %> 
+    <div role="alert" aria-live="assertive" aria-atomic="true" class="toast flashToast fade show rounded-3 border border-5 border-info border-top-0 border-end-0 border-bottom-0" data-autohide="false" data-bs-autohide="false">
+        <div class="toast-header bg-info bg-opacity-25">
+          <strong class="me-auto my-auto text-info h5"><i class="bi bi bi-info-circle-fill me-2"></i>Information</strong>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+          <%= info %> 
+        </div>
+      </div>
+<% } %>
+
+</div>
+
+<% } %>

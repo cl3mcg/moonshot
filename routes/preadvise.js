@@ -134,6 +134,7 @@ router.post("/new",validatePreadvise,catchAsync(async function (req, res, next) 
         "* OK *"
     )} A new TENDER PRE-ADVISE has been registered in the database: ${companyName}`
     );
+    req.flash("success", "Preadvise tender is successfully saved !");
     res.redirect(`/preadvise/${newEntry.id}`);
 
 //   let from = '"Tender registration" <appareil_en_ligne@outlook.com>';
@@ -304,19 +305,19 @@ router.get("/index",catchAsync(async function (req, res) {
     // console.log(`"preadvised_inEU" results are ${preadvised_inEU}`)
 
     res.render("preadvised_index.ejs", {
-    countriesData,
-    monthsData,
-    today,
-    next30days,
-    next90days,
-    allPreadvisedTenders,
-    preadvised_past,
-    preadvised_inM,
-    preadvised_inQ,
-    preadvised_inY,
-    preadvised_inAM,
-    preadvised_inAP,
-    preadvised_inEU,
+        countriesData,
+        monthsData,
+        today,
+        next30days,
+        next90days,
+        allPreadvisedTenders,
+        preadvised_past,
+        preadvised_inM,
+        preadvised_inQ,
+        preadvised_inY,
+        preadvised_inAM,
+        preadvised_inAP,
+        preadvised_inEU,
     });
 })
 );
@@ -324,16 +325,19 @@ router.get("/index",catchAsync(async function (req, res) {
 router.get("/:id",catchAsync(async function (req, res) {
     let matchingId = req.params.id;
     let matchingTender = await PreadvisedTender.findById(matchingId);
-    // ----- For debugging purposes
-    // console.log(matchingTender)
-    res.render("preadvised_show.ejs", {
-    countriesData,
-    monthsData,
-    tradelanes,
-    transportModes,
-    history,
-    matchingTender,
-    });
+    if (!matchingTender) {
+        req.flash("error", "The preadvised tender with the given ID was not found.");
+        return res.redirect("/preadvise/start");
+    } else {
+        res.render("preadvised_show.ejs", {
+            countriesData,
+            monthsData,
+            tradelanes,
+            transportModes,
+            history,
+            matchingTender,
+        });
+    }
 })
 );
 
@@ -341,18 +345,11 @@ router.delete("/:id",catchAsync(async function (req, res) {
     let matchingId = req.params.id;
     let matchingTender = await PreadvisedTender.findById(matchingId);
     let matchingTenderName = matchingTender.companyName;
-    console.log(
-    `${colors.black.bgBrightCyan(
-        "* ATTEMPT *"
-    )} A TENDER PRE-ADVISE has been selected for deletion: ${matchingTenderName}`
-    );
+    console.log(`${colors.black.bgBrightCyan("* ATTEMPT *")} A TENDER PRE-ADVISE has been selected for deletion: ${matchingTenderName}`);
     console.log(matchingTender);
     await PreadvisedTender.findByIdAndDelete(matchingId);
-    console.log(
-    `${colors.black.bgBrightGreen(
-        "* OK *"
-    )} The TENDER PRE-ADVISE related to "${matchingTenderName}" has been deleted`
-    );
+    console.log(`${colors.black.bgBrightGreen("* OK *")} The TENDER PRE-ADVISE related to "${matchingTenderName}" has been deleted`);
+    req.flash("success", "Preadvise tender has been deleted !");
     res.redirect("/preadvise/start");
 })
 );
@@ -360,36 +357,37 @@ router.delete("/:id",catchAsync(async function (req, res) {
 router.get("/edit/:id",catchAsync(async function (req, res) {
     let matchingId = req.params.id;
     let matchingTender = await PreadvisedTender.findById(matchingId);
-    res.render("preadvised_edit.ejs", {
-    countriesData,
-    monthsData,
-    matchingTender,
-    });
+    if (!matchingTender) {
+        req.flash("error", "The preadvised tender with the given ID was not found.");
+        return res.redirect("/preadvise/start");
+    } else {
+        res.render("preadvised_edit.ejs", {
+            countriesData,
+            monthsData,
+            matchingTender,
+        });
+    }
 })
 );
 
 router.get("/launch/:id",catchAsync(async function (req, res) {
     let matchingId = req.params.id;
     let preadviseTender = await PreadvisedTender.findById(matchingId);
-    res.render("register_new.ejs", {
-    countriesData,
-    businessVerticals,
-    preadviseTender,
-    });
+    if (!preadviseTender) {
+        req.flash("error", "The preadvised tender with the given ID was not found.");
+        return res.redirect("/preadvise/start");
+    } else {
+        res.render("register_new.ejs", {
+            countriesData,
+            businessVerticals,
+            preadviseTender,
+        });
+    }
 })
 );
 
-router.patch("/edit/:id",
-validatePreadvise,
-catchAsync(async function (req, res) {
-    console.log(
-    `${colors.black.bgBrightCyan(
-        "* ATTEMPT *"
-    )} A TENDER PRE-ADVISE has been selected for update: ${
-        req.body.companyName
-    }`
-    );
-
+router.patch("/edit/:id",validatePreadvise, catchAsync(async function (req, res) {
+    console.log(`${colors.black.bgBrightCyan("* ATTEMPT *")} A TENDER PRE-ADVISE has been selected for update: ${req.body.companyName}`);
     let matchingId = req.params.id;
     let newCompanyName = req.body.companyName;
     let newSugarID = req.body.sugarID;
@@ -460,6 +458,7 @@ catchAsync(async function (req, res) {
     countryLocation: newCountryLocation,
     });
     console.log(`${colors.black.bgBrightGreen("* OK *")} The TENDER PRE-ADVISE related to "${newCompanyName}" has been updated`);
+    req.flash("success", "Preadvise tender is successfully modified !");
     res.redirect(`/preadvise/${matchingId}`);
 })
 );

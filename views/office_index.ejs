@@ -10,12 +10,13 @@
 </head>
 <body>
     <%- include("partials/navbar.ejs") %>
+    <%- include("partials/flash.ejs") %>
 <div class="container">
     <h1>Offices</h1>
-    <a href="/moonshot/office/new">Register a new office</a>
+    <a href="/office/new">Register a new office</a>
 
     <ul>
-        <% for (let office of allOffices) { %> <li><%= office.companyName %> - <%= office.address_city %>, <%= office.address_cca2 %> | <a href="/moonshot/office/<%= office._id %> ">Data</a></li><% } %>
+        <% for (let office of allOffices) { %> <li><%= office.companyName %> - <%= office.address_city %>, <%= office.address_cca2 %> | <a href="/office/<%= office._id %> ">Data</a></li><% } %>
     </ul>
 </div>
     <%- include("partials/commonBootstrap.ejs") %>

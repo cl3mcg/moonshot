@@ -12,6 +12,7 @@
 </head>
 <body>
     <%- include("partials/navbar.ejs") %>
+    <%- include("partials/flash.ejs") %>
     <div class="container mt-5">
         <h1 class="text-center">Edit <% matchingOffice.companyName %> office data</h1>
         <!-- <p class="lead my-5">Dear Tender Team member,<br>
@@ -19,7 +20,7 @@
             Please Use the form below to register a new office in the database to include it in the tender launch process.<br>
             Thank you!</p> -->
         <div class="container mb-5 p-4 border rounded-3">
-            <form class="mb-5 needs-validation" id="newofficeForm" method="post" action="/moonshot/office/edit/<%= matchingOffice.id %>?_method=PATCH" novalidate>
+            <form class="mb-5 needs-validation" id="newofficeForm" method="post" action="/office/edit/<%= matchingOffice.id %>?_method=PATCH" novalidate>
                 <div class="row justify-content-md-center">
                     <div class="col-12">
                         <h2>Area handled by the office</h2>

@@ -8,6 +8,8 @@ const path = require("path");
 const ejsMate = require("ejs-mate");
 const methodOverride = require("method-override");
 const mongoose = require("mongoose");
+const session = require("express-session");
+const flash = require("connect-flash");
 const nodemailer = require("nodemailer");
 const Excel = require("exceljs");
 const PDFDocument = require("pdf-lib").PDFDocument;
@@ -51,61 +53,84 @@ app.set("view engine", "ejs");
 app.engine("ejs", ejsMate);
 app.use(fileUpload({ createParentPath: true }));
 
+// ----- Session & Flash middleware
+const sessionConfig = {
+  secret: "placeholder",
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+      httpOnly: true,
+      expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+      maxAge: 1000 * 60 * 60 * 24 * 7
+  }
+}
+app.use(session(sessionConfig))
+
+app.use(flash())
+
+app.use(function (req, res, next) {
+  res.locals.success = req.flash("success")
+  res.locals.warning = req.flash("warning")
+  res.locals.error = req.flash("error")
+  res.locals.info = req.flash("info")
+  next()
+})
+
 // ----- catchAsync middleware used to handle Async functions errors
 const catchAsync = require("./utilities/catchAsync.js");
 
 // ----- validatePreadvise middleware used with JOI to validate new preavised tenders according to JOI schema
-const validatePreadvise = function (req, res, next) {
-  const result = preadviseSchema.validate(req.body);
-  if (result.error) {
-    console.log(`${colors.brightYellow.bgBrightRed("*!* WARNING *!*")} JOI validation failed - validatePreadvise`);
-    const errorMsg = result.error.details
-      .map(function (element) {
-        return element.message;
-      })
-      .join(",");
-    throw new ExpressError(errorMsg, 400);
-  } else {
-    console.log(`${colors.black.bgBrightGreen("* OK *")} JOI validation passed - validatePreadvise`);
-    next();
-  }
-};
+// const validatePreadvise = function (req, res, next) {
+//   const result = preadviseSchema.validate(req.body);
+//   if (result.error) {
+//     console.log(`${colors.brightYellow.bgBrightRed("*!* WARNING *!*")} JOI validation failed - validatePreadvise`);
+//     const errorMsg = result.error.details
+//       .map(function (element) {
+//         return element.message;
+//       })
+//       .join(",");
+//     throw new ExpressError(errorMsg, 400);
+//   } else {
+//     console.log(`${colors.black.bgBrightGreen("* OK *")} JOI validation passed - validatePreadvise`);
+//     next();
+//   }
+// };
 
-const validateRegister = function (req, res, next) {
-  const result = registerSchema.validate(req.body);
-  if (result.error) {
-    console.log(
-      `${colors.brightYellow.bgBrightRed("*!* WARNING *!*")} JOI validation failed - validateRegister`);
-    const errorMsg = result.error.details
-      .map(function (element) {
-        return element.message;
-      })
-      .join(",");
-    throw new ExpressError(errorMsg, 400);
-  } else {
-    console.log(
-      `${colors.black.bgBrightGreen("* OK *")} JOI validation passed - validateRegister`);
-    next();
-  }
-};
+// const validateRegister = function (req, res, next) {
+//   const result = registerSchema.validate(req.body);
+//   if (result.error) {
+//     console.log(
+//       `${colors.brightYellow.bgBrightRed("*!* WARNING *!*")} JOI validation failed - validateRegister`);
+//     const errorMsg = result.error.details
+//       .map(function (element) {
+//         return element.message;
+//       })
+//       .join(",");
+//     throw new ExpressError(errorMsg, 400);
+//   } else {
+//     console.log(
+//       `${colors.black.bgBrightGreen("* OK *")} JOI validation passed - validateRegister`);
+//     next();
+//   }
+// };
 
-const validateOffice = function (req, res, next) {
-  const result = officeSchema.validate(req.body);
-  if (result.error) {
-    console.log(
-      `${colors.brightYellow.bgBrightRed("*!* WARNING *!*")} JOI validation failed - validateOffice`);
-    const errorMsg = result.error.details
-      .map(function (element) {
-        return element.message;
-      })
-      .join(",");
-    throw new ExpressError(errorMsg, 400);
-  } else {
-    console.log(
-      `${colors.black.bgBrightGreen("* OK *")} JOI validation passed - validateOffice`);
-    next();
-  }
-};
+// const validateOffice = function (req, res, next) {
+//   const result = officeSchema.validate(req.body);
+//   if (result.error) {
+//     console.log(
+//       `${colors.brightYellow.bgBrightRed("*!* WARNING *!*")} JOI validation failed - validateOffice`);
+//     const errorMsg = result.error.details
+//       .map(function (element) {
+//         return element.message;
+//       })
+//       .join(",");
+//     throw new ExpressError(errorMsg, 400);
+//   } else {
+//     console.log(
+//       `${colors.black.bgBrightGreen("* OK *")} JOI validation passed - validateOffice`);
+//     next();
+//   }
+// };
 
 // ----- Database connection
 mongoose
