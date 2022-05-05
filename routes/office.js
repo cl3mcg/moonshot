@@ -6,8 +6,10 @@ const Office = require("../models/office.js");
 
 // ----- Ressources required
 
+const ejs = require("ejs");
 const colors = require("colors");
 const { officeSchema } = require("../utilities/joiSchemas.js");
+const nodemailer = require("nodemailer");
 const countriesData = require("../public/ressources/countries.json");
 const monthsData = require("../public/ressources/months.json");
 const tradelanes = require("../public/ressources/tradelanes.json");

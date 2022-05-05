@@ -21,11 +21,6 @@
     <div class="col d-flex justify-content-end">
       <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="bi bi-gear me-1"></i>Options</button>
     </div>
-    <!-- <div class="col d-flex justify-content-end">
-      <a class="btn btn-disabled btn-outline-success btn-sm border-success me-1" href="/preadvise/launch/<%= matchingTender.id %>"><i class="bi bi-send-check me-1"></i>Launch</a>
-      <a class="btn btn-light btn-sm border me-3" href="/preadvise/edit/<%= matchingTender.id %>"><i class="bi bi-pencil-square me-1"></i>Edit</a>
-      <button class="btn btn-outline-danger btn-sm border-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal"><i class="bi bi-trash me-1"></i>Delete</button>
-    </div> -->
   </div>
     <div class="container mb-3">
     <h1><%= matchingTender.companyName %></h1>
@@ -128,6 +123,15 @@
                 <nav class="nav flex-column">
                     <h5 class="text-center">Launch the tender</h5>
                     <a class="btn btn-disabled btn-outline-success btn-sm border-success me-1" href="/preadvise/launch/<%= matchingTender.id %>"><i class="bi bi-send-check me-1"></i>Launch</a>
+                </nav>
+              </div>
+              <div class="rounded-3 border my-3 p-3 sticky-lg-top">
+                <nav class="nav flex-column">
+                    <h5 class="text-center">Issue pdf report</h5>
+                    <p>Send me a pdf report by email.</p>
+                    <form action="/preadvise/report/<%= matchingTender.id %>" method="post">
+                      <button class="btn btn-light btn-sm border w-100"><i class="bi bi-envelope-fill me-1"></i>Get a report</button>
+                    </form>
                 </nav>
               </div>
           </div>

@@ -27,6 +27,7 @@ const freightForwarders = require("../public/ressources/freightForwarders.json")
 // ----- catchAsync middleware used to handle Async functions errors
 
 const catchAsync = require("../utilities/catchAsync.js");
+const { testSenderName, testReceiverEmail, testSenderEmail, testSenderEmailPassword } = require('../secrets.js');
 
 // ----- validateRegister middleware used with JOI to validate new registered tenders according to JOI schema
 
@@ -339,49 +340,49 @@ router.get("/start", function (req, res) {
     req.flash("success", "Tender is successfully registered !");
     res.redirect("/register/start");
   
-    // let from = "'Sender name' <sender@email.com>";
-    // let selectedEmail = "recipient@email.com"; // Enter the recipient email here
-    // let subject = "Your tender has been registered";
-    // let attachement = null;
-    // // let attachement = [{
-    // //     filename: 'Jean-Marie.jpg',
-    // //     path: 'public/data/dummyAttachements/jm.jpg'
-    // // }]
-    // let emailBody = await ejs.renderFile("./emails/registerConfirm.ejs", {
-    //   userName: "Jean-Marie", // Enter the user name here
-    //   companyName: companyName, // Enter the company name here, it should be gathered from the form
-    //   registerId: newEntry.id, // Enter the registered ID here, it should be gathered after being saved in the database
-    //   isPreadvised: isPreadvised,
-    // });
+    let from = testSenderName;
+    let selectedEmail = testReceiverEmail; // Enter the recipient email here
+    let subject = "Your tender has been registered";
+    let attachement = null;
+    // let attachement = [{
+    //     filename: 'Jean-Marie.jpg',
+    //     path: 'public/data/dummyAttachements/jm.jpg'
+    // }]
+    let emailBody = await ejs.renderFile("./emails/registerConfirm.ejs", {
+      userName: "Jean-Marie", // Enter the user name here
+      companyName: companyName, // Enter the company name here, it should be gathered from the form
+      registerId: newEntry.id, // Enter the registered ID here, it should be gathered after being saved in the database
+      isPreadvised: isPreadvised,
+    });
   
-    // const send = async function () {
-    //   let transporter = nodemailer.createTransport({
-    //     host: "smtp.office365.com",
-    //     port: 587,
-    //     secure: false, // true for 465, false for other ports
-    //     auth: {
-    //       user: "emailusedforsending@email.com", // generated ethereal user
-    //       pass: "xxxemailPasswordxxx", // generated ethereal password
-    //     },
-    //   });
+    const send = async function () {
+      let transporter = nodemailer.createTransport({
+        host: "smtp.office365.com",
+        port: 587,
+        secure: false, // true for 465, false for other ports
+        auth: {
+          user: testSenderEmail, // generated ethereal user
+          pass: testSenderEmailPassword, // generated ethereal password
+        },
+      });
   
-    //   let info = await transporter.sendMail({
-    //     from: from, // sender address
-    //     to: selectedEmail, // list of receivers
-    //     subject: subject, // Subject line
-    //     html: emailBody, // html body
-    //     attachments: attachement,
-    //   });
-    // };
+      let info = await transporter.sendMail({
+        from: from, // sender address
+        to: selectedEmail, // list of receivers
+        subject: subject, // Subject line
+        html: emailBody, // html body
+        attachments: attachement,
+      });
+    };
   
-    // // Nodemailer launch function - Uncomment below to enable to email launch.
-    // // try {
-    // //   send();
-    // //   console.log(`An email with the information related to the TENDER REGISTRATION of the company ${companyName}, has been sent`);
-    // // } catch (error) {
-    // //   console.log(error);
-    // //   res.send("ERROR ! Check console...");
-    // // }
+    // Nodemailer launch function - Uncomment below to enable to email launch.
+    try {
+      send();
+      console.log(`An email with the information related to the TENDER REGISTRATION of the company ${companyName}, has been sent`);
+    } catch (error) {
+      console.log(error);
+      res.send("ERROR ! Check console...");
+    }
   });
   
   router.get("/index",catchAsync(async function (req, res) {

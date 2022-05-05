@@ -324,8 +324,19 @@
                     <h5 class="text-center">Feedback</h5>
                     <a class="btn btn-outline-success btn-block btn-sm border-success m-1 <%if (!isDecisionDatePassed) {%>disabled<%}%>" href=""><i class="bi bi-send-check me-1"></i>Feedback</a>
                 </nav>
+                <%if (!isDecisionDatePassed) {%>
+                  <div role="alert" aria-live="assertive" aria-atomic="true" class="toast fade show rounded-3 border border-5 border-primary border-top-0 border-end-0 border-bottom-0 w-100 mt-2" data-autohide="false" data-bs-autohide="false">
+                    <div class="toast-header bg-primary bg-opacity-25">
+                      <strong class="me-auto my-auto text-primary h6"><i class="bi bi bi-info-circle-fill me-2"></i>Information</strong>
+                      <!-- <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button> -->
+                    </div>
+                    <div class="toast-body">
+                      Feedback cannot be provided until the decision date (<% if (matchingTender.decisionDate.getDate() < 10) {%><%=`0${matchingTender.decisionDate.getDate()}`%><% } else { %><%=matchingTender.decisionDate.getDate()%><% } %>-<%=monthsData[matchingTender.decisionDate.getMonth() + 1]%>-<%=matchingTender.decisionDate.getFullYear() %>) is passed.
+                    </div>
+                  </div>
+                <%}%>
               </div>
-              <%if (!isDecisionDatePassed) {%>
+              <!-- <%if (!isDecisionDatePassed) {%>
                 <div class="alert alert-warning d-flex align-items-center my-3 p-3" role="alert">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
                     <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
@@ -334,7 +345,7 @@
                     <small>Feedback cannot be provided until the decision date (<% if (matchingTender.decisionDate.getDate() < 10) {%><%=`0${matchingTender.decisionDate.getDate()}`%><% } else { %><%=matchingTender.decisionDate.getDate()%><% } %>-<%=monthsData[matchingTender.decisionDate.getMonth() + 1]%>-<%=matchingTender.decisionDate.getFullYear() %>) is passed.</small>
                   </div>
                 </div>
-              <%}%>
+              <%}%> -->
               <hr>
               <div class="rounded-3 border my-3 p-3 sticky-lg-top">
                 <nav class="nav flex-column">
