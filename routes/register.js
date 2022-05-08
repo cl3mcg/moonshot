@@ -48,25 +48,10 @@ const validateRegister = function (req, res, next) {
   };
 
 // ----- Commonly used functions
-const currentDateAndTime = function () {
-    return new Date(Date.now());
-  };
-
-  const findCountryName = function (cca2) {
-    for (country of countriesData) {
-      if (country.cca2 === cca2) {
-        return country.name.common;
-      }
-    }
-  };
-
-  const findcca2 = function (countryName) {
-    for (country of countriesData) {
-      if (country.common.name === countryName) {
-        return country.cca2;
-      }
-    }
-  };
+// const currentDateAndTime = function () {
+//     return new Date(Date.now());
+//   };
+const currentDateAndTime = require("../utilities/commonFunctions.js");
 
   // ----- ----- The function below is used to retrieve the contents of a folder (typically the document upload folder)
   // ----- ----- the function listFiles() can be called (with await !! It's an async !!) and the result provided would be an array.

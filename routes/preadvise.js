@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router({ mergeParams: true });
 
-
 // ----- Database models
 const PreadvisedTender = require("../models/preadvisedTender.js");
 
@@ -51,9 +50,8 @@ const validatePreadvise = function (req, res, next) {
 const generatePreadviseReport = require("../utilities/generatePreadviseReport.js");
 
 // ----- Commonly used functions
-const currentDateAndTime = function () {
-    return new Date(Date.now());
-  };
+
+const currentDateAndTime = require("../utilities/commonFunctions.js");
 
 // ----- Routes MOONSHOT PREADVISED
 
