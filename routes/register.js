@@ -27,15 +27,7 @@ const freightForwarders = require("../public/ressources/freightForwarders.json")
 // ----- catchAsync middleware used to handle Async functions errors
 
 const catchAsync = require("../utilities/catchAsync.js");
-
-try {
-  const { testSenderName, testReceiverEmail, testSenderEmail, testSenderEmailPassword } = require('../secrets.js');
-} catch (error) {
-  if (error) {
-    const { testSenderName, testReceiverEmail, testSenderEmail, testSenderEmailPassword } = process.env.SECRETS
-  }
-}
-// const { testSenderName, testReceiverEmail, testSenderEmail, testSenderEmailPassword } = require('../secrets.js');
+const { testSenderName, testReceiverEmail, testSenderEmail, testSenderEmailPassword } = require('../secrets.js');
 
 // ----- validateRegister middleware used with JOI to validate new registered tenders according to JOI schema
 
