@@ -2,7 +2,6 @@
 const express = require("express");
 const app = express();
 const fs = require("fs").promises;
-const secrets = require("./secrets");
 const colors = require("colors");
 const ejs = require("ejs");
 const path = require("path");
