@@ -1,4 +1,6 @@
 const countriesData = require("../public/ressources/countries.json");
+const monthsData = require("../public/ressources/months.json");
+const daysData = require("../public/ressources/days.json");
 
 const findCountryName = function (cca2) {
     for (country of countriesData) {
@@ -7,6 +9,7 @@ const findCountryName = function (cca2) {
       }
     }
   };
+
   const findcca2 = function (countryName) {
     for (country of countriesData) {
       if (country.common.name === countryName) {
@@ -42,8 +45,24 @@ const findCountryName = function (cca2) {
     return new Date(Date.now());
   };
 
-module.exports = findCountryName
-module.exports = findcca2
-module.exports = findSubRegion
-module.exports = findResponsibleTenderOffice
-module.exports = currentDateAndTime
+  const formatDate = function (date) {
+    let weekDay = date.getDay();
+    weekDay = daysData[weekDay];
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    month = monthsData[month];
+    let year = date.getFullYear();
+    if (day < 10) {
+      day = "0" + day;
+    }
+    return `${day}-${month}-${year} (${weekDay}.)`;
+  }
+
+  module.exports = {
+    findCountryName,
+    findcca2,
+    findSubRegion,
+    findResponsibleTenderOffice,
+    currentDateAndTime,
+    formatDate
+  }
