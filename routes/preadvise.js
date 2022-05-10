@@ -24,11 +24,11 @@ const catchAsync = require("../utilities/catchAsync.js");
 // ----- Extended error class
 
 const ExpressError = require("../utilities/expressError.js");
-// const { testSenderName, testReceiverEmail, testSenderEmail, testSenderEmailPassword } = require('../secrets.js');
-const testSenderName = process.env.testSenderName
-const testReceiverEmail = process.env.testReceiverEmail
-const testSenderEmail = process.env.testSenderEmail
-const testSenderEmailPassword = process.env.testSenderEmailPassword
+const { testSenderName, testReceiverEmail, testSenderEmail, testSenderEmailPassword } = require('../secrets.js');
+// const testSenderName = process.env.testSenderName
+// const testReceiverEmail = process.env.testReceiverEmail
+// const testSenderEmail = process.env.testSenderEmail
+// const testSenderEmailPassword = process.env.testSenderEmailPassword
 
 // ----- validatePreadvise middleware used with JOI to validate new preavised tenders according to JOI schema
 
