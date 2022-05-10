@@ -27,11 +27,11 @@ const freightForwarders = require("../public/ressources/freightForwarders.json")
 // ----- catchAsync middleware used to handle Async functions errors
 
 const catchAsync = require("../utilities/catchAsync.js");
-// const { testSenderName, testReceiverEmail, testSenderEmail, testSenderEmailPassword } = require('../secrets.js');
-const testSenderName = process.env.testSenderName
-const testReceiverEmail = process.env.testReceiverEmail
-const testSenderEmail = process.env.testSenderEmail
-const testSenderEmailPassword = process.env.testSenderEmailPassword
+const { testSenderName, testReceiverEmail, testSenderEmail, testSenderEmailPassword } = require('../secrets.js');
+// const testSenderName = process.env.testSenderName
+// const testReceiverEmail = process.env.testReceiverEmail
+// const testSenderEmail = process.env.testSenderEmail
+// const testSenderEmailPassword = process.env.testSenderEmailPassword
 
 // ----- validateRegister middleware used with JOI to validate new registered tenders according to JOI schema
 
@@ -51,11 +51,23 @@ const validateRegister = function (req, res, next) {
     }
   };
 
+// ----- generateRegisterReport function used to generate the register pdf report
+
+const generateRegisterReport = require("../utilities/generateRegisterReport.js");
+
+
 // ----- Commonly used functions
 // const currentDateAndTime = function () {
 //     return new Date(Date.now());
 //   };
-const currentDateAndTime = require("../utilities/commonFunctions.js");
+const {
+  findCountryName,
+  findcca2,
+  findSubRegion,
+  findResponsibleTenderOffice,
+  currentDateAndTime,
+  formatDate
+} = require("../utilities/commonFunctions.js");
 
   // ----- ----- The function below is used to retrieve the contents of a folder (typically the document upload folder)
   // ----- ----- the function listFiles() can be called (with await !! It's an async !!) and the result provided would be an array.
@@ -329,14 +341,17 @@ router.get("/start", function (req, res) {
     req.flash("success", "Tender is successfully registered !");
     res.redirect("/register/start");
   
+    let fileIdentifier = Date.now();
+    await generateRegisterReport(newEntry.id, fileIdentifier);
+
     let from = testSenderName;
     let selectedEmail = testReceiverEmail; // Enter the recipient email here
     let subject = "Your tender has been registered";
-    let attachement = null;
-    // let attachement = [{
-    //     filename: 'Jean-Marie.jpg',
-    //     path: 'public/data/dummyAttachements/jm.jpg'
-    // }]
+    // let attachement = null;
+    let attachement = [{
+        filename: `Registration Report - ${newEntry.companyName} - ${fileIdentifier}.pdf`,
+        path: `./reports/reportsGenerated/${newEntry.companyName}_${fileIdentifier}.pdf`
+    }]
     let emailBody = await ejs.renderFile("./emails/registerConfirm.ejs", {
       userName: "Jean-Marie", // Enter the user name here
       companyName: companyName, // Enter the company name here, it should be gathered from the form
