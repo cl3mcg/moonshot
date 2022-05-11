@@ -58,11 +58,16 @@ const findCountryName = function (cca2) {
     return `${day}-${month}-${year} (${weekDay}.)`;
   }
 
+  const capitalize = function (string) {
+    return `${string.charAt(0).toUpperCase()}${string.slice(1)}`
+  }
+
   module.exports = {
     findCountryName,
     findcca2,
     findSubRegion,
     findResponsibleTenderOffice,
     currentDateAndTime,
-    formatDate
+    formatDate,
+    capitalize
   }

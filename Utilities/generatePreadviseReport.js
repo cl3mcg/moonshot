@@ -28,7 +28,7 @@ const generatePreadviseReport = async function (preadvisedId, fileIdentifier) {
     const pdfContent = await fs.readFile("./reports/templates/reportTemplate_preadvise.pdf");
     const pdfDoc = await PDFDocument.load(pdfContent);
     pdfDoc.registerFontkit(fontkit);
-    const fontBytes = await fs.readFile("./public/css/common/fonts/firaCode.ttf");
+    const fontBytes = await fs.readFile("./public/css/common/fonts/FiraMono-Regular.ttf");
     const customFont = await pdfDoc.embedFont(fontBytes);
     // const zapfDingbatsFont = await pdfDoc.embedFont(StandardFonts.ZapfDingbats)
     const form = pdfDoc.getForm()

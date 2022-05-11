@@ -9,12 +9,11 @@ const fontkit = require("@pdf-lib/fontkit")
 const countriesData = require("../public/ressources/countries.json");
 const daysData = require("../public/ressources/days.json");
 const monthsData = require("../public/ressources/months.json");
+const competitorAmountData = require("../public/ressources/competitorAmount.json");
+const volumeSplitData = require("../public/ressources/volumeSplit.json");
+const decisionCriteriaData = require("../public/ressources/decisionCriteria.json");
 
 // ----- Commonly used functions
-
-// const currentDateAndTime = require("./commonFunctions.js");
-// const findCountryName = require("./commonFunctions.js");
-// const formatDate = require("./commonFunctions.js");
 
 const {
     findCountryName,
@@ -22,20 +21,9 @@ const {
     findSubRegion,
     findResponsibleTenderOffice,
     currentDateAndTime,
-    formatDate
+    formatDate,
+    capitalize
   } = require("./commonFunctions.js");
-
-// const currentDateAndTime = function () {
-//     return new Date(Date.now());
-//   };
-
-//   const findCountryName = function (cca2) {
-//     for (country of countriesData) {
-//       if (country.cca2 === cca2) {
-//         return country.name.common;
-//       }
-//     }
-//   };
 
 // ----- Report generation functions
 
@@ -44,7 +32,7 @@ const generateRegisterReport = async function (registeredId, fileIdentifier) {
     const pdfContent = await fs.readFile("./reports/templates/reportTemplate_register.pdf");
     const pdfDoc = await PDFDocument.load(pdfContent);
     pdfDoc.registerFontkit(fontkit);
-    const fontBytes = await fs.readFile("./public/css/common/fonts/firaCode.ttf");
+    const fontBytes = await fs.readFile("./public/css/common/fonts/FiraMono-Regular.ttf");
     const customFont = await pdfDoc.embedFont(fontBytes);
     // const zapfDingbatsFont = await pdfDoc.embedFont(StandardFonts.ZapfDingbats)
     const form = pdfDoc.getForm()
@@ -108,7 +96,7 @@ const generateRegisterReport = async function (registeredId, fileIdentifier) {
     contactEmailField.setText(`${matchingTender.contactEmail}`)
     contactEmailField.updateAppearances(customFont)
     const decisionMakerField = form.getTextField("decisionMaker")
-    decisionMakerField.setText(`${matchingTender.decisionMaker}`)
+    decisionMakerField.setText(`${capitalize(matchingTender.decisionMaker)}`)
     decisionMakerField.updateAppearances(customFont)
     const tenderReceptionDateField = form.getTextField("receptionDate")
     tenderReceptionDateField.setText(`${formatDate(matchingTender.receptionDate)}`)
@@ -126,10 +114,10 @@ const generateRegisterReport = async function (registeredId, fileIdentifier) {
     startBusinessDateField.setText(`${formatDate(matchingTender.startBusinessDate)}`)
     startBusinessDateField.updateAppearances(customFont)
     const contractPeriodField = form.getTextField("contractPeriod")
-    contractPeriodField.setText(`${matchingTender.contractPeriod}`)
+    contractPeriodField.setText(`${matchingTender.contractPeriod} month(s)`)
     contractPeriodField.updateAppearances(customFont)
     const paymentTermsField = form.getTextField("paymentTerms")
-    paymentTermsField.setText(`${matchingTender.paymentTerms}`)
+    paymentTermsField.setText(`${matchingTender.paymentTerms*30} day(s)`)
     paymentTermsField.updateAppearances(customFont)
     if (matchingTender.transportMode.includes("hasAirFreight")) {
         form.getCheckBox("hasAirFreight").check()
@@ -144,14 +132,38 @@ const generateRegisterReport = async function (registeredId, fileIdentifier) {
         form.getCheckBox("hasRailFreight").check()
     }
     const airFreightVolumeField = form.getTextField("airFreightVolume")
-    airFreightVolumeField.setText(`${matchingTender.airFreightVolume.toLocaleString('en-US', { minimumFractionDigits: 2 })}`)
+    if (matchingTender.airFreightVolume) {
+        airFreightVolumeField.setText(`${matchingTender.airFreightVolume.toLocaleString('en-US', { minimumFractionDigits: 2 })}`)
+        airFreightVolumeField.updateAppearances(customFont)
+    } else {
+        airFreightVolumeField.setText("---")
+        airFreightVolumeField.updateAppearances(customFont)
+    }
     const seaFreightFCLVolumeField = form.getTextField("seaFreightFCLVolume")
-    seaFreightFCLVolumeField.setText(`${matchingTender.seaFreightFCLVolume.toLocaleString('en-US', { minimumFractionDigits: 2 })}`)
+    if (matchingTender.seaFreightFCLVolume) {
+        seaFreightFCLVolumeField.setText(`${matchingTender.seaFreightFCLVolume.toLocaleString('en-US', { minimumFractionDigits: 2 })}`)
+        seaFreightFCLVolumeField.updateAppearances(customFont)
+    } else {
+        seaFreightFCLVolumeField.setText("---")
+        seaFreightFCLVolumeField.updateAppearances(customFont)
+    }
     const seaFreightLCLVolumeField = form.getTextField("seaFreightLCLVolume")
-    seaFreightLCLVolumeField.setText(`${matchingTender.seaFreightLCLVolume.toLocaleString('en-US', { minimumFractionDigits: 2 })}`)
+    if (matchingTender.seaFreightLCLVolume) {
+        seaFreightLCLVolumeField.setText(`${matchingTender.seaFreightLCLVolume.toLocaleString('en-US', { minimumFractionDigits: 2 })}`)
+        seaFreightLCLVolumeField.updateAppearances(customFont)
+    } else {
+        seaFreightLCLVolumeField.setText("---")
+        seaFreightLCLVolumeField.updateAppearances(customFont)
+    }
     const railFreightVolumeField = form.getTextField("railFreightVolume")
-    railFreightVolumeField.setText(`${matchingTender.railFreightVolume.toLocaleString('en-US', { minimumFractionDigits: 2 })}`)
-
+    if (matchingTender.railFreightVolume) {
+        railFreightVolumeField.setText(`${matchingTender.railFreightVolume.toLocaleString('en-US', { minimumFractionDigits: 2 })}`)
+        railFreightVolumeField.updateAppearances(customFont)
+    } else {
+        railFreightVolumeField.setText("---")
+        railFreightVolumeField.updateAppearances(customFont)
+    }
+    
     const lanesAmountField = form.getTextField("lanesAmount")
     lanesAmountField.setText(`${matchingTender.lanesAmount} lane(s)`)
 
@@ -274,17 +286,37 @@ const generateRegisterReport = async function (registeredId, fileIdentifier) {
     }
 
     const airFreightRatesValidityField = form.getField("airFreightRatesValidity")
-    airFreightRatesValidityField.setText(`${matchingTender.ratesValidityAir}`)
-    airFreightRatesValidityField.updateAppearances(customFont)
+    if (matchingTender.airFreightRatesValidity) {
+        airFreightRatesValidityField.setText(`${matchingTender.airFreightRatesValidity}`)
+        airFreightRatesValidityField.updateAppearances(customFont)
+    } else {
+        airFreightRatesValidityField.setText("---")
+        airFreightRatesValidityField.updateAppearances(customFont)
+    }
     const seaFreightFCLRatesValidityField = form.getField("seaFreightFCLRatesValidity")
-    seaFreightFCLRatesValidityField.setText(`${matchingTender.ratesValidityFCL}`)
-    seaFreightFCLRatesValidityField.updateAppearances(customFont)
+    if (matchingTender.seaFreightFCLRatesValidity) {
+        seaFreightFCLRatesValidityField.setText(`${matchingTender.seaFreightFCLRatesValidity}`)
+        seaFreightFCLRatesValidityField.updateAppearances(customFont)
+    } else {
+        seaFreightFCLRatesValidityField.setText("---")
+        seaFreightFCLRatesValidityField.updateAppearances(customFont)
+    }
     const seaFreightLCLRatesValidityField = form.getField("seaFreightLCLRatesValidity")
-    seaFreightLCLRatesValidityField.setText(`${matchingTender.ratesValidityLCL}`)
-    seaFreightLCLRatesValidityField.updateAppearances(customFont)
+    if (matchingTender.seaFreightLCLRatesValidity) {
+        seaFreightLCLRatesValidityField.setText(`${matchingTender.seaFreightLCLRatesValidity}`)
+        seaFreightLCLRatesValidityField.updateAppearances(customFont)
+    } else {
+        seaFreightLCLRatesValidityField.setText("---")
+        seaFreightLCLRatesValidityField.updateAppearances(customFont)
+    }
     const railFreightRatesValidityField = form.getField("railFreightRatesValidity")
-    railFreightRatesValidityField.setText(`${matchingTender.ratesValidityRail}`)
-    railFreightRatesValidityField.updateAppearances(customFont)
+    if (matchingTender.railFreightRatesValidity) {
+        railFreightRatesValidityField.setText(`${matchingTender.railFreightRatesValidity}`)
+        railFreightRatesValidityField.updateAppearances(customFont)
+    } else {
+        railFreightRatesValidityField.setText("---")
+        railFreightRatesValidityField.updateAppearances(customFont)
+    }
 
     if(matchingTender.bidRestrictions.includes("noRestriction")){
         const noRestrictionBox = form.getCheckBox("noRestriction")
@@ -341,7 +373,7 @@ const generateRegisterReport = async function (registeredId, fileIdentifier) {
     }
 
 
-    if(!matchingTender.history.length > 0 || matchingTender.history === null){
+    if(matchingTender.history.length || matchingTender.history === null || matchingTender.history.includes("historyNone")){
     const historyNoneBox = form.getCheckBox("historyNone")
     historyNoneBox.check()
     }
@@ -429,19 +461,19 @@ const generateRegisterReport = async function (registeredId, fileIdentifier) {
     currentServiceProviderField.updateAppearances(customFont)
 
     const competitorAmountField = form.getField("competitorAmount")
-    competitorAmountField.setText(`${matchingTender.competitorAmount}`)
+    competitorAmountField.setText(`${competitorAmountData[matchingTender.competitorAmount]}`)
     competitorAmountField.updateAppearances(customFont)
 
     const volumeSplitField = form.getField("volumeSplit")
-    volumeSplitField.setText(`${matchingTender.volumeSplit}`)
+    volumeSplitField.setText(`${volumeSplitData[matchingTender.volumeSplit]}`)
     volumeSplitField.updateAppearances(customFont)
 
     const decisionCriteraField = form.getField("decisionCritera")
-    decisionCriteraField.setText(`${matchingTender.decisionCritera}`)
+    decisionCriteraField.setText(`${decisionCriteriaData[matchingTender.decisionCritera]}`)
     decisionCriteraField.updateAppearances(customFont)
 
     const feedbackAvailableField = form.getField("feedbackAvailable")
-    feedbackAvailableField.setText(`${matchingTender.feedbackAvailable}`)
+    feedbackAvailableField.setText(`${capitalize(matchingTender.feedbackAvailable)}`)
     feedbackAvailableField.updateAppearances(customFont)
 
     let docAttachedFields = [
@@ -463,11 +495,7 @@ const generateRegisterReport = async function (registeredId, fileIdentifier) {
             docAttachedField.updateAppearances(customFont)
         }
     } else {
-        let attachedDocsNameArray = []
-        let attachedDocs = matchingTender.documentUpload
-        for (let attachDoc of attachedDocs) {
-            attachedDocsNameArray.push(attachDoc.name)
-        }
+        let attachedDocsNameArray = matchingTender.documentUpload
         for (let i = 0; i < attachedDocsNameArray.length; i++) {
             docAttachedFields[i].setText(`${attachedDocsNameArray[i]}`)
             docAttachedFields[i].updateAppearances(customFont)
