@@ -557,6 +557,6 @@ app.use(function (err, req, res, next) {
 
 // ----- Port listening
 
-app.listen(3000, function () {
+app.listen(8080, function () {
   console.log(`${colors.black.bgBrightGreen("* OK *")} MOONSHOT PROJECT - App is listening on port 3000`);
 });
