@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moonshot | Home</title>
+    <%- include("../partials/commonStyles.ejs") %>
+    <%- include("../partials/commonFonts.ejs") %>
+</head>
+<body>
+    <%- include("../partials/navbar.ejs") %>
+    <%- include("../partials/flash.ejs") %>
+<a href="/start" class="btn btn-secondary btn-sm d-inline-block z-index-1 position-relative top-0 start-0 mt-3 ms-3"><i class="bi bi-arrow-left-circle me-2"></i>Back</a>
+<div class="container mt-2">
+    <h1 class="text-center">Tender registration</h1>
+    <div class="container rounded-3 mt-5">
+        <div class="container rounded-3 p-3">
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                <div class="col-sm-6">
+                    <div class="card">
+                        <div class="card-body">
+                        <h5 class="card-title">Form</h5>
+                        <p class="card-text">Fill a form and provide key information related to the tender.</p>
+                        <a href="/register/new" class="btn btn-primary">Go</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="card">
+                        <div class="card-body">
+                        <h5 class="card-title">Dashboard</h5>
+                        <p class="card-text">Quick look on the tenders registered.</p>
+                        <a href="/register/index" class="btn btn-primary">Go</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="card">
+                        <div class="card-body">
+                        <h5 class="card-title">History</h5>
+                        <p class="card-text">Check the information provided, modify or delete a tender registration.</p>
+                        <a href="#" class="btn btn-primary disabled">Soon</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+    <%- include("../partials/commonBootstrap.ejs") %>
+</body>
+</html>

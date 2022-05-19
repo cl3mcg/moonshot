@@ -1,0 +1,6 @@
+{
+    "email": "Launched with an email",
+    "tiContract": "Launched with TI-Contract",
+    "otherPlatform": "Launched with another bidding platform",
+    "unknown": "Unknown"
+}

@@ -9,6 +9,7 @@ const fontkit = require("@pdf-lib/fontkit")
 const countriesData = require("../public/ressources/countries.json");
 const daysData = require("../public/ressources/days.json");
 const monthsData = require("../public/ressources/months.json");
+const tenderLaunchMethodData = require("../public/ressources/tenderLaunchMethod.json");
 const competitorAmountData = require("../public/ressources/competitorAmount.json");
 const volumeSplitData = require("../public/ressources/volumeSplit.json");
 const decisionCriteriaData = require("../public/ressources/decisionCriteria.json");
@@ -98,6 +99,9 @@ const generateRegisterReport = async function (registeredId, fileIdentifier) {
     const decisionMakerField = form.getTextField("decisionMaker")
     decisionMakerField.setText(`${capitalize(matchingTender.decisionMaker)}`)
     decisionMakerField.updateAppearances(customFont)
+    const tenderLaunchMethodField = form.getTextField("tenderLaunchMethod")
+    tenderLaunchMethodField.setText(`${tenderLaunchMethodData[matchingTender.tenderLaunchMethod]}`)
+    tenderLaunchMethodField.updateAppearances(customFont)
     const tenderReceptionDateField = form.getTextField("receptionDate")
     tenderReceptionDateField.setText(`${formatDate(matchingTender.receptionDate)}`)
     tenderReceptionDateField.updateAppearances(customFont)
@@ -501,7 +505,7 @@ const generateRegisterReport = async function (registeredId, fileIdentifier) {
             docAttachedFields[i].updateAppearances(customFont)
         }
         for (let docAttachedField of docAttachedFields) {
-            if (docAttachedField.getText() === "") {
+            if (!docAttachedField.getText()) {
                 docAttachedField.setText("---")
                 docAttachedField.updateAppearances(customFont)
             }
@@ -518,13 +522,7 @@ const generateRegisterReport = async function (registeredId, fileIdentifier) {
     }
 
     const reportIssueDateField = form.getTextField("reportIssueDate")
-    let reportIssueDate_format
-    if (currentDateAndTime().getDate() < 10) {
-        reportIssueDate_format = `0${currentDateAndTime().getDate()}-${monthsData[currentDateAndTime().getMonth()+1]}-${currentDateAndTime().getFullYear()} (${daysData[currentDateAndTime().getDay()]}.)`
-    } else {
-        reportIssueDate_format = `${currentDateAndTime().getDate()}-${monthsData[currentDateAndTime().getMonth()+1]}-${currentDateAndTime().getFullYear()} (${daysData[currentDateAndTime().getDay()]}.)`
-    }
-    reportIssueDateField.setText(reportIssueDate_format)
+    reportIssueDateField.setText(`${formatDate(currentDateAndTime())}`)
     reportIssueDateField.updateAppearances(customFont)
 
     const awardField = form.getField("award")

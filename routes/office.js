@@ -49,17 +49,17 @@ const validateOffice = function (req, res, next) {
 // ----- Routes MOONSHOT OFFICES
 
 router.get("/start", function (req, res) {
-  res.render("office_start.ejs");
+  res.render("office/office_start.ejs");
 });
 
 router.get("/index",catchAsync(async function (req, res) {
     let allOffices = await Office.find({});
-    res.render("office_index.ejs", { countriesData, monthsData, allOffices });
+    res.render("office/office_index.ejs", { countriesData, monthsData, allOffices });
   })
 );
 
 router.get("/new", function (req, res) {
-  res.render("office_new.ejs", { countriesData, monthsData });
+  res.render("office/office_new.ejs", { countriesData, monthsData });
 });
 
 router.post("/new",validateOffice,catchAsync(async function (req, res) {
@@ -104,7 +104,7 @@ router.get("/:id",catchAsync(async function (req, res) {
       req.flash("error", "The office with the given ID was not found.");
       res.redirect("/office/start");
     } else {
-      res.render("office_show.ejs", {
+      res.render("office/office_show.ejs", {
         countriesData,
         monthsData,
         matchingOffice,
@@ -120,7 +120,7 @@ router.get("/edit/:id",catchAsync(async function (req, res) {
       req.flash("error", "The office with the given ID was not found.");
       res.redirect("/office/start");
     } else {
-      res.render("office_edit.ejs", {
+      res.render("office/office_edit.ejs", {
         countriesData,
         monthsData,
         matchingOffice,

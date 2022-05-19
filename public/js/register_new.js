@@ -1111,9 +1111,3 @@ const bootsrapValidation = function () {
   }
 
 mod_submitBtn.addEventListener("click", bootsrapValidation())
-
-// ---- ---- Bootstrap / Popper popover initialization
-var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-  return new bootstrap.Tooltip(tooltipTriggerEl)
-})

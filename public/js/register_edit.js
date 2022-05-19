@@ -759,8 +759,10 @@ const adjust_preadvisedIDField = function () {
 
 isPreadvised.addEventListener("input", adjust_preadvisedIDField)
 window.addEventListener("load", function () {
-    preadviseID.value = ""
-    opt_preadviseID.classList.add("d-none")
+    if (isPreadvised.value !== "yes") {
+        preadviseID.value = ""
+        opt_preadviseID.classList.add("d-none")
+    }
 })
 
 // ---- Controling the requiered attribute of the "Is there an RFI ?" field

@@ -8,6 +8,7 @@ const PreadvisedTender = require("../models/preadvisedTender.js");
 
 const ejs = require("ejs");
 const colors = require("colors");
+const fs = require("fs").promises;
 const { preadviseSchema } = require("../utilities/joiSchemas.js");
 const nodemailer = require("nodemailer");
 const countriesData = require("../public/ressources/countries.json");
@@ -51,19 +52,28 @@ const validatePreadvise = function (req, res, next) {
 // ----- generatePreadviseReport function used to generate the preadvise pdf report
 
 const generatePreadviseReport = require("../utilities/generatePreadviseReport.js");
+const generatePreadviseExcelReport = require("../utilities/generatePreadviseExcelReport.js");
 
 // ----- Commonly used functions
 
-const currentDateAndTime = require("../utilities/commonFunctions.js");
+const {
+  findCountryName,
+  findcca2,
+  findSubRegion,
+  findResponsibleTenderOffice,
+  currentDateAndTime,
+  formatDate,
+  capitalize
+} = require("../utilities/commonFunctions.js");
 
 // ----- Routes MOONSHOT PREADVISED
 
 router.get("/start", function (req, res) {
-    res.render("preadvised_start.ejs");
+    res.render("preadvise/preadvised_start.ejs");
   });
 
 router.get("/new", function (req, res) {
-res.render("preadvised_new.ejs", { countriesData });
+res.render("preadvise/preadvised_new.ejs", { countriesData });
 });
 
 router.post("/new",validatePreadvise,catchAsync(async function (req, res, next) {
@@ -139,11 +149,7 @@ router.post("/new",validatePreadvise,catchAsync(async function (req, res, next) 
     countryLocation: countryLocation,
     });
     await newEntry.save();
-    console.log(
-    `${colors.black.bgBrightGreen(
-        "* OK *"
-    )} A new TENDER PRE-ADVISE has been registered in the database: ${companyName}`
-    );
+    console.log(`${colors.black.bgBrightGreen("* OK *")} A new TENDER PRE-ADVISE has been registered in the database: ${companyName}`);
     req.flash("success", "Preadvise tender is successfully saved !");
     res.redirect(`/preadvise/${newEntry.id}`);
 
@@ -187,13 +193,20 @@ router.post("/new",validatePreadvise,catchAsync(async function (req, res, next) 
 //   Nodemailer launch function - Uncomment below to enable to email launch.
   try {
     await send();
-    console.log(
-      `An email with the information related to the TENDER PRE-ADVISE of the company ${companyName}, has been sent`
-    );
+    console.log(`${colors.black.bgBrightGreen("* OK *")} An email with the information related to the TENDER PRE-ADVISE of the company ${companyName}, has been sent`);
   } catch (error) {
     console.log(error);
     res.send("ERROR ! Check console...");
   }
+
+  fs.unlink(`./reports/reportsGenerated/${newEntry.companyName}_${fileIdentifier}.pdf`, function (err) {
+    if (err) {
+      console.error(err)
+      return
+    }
+  })
+  console.log(`${colors.black.bgBrightGreen("* OK *")} The PDF report related to the preadvise of ${companyName} has been deleted from the server`);
+
 })
 );
 
@@ -317,7 +330,7 @@ router.get("/index",catchAsync(async function (req, res) {
     // console.log(`"preadvised_inAP" results are ${preadvised_inAP}`)
     // console.log(`"preadvised_inEU" results are ${preadvised_inEU}`)
 
-    res.render("preadvised_index.ejs", {
+    res.render("preadvise/preadvised_index.ejs", {
         countriesData,
         monthsData,
         today,
@@ -335,6 +348,14 @@ router.get("/index",catchAsync(async function (req, res) {
 })
 );
 
+router.get("/excelReport",catchAsync(async function (req, res) {
+  let fileName = `excelReport_${Date.now()}`
+      generatePreadviseExcelReport(fileName)
+      req.flash("sucess", "The preadvised tender Excel report has been generated.");
+      return res.redirect("/preadvise/start");
+})
+);
+
 router.get("/:id",catchAsync(async function (req, res) {
     let matchingId = req.params.id;
     let matchingTender = await PreadvisedTender.findById(matchingId);
@@ -342,7 +363,7 @@ router.get("/:id",catchAsync(async function (req, res) {
         req.flash("error", "The preadvised tender with the given ID was not found.");
         return res.redirect("/preadvise/start");
     } else {
-        res.render("preadvised_show.ejs", {
+        res.render("preadvise/preadvised_show.ejs", {
             countriesData,
             monthsData,
             tradelanes,
@@ -374,7 +395,7 @@ router.get("/edit/:id",catchAsync(async function (req, res) {
         req.flash("error", "The preadvised tender with the given ID was not found.");
         return res.redirect("/preadvise/start");
     } else {
-        res.render("preadvised_edit.ejs", {
+        res.render("preadvise/preadvised_edit.ejs", {
             countriesData,
             monthsData,
             matchingTender,
@@ -390,7 +411,7 @@ router.get("/launch/:id",catchAsync(async function (req, res) {
         req.flash("error", "The preadvised tender with the given ID was not found.");
         return res.redirect("/preadvise/start");
     } else {
-        res.render("register_new.ejs", {
+        res.render("register/register_new.ejs", {
             countriesData,
             businessVerticals,
             preadviseTender,

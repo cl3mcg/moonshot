@@ -11,7 +11,7 @@ const colors = require("colors");
 const ejs = require("ejs");
 const fs = require("fs").promises;
 const nodemailer = require("nodemailer");
-const { preadviseSchema, registerSchema } = require("../utilities/joiSchemas.js");
+const { preadviseSchema, registerSchema, decisionSchema } = require("../utilities/joiSchemas.js");
 const countriesData = require("../public/ressources/countries.json");
 const monthsData = require("../public/ressources/months.json");
 const tradelanes = require("../public/ressources/tradelanes.json");
@@ -33,6 +33,10 @@ const { testSenderName, testReceiverEmail, testSenderEmail, testSenderEmailPassw
 // const testSenderEmail = process.env.testSenderEmail
 // const testSenderEmailPassword = process.env.testSenderEmailPassword
 
+// ----- Extended error class
+
+const ExpressError = require("../utilities/expressError.js");
+
 // ----- validateRegister middleware used with JOI to validate new registered tenders according to JOI schema
 
 const validateRegister = function (req, res, next) {
@@ -51,10 +55,27 @@ const validateRegister = function (req, res, next) {
     }
   };
 
+  const validateDecision = function (req, res, next) {
+    const result = decisionSchema.validate(req.body);
+    if (result.error) {
+      console.log(`${colors.brightYellow.bgBrightRed("*!* WARNING *!*")} JOI validation failed - validateDecision`);
+      const errorMsg = result.error.details
+        .map(function (element) {
+          return element.message;
+        })
+        .join(",");
+      throw new ExpressError(errorMsg, 400);
+    } else {
+      console.log(`${colors.black.bgBrightGreen("* OK *")} JOI validation passed - validateDecision`);
+      next();
+    }
+  };
+
+
 // ----- generateRegisterReport function used to generate the register pdf report
 
 const generateRegisterReport = require("../utilities/generateRegisterReport.js");
-
+const generateRegisterExcelReport = require("../utilities/generateRegisterExcelReport.js");
 
 // ----- Commonly used functions
 // const currentDateAndTime = function () {
@@ -89,12 +110,12 @@ const {
 // ----- Routes MOONSHOT REGISTER
 
 router.get("/start", function (req, res) {
-    res.render("register_start.ejs");
+    res.render("register/register_start.ejs");
   });
   
   router.get("/new", function (req, res) {
     let preadviseTender = null;
-    res.render("register_new.ejs", {
+    res.render("register/register_new.ejs", {
       countriesData,
       businessVerticals,
       preadviseTender,
@@ -387,6 +408,15 @@ router.get("/start", function (req, res) {
       console.log(error);
       res.send("ERROR ! Check console...");
     }
+
+    fs.unlink(`./reports/reportsGenerated/${newEntry.companyName}_${fileIdentifier}.pdf`, function (err) {
+      if (err) {
+        console.error(err)
+        return
+      }
+    })
+    console.log(`${colors.black.bgBrightGreen("* OK *")} The PDF report related to the registration of ${companyName} has been deleted from the server`);
+
   });
   
   router.get("/index",catchAsync(async function (req, res) {
@@ -497,7 +527,7 @@ router.get("/start", function (req, res) {
       // console.log(`"preadvised_inAP" results are ${preadvised_inAP}`)
       // console.log(`"preadvised_inEU" results are ${preadvised_inEU}`)
   
-      res.render("register_index.ejs", {
+      res.render("register/register_index.ejs", {
         countriesData,
         monthsData,
         today,
@@ -513,6 +543,15 @@ router.get("/start", function (req, res) {
     })
   );
   
+
+  router.get("/excelReport",catchAsync(async function (req, res) {
+    let fileName = `excelReport_${Date.now()}`
+        generateRegisterExcelReport(fileName)
+        req.flash("success", "The preadvised tender Excel report has been generated.");
+        return res.redirect("/register/start");
+  })
+  );
+
   router.get("/:id",catchAsync(async function (req, res) {
       const d = new Date();
       const today = new Date(d.getFullYear(), d.getMonth(), d.getDate());
@@ -533,7 +572,7 @@ router.get("/start", function (req, res) {
         const decisionDate = new Date(matchingTender.decisionDate);
         const isDecisionDatePassed = decisionDate < today;
     
-        res.render("register_show.ejs", {
+        res.render("register/register_show.ejs", {
           isDecisionDatePassed,
           countriesData,
           monthsData,
@@ -550,7 +589,57 @@ router.get("/start", function (req, res) {
       }
     })
   );
-  
+
+  // router.post("/:id/participation/:decision", validateDecision, catchAsync(async function (req, res) {
+  //   let matchingId = req.params.id;
+  //   let decision = req.params.decision;
+  //   let matchingTender = await RegisteredTender.findById(matchingId);
+  //   if (!matchingTender) {
+  //       req.flash("error", "The tender with the given ID was not found.");
+  //       return res.redirect("/register/start");
+  //   } else if (decision !== "accepted" || decision !== "rejected") {
+  //       req.flash("error", "The decision doesn't match the criterias");
+  //       return res.redirect(`/register/${matchingId}`);
+  //   } else {
+  //     let updatedEntry = {
+  //       tenderTeamDecision: decision,
+  //       tenderTeamDecisionDate: currentDateAndTime(),
+  //       tenderTeamDecisionMaker: "Tender team member",
+  //       tenderTeamDecisionComment: req.body.tenderTeamDecisionComment,
+  //     };
+  //     await RegisteredTender.findByIdAndUpdate(matchingId, updatedEntry);
+  //     req.flash("success", "The decision has been updated.");
+  //     res.redirect(`/register/index`);
+  //   }
+  //   res.redirect(`/register/index`);
+  // }
+  // ));
+
+  router.post("/:id/participation/:decision", validateDecision, catchAsync(async function (req, res) {
+    let matchingId = req.params.id;
+    let decision = req.params.decision;
+    let matchingTender = await RegisteredTender.findById(matchingId);
+    if (!matchingTender) {
+        req.flash("error", "The tender with the given ID was not found.");
+        return res.redirect("/register/start");
+    } else if (decision !== "accept" && decision !== "decline") {
+        req.flash("error", "The decision doesn't match the criterias");
+        return res.redirect(`/register/${matchingId}`);
+    } else {
+      let updatedEntry = {
+        tenderTeamDecision: decision,
+        tenderTeamDecisionDate: currentDateAndTime(),
+        tenderTeamDecisionMaker: "Tender team member",
+        tenderTeamDecisionComment: req.body.tenderTeamDecisionComment,
+      };
+      await RegisteredTender.findByIdAndUpdate(matchingId, updatedEntry);
+      req.flash("success", "The decision has been updated.");
+      return res.redirect("/register/index");
+    }
+  }
+  ));
+
+
   router.get("/edit/:id",catchAsync(async function (req, res) {
       let matchingId = req.params.id;
       let matchingTender = await RegisteredTender.findById(matchingId);
@@ -559,7 +648,7 @@ router.get("/start", function (req, res) {
         return res.redirect("/register/start");
       } else {
         let filesUploaded = await listFiles(matchingId);
-        res.render("register_edit.ejs", {
+        res.render("register/register_edit.ejs", {
           countriesData,
           monthsData,
           businessVerticals,

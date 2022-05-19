@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moonshot | Home</title>
+    <%- include("../partials/commonStyles.ejs") %>
+    <%- include("../partials/commonFonts.ejs") %>
+</head>
+<body>
+    <%- include("../partials/navbar.ejs") %>
+    <%- include("../partials/flash.ejs") %>
+<div class="container">
+    <h1>Offices</h1>
+    <a href="/office/new">Register a new office</a>
+
+    <ul>
+        <% for (let office of allOffices) { %> <li><%= office.companyName %> - <%= office.address_city %>, <%= office.address_cca2 %> | <a href="/office/<%= office._id %> ">Data</a></li><% } %>
+    </ul>
+</div>
+    <%- include("../partials/commonBootstrap.ejs") %>
+    <script src="/js/office_new.js"></script>
+</body>
+</html>

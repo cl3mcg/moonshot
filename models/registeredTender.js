@@ -181,7 +181,20 @@ const registeredTenderSchema = new Schema({
         type: String,
         required: true
     },
-    additionalComment: String
+    additionalComment: String,
+    tenderTeamDecision: {
+        type: String,
+    },
+    tenderTeamDecisionDate: {
+        type: Date,
+        min: "2021-01-01"
+    },
+    tenderTeamDecisionMaker: {
+        type: String
+    },
+    tenderTeamComment: {
+        type: String
+    }
 })
 
 module.exports = mongoose.model("registeredTender", registeredTenderSchema)

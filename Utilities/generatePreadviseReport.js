@@ -1,4 +1,5 @@
 const PreadvisedTender = require("../models/preadvisedTender.js");
+const colors = require("colors");
 const fs = require("fs").promises;
 const PDFDocument = require("pdf-lib").PDFDocument;
 // const StandardFonts = require("pdf-lib").StandardFonts;
@@ -10,17 +11,16 @@ const daysData = require("../public/ressources/days.json");
 const monthsData = require("../public/ressources/months.json");
 
 // ----- Commonly used functions
-const currentDateAndTime = function () {
-    return new Date(Date.now());
-  };
 
-  const findCountryName = function (cca2) {
-    for (country of countriesData) {
-      if (country.cca2 === cca2) {
-        return country.name.common;
-      }
-    }
-  };
+const {
+    findCountryName,
+    findcca2,
+    findSubRegion,
+    findResponsibleTenderOffice,
+    currentDateAndTime,
+    formatDate,
+    capitalize
+  } = require("./commonFunctions.js");
 
 // ----- Report generation functions
 const generatePreadviseReport = async function (preadvisedId, fileIdentifier) {
@@ -39,23 +39,6 @@ const generatePreadviseReport = async function (preadvisedId, fileIdentifier) {
         return rawUpdateFieldAppearances(customFont);
     };
 
-    // customSetupFields = ["hasAirFreight", "hasSeaFreightFCL", "hasSeaFreightLCL", "hasRailFreight",  "africaToAfrica", "africaToAmericas", "africaToAsia", "africaToEurope", "africaToOceania", "americasToAfrica", "americasToAmericas", "americasToAsia", "americasToEurope", "americasToOceania", "asiaToAfrica", "asiaToAmericas", "asiaToAsia", "asiaToEurope", "asiaToOceania", "europeToAfrica", "europeToAmericas", "europeToAsia", "europeToEurope", "europeToOceania", "oceaniaToAfrica", "oceaniaToAmericas", "oceaniaToAsia", "oceaniaToEurope", "oceaniaToOceania", "historyAirOcean", "historyPortLog", "historyContractLog", "historyRoadFreight", "reportIssueDate", "tenderLaunch", "tenderLaunchDate"]
-
-    // fields.forEach(field => {
-    //   const fieldName = field.getName()
-    //   if (!customSetupFields.includes(fieldName)){
-    //     let fieldToFill = form.getTextField(fieldName)
-    //     let valueToFill = matchingTender[`${fieldName}`]
-    //     console.log(`${matchingTender[`${fieldName}`]} is of type: ${typeof(valueToFill)}`)
-    //     if (typeof(valueToFill) !== "String") {
-    //       valueToFill = `${valueToFill}`
-    //     }
-    //     fieldToFill.setText(valueToFill)
-    //     fieldToFill.enableReadOnly()
-    //     // console.log('Field name:', fieldName)
-    //   }
-    // })
-
     const preadvideIdField = form.getTextField("preadviseID")
     preadvideIdField.setText(matchingTender.id)
     preadvideIdField.updateAppearances(customFont)
@@ -73,13 +56,7 @@ const generatePreadviseReport = async function (preadvisedId, fileIdentifier) {
     const sugarIDField = form.getTextField("sugarID")
     sugarIDField.setText(`${matchingTender.sugarID}`)
     const expectedReceiveDateField = form.getTextField("expectedReceiveDate")
-    let expectedReceiveDateField_format
-    if (matchingTender.expectedReceiveDate.getDate() < 10) {
-        expectedReceiveDateField_format = `0${matchingTender.expectedReceiveDate.getDate()}-${monthsData[matchingTender.expectedReceiveDate.getMonth()+1]}-${matchingTender.expectedReceiveDate.getFullYear()} (${daysData[matchingTender.expectedReceiveDate.getDay()]}.)`
-    } else {
-        expectedReceiveDateField_format = `${matchingTender.expectedReceiveDate.getDate()}-${monthsData[matchingTender.expectedReceiveDate.getMonth()+1]}-${matchingTender.expectedReceiveDate.getFullYear()} (${daysData[matchingTender.expectedReceiveDate.getDay()]}.)`
-    }
-    expectedReceiveDateField.setText(expectedReceiveDateField_format)
+    expectedReceiveDateField.setText(`${formatDate(matchingTender.expectedReceiveDate)}`)
     if (matchingTender.transportMode.includes("hasAirFreight")) {
         form.getCheckBox("hasAirFreight").check()
     }
@@ -202,7 +179,7 @@ const generatePreadviseReport = async function (preadvisedId, fileIdentifier) {
         oceaniaToOceaniaBox.check()
         }
 
-        if(!matchingTender.history.length > 0 || matchingTender.history === null){
+        if(!matchingTender.history.length > 0 || matchingTender.history === null || matchingTender.history === "historyNone"){
         const historyNoneBox = form.getCheckBox("historyNone")
         historyNoneBox.check()
         }
@@ -249,13 +226,7 @@ const generatePreadviseReport = async function (preadvisedId, fileIdentifier) {
         }
 
         const reportIssueDateField = form.getTextField("reportIssueDate")
-        let reportIssueDate_format
-        if (currentDateAndTime().getDate() < 10) {
-            reportIssueDate_format = `0${currentDateAndTime().getDate()}-${monthsData[currentDateAndTime().getMonth()+1]}-${currentDateAndTime().getFullYear()} (${daysData[currentDateAndTime().getDay()]}.)`
-        } else {
-            reportIssueDate_format = `${currentDateAndTime().getDate()}-${monthsData[currentDateAndTime().getMonth()+1]}-${currentDateAndTime().getFullYear()} (${daysData[currentDateAndTime().getDay()]}.)`
-        }
-        reportIssueDateField.setText(reportIssueDate_format)
+        reportIssueDateField.setText(`${formatDate(currentDateAndTime())}`)
         if(matchingTender.launched){
         const tenderLaunchField = form.getTextField("tenderLaunch")
         tenderLaunchField.setText("Tender launched")
@@ -264,14 +235,13 @@ const generatePreadviseReport = async function (preadvisedId, fileIdentifier) {
         tenderLaunchField.setText("Tender not yet launched")
         }
         if(matchingTender.launchedTime){
-            let tenderLaunchDate_format
-            if (matchingTender.launchedTime.getDate() < 10) {
-                tenderLaunchDate_format = `0${matchingTender.launchedTime.getDate()}-${monthsData[matchingTender.launchedTime.getMonth()+1]}-${matchingTender.launchedTime.getFullYear()} (${daysData[matchingTender.launchedTime.getDay()]}.)`
-            } else {
-                tenderLaunchDate_format = `${matchingTender.launchedTime.getDate()}-${monthsData[matchingTender.launchedTime.getMonth()+1]}-${matchingTender.launchedTime.getFullYear()} (${daysData[matchingTender.launchedTime.getDay()]}.)`
-            }
             const tenderLaunchDateField = form.getTextField("tenderLaunch")
-            tenderLaunchDateField.setText(tenderLaunchDate_format)
+            tenderLaunchDateField.setText(`${formatDate(matchingTender.launchedTime)}`)
+            tenderLaunchDateField.updateAppearances(customFont)
+        } else {
+            const tenderLaunchDateField = form.getTextField("tenderLaunch")
+            tenderLaunchDateField.setText("---")
+            tenderLaunchDateField.updateAppearances(customFont)
         }
 
         for (let field of fields) {
@@ -279,9 +249,16 @@ const generatePreadviseReport = async function (preadvisedId, fileIdentifier) {
         }
 
     const newReportContent = await pdfDoc.save()
-    await fs.writeFile(`./reports/reportsGenerated/${matchingTender.companyName}_${fileIdentifier}.pdf`, newReportContent, (err) => {
-        if (err) throw err;
-        console.log("The pdf report was succesfully created !");
-    });
+
+    try {
+        await fs.writeFile(`./reports/reportsGenerated/${matchingTender.companyName}_${fileIdentifier}.pdf`, newReportContent)
+        console.log(`${colors.black.bgBrightGreen("* OK *")} The PDF report related to TENDER PRE-ADVISE of the company ${matchingTender.companyName}, has been created successfully`);
+    } catch (error) {
+        console.log(`${colors.brightYellow.bgBrightRed("*!* ERROR *!*")} - Status Code: ${error.statusCode} - Message: ${error.message}`)
+    }
+    // await fs.writeFile(`./reports/reportsGenerated/${matchingTender.companyName}_${fileIdentifier}.pdf`, newReportContent, (err) => {
+    //     if (err) throw err;
+    //     console.log("The pdf report was succesfully created !");
+    // });
 }
 module.exports = generatePreadviseReport

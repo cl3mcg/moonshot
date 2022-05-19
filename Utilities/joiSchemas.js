@@ -67,6 +67,10 @@ module.exports.registerSchema = Joi.object({
     additionalComment: Joi.optional(),
 })
 
+module.exports.decisionSchema = Joi.object({
+    tenderTeamDecisionComment: Joi.string().required()
+})
+
 module.exports.officeSchema = Joi.object({
     countryLocation: Joi.string().required(),
     companyName: Joi.string().required(),
