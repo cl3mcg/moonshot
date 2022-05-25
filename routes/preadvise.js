@@ -25,7 +25,12 @@ const catchAsync = require("../utilities/catchAsync.js");
 // ----- Extended error class
 
 const ExpressError = require("../utilities/expressError.js");
-const { testSenderName, testReceiverEmail, testSenderEmail, testSenderEmailPassword } = require('../secrets.js');
+const {
+  testSenderName,
+  testReceiverEmail,
+  testSenderEmail,
+  testSenderEmailPassword
+} = require('../secrets.js');
 // const testSenderName = process.env.testSenderName
 // const testReceiverEmail = process.env.testReceiverEmail
 // const testSenderEmail = process.env.testSenderEmail
@@ -53,6 +58,10 @@ const validatePreadvise = function (req, res, next) {
 
 const generatePreadviseReport = require("../utilities/generatePreadviseReport.js");
 const generatePreadviseExcelReport = require("../utilities/generatePreadviseExcelReport.js");
+
+// ----- preadviseTenderEmailConfirmation function used to send emails related to preadvise tenders operations
+
+const { preadviseTenderEmailConfirmation } = require("../utilities/preadviseEmail.js");
 
 // ----- Commonly used functions
 
@@ -155,49 +164,7 @@ router.post("/new",validatePreadvise,catchAsync(async function (req, res, next) 
 
   let fileIdentifier = Date.now();
   await generatePreadviseReport(newEntry.id, fileIdentifier);
-
-  let from = testSenderName;
-  let selectedEmail = testReceiverEmail; // Enter the recipient email here
-  let subject = "Your tender has been preadvised";
-  // let attachement = null;
-  let attachement = [{
-      filename: `Preadvise Report - ${newEntry.companyName} - ${fileIdentifier}.pdf`,
-      path: `./reports/reportsGenerated/${newEntry.companyName}_${fileIdentifier}.pdf`
-  }]
-  let emailBody = await ejs.renderFile("./emails/preadviseConfirm.ejs", {
-    userName: "Jean-Marie", // Enter the user name here
-    companyName: companyName, // Enter the company name here, it should be gathered from the form
-    preadviseId: newEntry.id, // Enter the preadvise ID here, it should be gathered after being saved in the database
-  });
-
-  const send = async function () {
-    let transporter = nodemailer.createTransport({
-      host: "smtp.office365.com",
-      port: 587,
-      secure: false, // true for 465, false for other ports
-      auth: {
-        user: testSenderEmail, // generated ethereal user
-        pass: testSenderEmailPassword, // generated ethereal password
-      },
-    });
-
-    let info = await transporter.sendMail({
-      from: from, // sender address
-      to: selectedEmail, // list of receivers
-      subject: subject, // Subject line
-      html: emailBody, // html body
-      attachments: attachement,
-    });
-  };
-
-//   Nodemailer launch function - Uncomment below to enable to email launch.
-  try {
-    await send();
-    console.log(`${colors.black.bgBrightGreen("* OK *")} An email with the information related to the TENDER PRE-ADVISE of the company ${companyName}, has been sent`);
-  } catch (error) {
-    console.log(error);
-    res.send("ERROR ! Check console...");
-  }
+  await preadviseTenderEmailConfirmation(newEntry.id, fileIdentifier)
 
   fs.unlink(`./reports/reportsGenerated/${newEntry.companyName}_${fileIdentifier}.pdf`, function (err) {
     if (err) {
@@ -358,7 +325,7 @@ router.get("/excelReport",catchAsync(async function (req, res) {
 
 router.get("/:id",catchAsync(async function (req, res) {
     let matchingId = req.params.id;
-    let matchingTender = await PreadvisedTender.findById(matchingId);
+    let matchingTender = await PreadvisedTender.findById(matchingId).populate("register");
     if (!matchingTender) {
         req.flash("error", "The preadvised tender with the given ID was not found.");
         return res.redirect("/preadvise/start");
@@ -502,51 +469,59 @@ router.post("/report/:id",catchAsync(async function (req, res) {
   let matchingTender = await PreadvisedTender.findById(matchingId);
   let fileIdentifier = Date.now();
   await generatePreadviseReport(matchingId, fileIdentifier);
+  await preadviseTenderEmailConfirmation(matchingId, fileIdentifier)
+//   let from = testSenderName;
+//   let selectedEmail = testReceiverEmail; // Enter the recipient email here
+//   let subject = "Your tender has been preadvised";
+//   // let attachement = null;
+//   let attachement = [{
+//       filename: `Preadvise Report - ${matchingTender.companyName} - ${fileIdentifier}.pdf`,
+//       path: `./reports/reportsGenerated/${matchingTender.companyName}_${fileIdentifier}.pdf`
+//   }]
+//   let emailBody = await ejs.renderFile("./emails/preadviseConfirm.ejs", {
+//     userName: "Jean-Marie", // Enter the user name here
+//     companyName: matchingTender.companyName, // Enter the company name here, it should be gathered from the form
+//     preadviseId: matchingTender.id, // Enter the preadvise ID here, it should be gathered after being saved in the database
+//   });
 
-  let from = testSenderName;
-  let selectedEmail = testReceiverEmail; // Enter the recipient email here
-  let subject = "Your tender has been preadvised";
-  // let attachement = null;
-  let attachement = [{
-      filename: `Preadvise Report - ${matchingTender.companyName} - ${fileIdentifier}.pdf`,
-      path: `./reports/reportsGenerated/${matchingTender.companyName}_${fileIdentifier}.pdf`
-  }]
-  let emailBody = await ejs.renderFile("./emails/preadviseConfirm.ejs", {
-    userName: "Jean-Marie", // Enter the user name here
-    companyName: matchingTender.companyName, // Enter the company name here, it should be gathered from the form
-    preadviseId: matchingTender.id, // Enter the preadvise ID here, it should be gathered after being saved in the database
-  });
+//   const send = async function () {
+//     let transporter = nodemailer.createTransport({
+//       host: "smtp.office365.com",
+//       port: 587,
+//       secure: false, // true for 465, false for other ports
+//       auth: {
+//         user: testSenderEmail, // generated ethereal user
+//         pass: testSenderEmailPassword, // generated ethereal password
+//       },
+//     });
 
-  const send = async function () {
-    let transporter = nodemailer.createTransport({
-      host: "smtp.office365.com",
-      port: 587,
-      secure: false, // true for 465, false for other ports
-      auth: {
-        user: testSenderEmail, // generated ethereal user
-        pass: testSenderEmailPassword, // generated ethereal password
-      },
-    });
+//     let info = await transporter.sendMail({
+//       from: from, // sender address
+//       to: selectedEmail, // list of receivers
+//       subject: subject, // Subject line
+//       html: emailBody, // html body
+//       attachments: attachement,
+//     });
+//   };
 
-    let info = await transporter.sendMail({
-      from: from, // sender address
-      to: selectedEmail, // list of receivers
-      subject: subject, // Subject line
-      html: emailBody, // html body
-      attachments: attachement,
-    });
-  };
+// //   Nodemailer launch function - Uncomment below to enable to email launch.
+//   try {
+//     await send();
+//     console.log(
+//       `An email with the information related to the TENDER PRE-ADVISE of the company ${matchingTender.companyName}, has been sent`
+//     );
+//   } catch (error) {
+//     console.log(error);
+//     res.send("ERROR ! Check console...");
+//   } 
 
-//   Nodemailer launch function - Uncomment below to enable to email launch.
-  try {
-    await send();
-    console.log(
-      `An email with the information related to the TENDER PRE-ADVISE of the company ${matchingTender.companyName}, has been sent`
-    );
-  } catch (error) {
-    console.log(error);
-    res.send("ERROR ! Check console...");
-  } 
+fs.unlink(`./reports/reportsGenerated/${matchingTender.companyName}_${fileIdentifier}.pdf`, function (err) {
+  if (err) {
+    console.error(err)
+    return
+  }
+})
+console.log(`${colors.black.bgBrightGreen("* OK *")} The PDF report related to the preadvise of ${companyName} has been deleted from the server`);
 
   req.flash("success", "The report has been sent by email.");
   res.redirect(`/preadvise/${matchingId}`);

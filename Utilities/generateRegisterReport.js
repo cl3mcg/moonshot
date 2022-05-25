@@ -1,4 +1,3 @@
-const PreadvisedTender = require("../models/preadvisedTender.js");
 const RegisteredTender = require("../models/registeredTender.js");
 const fs = require("fs").promises;
 const PDFDocument = require("pdf-lib").PDFDocument;
@@ -29,7 +28,7 @@ const {
 // ----- Report generation functions
 
 const generateRegisterReport = async function (registeredId, fileIdentifier) {
-    const matchingTender = await RegisteredTender.findById(registeredId);
+    const matchingTender = await RegisteredTender.findById(registeredId).populate("preadvise");
     const pdfContent = await fs.readFile("./reports/templates/reportTemplate_register.pdf");
     const pdfDoc = await PDFDocument.load(pdfContent);
     pdfDoc.registerFontkit(fontkit);
@@ -47,10 +46,10 @@ const generateRegisterReport = async function (registeredId, fileIdentifier) {
     const registerIdField = form.getTextField("registerID")
     registerIdField.setText(`${matchingTender.id}`)
     registerIdField.updateAppearances(customFont)
-    if (matchingTender.isPreadvised) {
+    if (matchingTender.preadvise) {
         form.getCheckBox("isPreadvised").check()
         const preadviseIDField = form.getTextField("preadviseID")
-        preadviseIDField.setText(`${matchingTender.preadviseID}`)
+        preadviseIDField.setText(`${matchingTender.preadvise._id}`)
         preadviseIDField.updateAppearances(customFont)
     } else {
         const preadviseIDField = form.getTextField("preadviseID")

@@ -19,7 +19,7 @@ const {
   } = require("./commonFunctions.js");
 
 let generateRegisterExcelReport = async function (newFilename) {
-  let allRegister = await RegisteredTender.find({});
+  let allRegister = await RegisteredTender.find({}).populate("preadvise");
   const fileName = `${newFilename}.xlsx`;
   console.log(fileName);
   const wb = new Excel.Workbook();
@@ -143,24 +143,17 @@ let generateRegisterExcelReport = async function (newFilename) {
 
   for (let register of allRegister) {
     let dataToPush = []
-    dataToPush.push(register._id)
+    dataToPush.push(register.id)
     dataToPush.push(register.recordDate)
     if (register.lastModifiedDate) {
       dataToPush.push(register.lastModifiedDate)
     } else {
       dataToPush.push("Not modified")
     }
-    if (register.isPreadvised) {
+    if (register.preadvise) {
       dataToPush.push("Yes")
-      dataToPush.push(register.preadviseID)
-      try {
-        let relatedPreadvise = await PreadvisedTender.findById(register.preadviseID);
-        dataToPush.push(relatedPreadvise.recordDate)
-      } catch (error) {
-        if (error) {
-          dataToPush.push("Not retrieved")
-        }
-      }
+      dataToPush.push(register.preadvise.id)
+      dataToPush.push(register.preadvise.recordDate)
     } else {
       dataToPush.push("No")
       dataToPush.push("None")

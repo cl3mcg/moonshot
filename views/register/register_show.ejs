@@ -42,37 +42,37 @@
           <div class="bs-stepper">
             <div class="bs-stepper-header" role="tablist">
               <!-- your steps here -->
-              <div class="step px-2">
+              <div class="step px-2" <% if (matchingTender.preadvise) { %>data-bs-toggle="tooltip" data-bs-placement="top" title="Tender was pre-advised"<% } else {%>data-bs-toggle="tooltip" data-bs-placement="top" title="Tender was not pre-advised"<% } %>>
                 <div role="tab">
-                  <span class="bs-stepper-circle <% if (matchingTender.isPreadvised) { %>bg-success<% } else { %>bg-danger<% } %>">1</span>
+                  <span class="bs-stepper-circle <% if (matchingTender.preadvise) { %>bg-success<% } else { %>bg-danger<% } %>">1</span>
                   <span class="bs-stepper-label">Preadvise</span>
                 </div>
               </div>
               <div class="line"></div>
-              <div class="step px-2">
+              <div class="step px-2" <% if (matchingTender.id) { %>data-bs-toggle="tooltip" data-bs-placement="top" title="Tender is registered"<% } else { %>data-bs-toggle="tooltip" data-bs-placement="top" title="Tender is not registered"<% } %>>
                 <div role="tab">
                   <span class="bs-stepper-circle <% if (matchingTender.id) { %>bg-success<% } else { %>bg-light text-dark border border-secondary<% } %>">2</span>
                   <span class="bs-stepper-label">Registration</span>
                 </div>
               </div>
               <div class="line"></div>
-              <div class="step px-2">
+              <div class="step px-2" <% if (matchingTender.tenderTeamDecision === "accept") { %>data-bs-toggle="tooltip" data-bs-placement="top" title="Tender team decided to participate"<% } else if (matchingTender.tenderTeamDecision === "decline") { %>data-bs-toggle="tooltip" data-bs-placement="top" title="Tender team declined participation"<% } else {%>data-bs-toggle="tooltip" data-bs-placement="top" title="Tender team participation is pending"<% } %>>
                 <div role="tab">
                   <span class="bs-stepper-circle <% if (matchingTender.tenderTeamDecision === "accept") { %>bg-success<% } else if (matchingTender.tenderTeamDecision === "decline") { %>bg-danger<% } else {%>bg-light text-dark border border-secondary<% } %>">3</span>
                   <span class="bs-stepper-label">Participation</span>
                 </div>
               </div>
               <div class="line"></div>
-              <div class="step px-2">
+              <div class="step px-2" <% if (matchingTender.tenderTeamDecision === "accept" && matchingTender.isSubmitted) { %>data-bs-toggle="tooltip" data-bs-placement="top" title="Tender submission is done"<% } else if (matchingTender.tenderTeamDecision === "decline") {%>data-bs-toggle="tooltip" data-bs-placement="top" title="Tender submission will not occur"<% } else {%>data-bs-toggle="tooltip" data-bs-placement="top" title="Tender submission is pending"<% } %>>
                 <div role="tab">
-                  <span class="bs-stepper-circle">4</span>
+                  <span class="bs-stepper-circle <% if (matchingTender.tenderTeamDecision === "accept" && matchingTender.isSubmitted) { %>bg-success<% } else {%>bg-light text-dark border border-secondary<% } %>">4</span>
                   <span class="bs-stepper-label">Submission</span>
                 </div>
               </div>
               <div class="line"></div>
-              <div class="step px-2">
+              <div class="step px-2" <% if ((matchingTender.submissionFeedback === "winAll" || matchingTender.submissionFeedback === "winPartly") && matchingTender.isSubmitted) { %>data-bs-toggle="tooltip" data-bs-placement="top" title="Feedback is received and positive"<% } else if (matchingTender.submissionFeedback === "loose") {%>data-bs-toggle="tooltip" data-bs-placement="top" title="Feedback is received and negative"<% } else if (!matchingTender.tenderTeamDecision || (matchingTender.tenderTeamDecision === "accept" && !matchingTender.isSubmitted)) {%>data-bs-toggle="tooltip" data-bs-placement="top" title="No feedback yet"<% } else { %>data-bs-toggle="tooltip" data-bs-placement="top" title="No feedback will be received"<% } %>>
                 <div role="tab">
-                  <span class="bs-stepper-circle">5</span>
+                  <span class="bs-stepper-circle <% if ((matchingTender.submissionFeedback === "winAll" || matchingTender.submissionFeedback === "winPartly") && matchingTender.isSubmitted) { %>bg-success<% } else if (matchingTender.tenderTeamDecision === "decline" || matchingTender.submissionFeedback === "loose") {%>bg-danger<% } else {%>bg-light text-dark border border-secondary<% } %>">5</span>
                   <span class="bs-stepper-label">Feedback</span>
                 </div>
               </div>
@@ -102,7 +102,7 @@
               </tr>
               <tr>
                 <th scope="row">Preadvised</th>
-                <td><% if (matchingTender.isPreadvised) { %>Tender was preadvised<br><span class="font-monospace me-2"><%= matchingTender.preadviseID %></span><% } else { %><i class="twa twa-warning me-2"></i>Tender was not preadvised<% } %></td>
+                <td><% if (matchingTender.preadvise) { %>Tender was preadvised<br><span class="font-monospace me-2"><%= matchingTender.preadviseID %></span><% } else { %><span data-bs-toggle="tooltip" data-bs-placement="top" title="All tenders must be pre-advised"><i class="twa twa-warning me-2"></i>Tender was not preadvised</span><% } %></td>
               </tr>
               <tr>
                 <th scope="row">Sugar ID</th>
@@ -252,7 +252,7 @@
               </tr>
               <tr>
                 <th scope="row">History</th>
-                <td><% if (matchingTender.history[0]==="historyNone" ) { %><i class="twa twa-warning me-2"></i>No history<% } else { for (i=0; i < matchingTender.history.length; i++) { if (i!==matchingTender.history.length -1){ if (matchingTender.history[i] === "historyAirOcean") {%><%=`${history[matchingTender.history[i]]}`%> (<i><%=`${matchingTender.existingCustomerSegment}`%></i>)<br><% } else {%><%=`${history[matchingTender.history[i]]}`%><br><% }} else { %><%=`${history[matchingTender.history[i]]}`%><%} } }%></td>
+                <td><% if (matchingTender.history[0]==="historyNone" ) { %><span data-bs-toggle="tooltip" data-bs-placement="top" title="Unusual value"><i class="twa twa-warning me-2"></i>No history</span><% } else { for (i=0; i < matchingTender.history.length; i++) { if (i!==matchingTender.history.length -1){ if (matchingTender.history[i] === "historyAirOcean") {%><%=`${history[matchingTender.history[i]]}`%> (<i><%=`${matchingTender.existingCustomerSegment}`%></i>)<br><% } else {%><%=`${history[matchingTender.history[i]]}`%><br><% }} else { %><%=`${history[matchingTender.history[i]]}`%><%} } }%></td>
               </tr>
               <tr>
                 <th scope="row">Visit frequency</th>
@@ -272,7 +272,7 @@
               </tr>
               <tr>
                 <th scope="row">Feedback availability</th>
-                <td><% if (matchingTender.feedbackAvailable === "yes") {%>Yes<%} else if (matchingTender.feedbackAvailable === "no") {%><i class="twa twa-warning me-2"></i>No<%} else {%><i class="twa twa-warning me-2"></i>Unknown<%}%></td>
+                <td><% if (matchingTender.feedbackAvailable === "yes") {%>Yes<%} else if (matchingTender.feedbackAvailable === "no") {%><span data-bs-toggle="tooltip" data-bs-placement="top" title="Unusual value"><i class="twa twa-warning me-2"></i>No</span><%} else {%><span data-bs-toggle="tooltip" data-bs-placement="top" title="Unusual value"><i class="twa twa-warning me-2"></i>Unknown</span><%}%></td>
               </tr>
               <tr>
                 <th scope="row">Contact name</th>
@@ -288,7 +288,7 @@
               </tr>
               <tr>
                 <th scope="row">Contact is decision maker</th>
-                <td><% if (matchingTender.decisionMaker === "yes") {%>Yes<% }else if (matchingTender.decisionMaker === "partly") { %>Partly<% } else { %><i class="twa twa-warning me-2"></i>No<% } %></td>
+                <td><% if (matchingTender.decisionMaker === "yes") {%>Yes<% }else if (matchingTender.decisionMaker === "partly") { %>Partly<% } else { %><span data-bs-toggle="tooltip" data-bs-placement="top" title="Unusual value"><i class="twa twa-warning me-2"></i>No</span><% } %></td>
               </tr>
               <tr>
                 <th scope="row">Potential</th>
@@ -304,11 +304,11 @@
             <tbody>
               <tr>
                 <th scope="row">Documents uploaded</th>
-                <td><% if (filesUploaded.length) {for (i=0; i < filesUploaded.length; i++) { if (i!==filesUploaded.length -1){%><%=`${filesUploaded[i]}`%><br><% } else { %><%=`${filesUploaded[i]}`%><% } } } else { %><i class="twa twa-warning me-2"></i>No files uploaded<% } %></td>
+                <td><% if (filesUploaded.length) {for (i=0; i < filesUploaded.length; i++) { if (i!==filesUploaded.length -1){%><%=`${filesUploaded[i]}`%><br><% } else { %><%=`${filesUploaded[i]}`%><% } } } else { %><span data-bs-toggle="tooltip" data-bs-placement="top" title="Unusual value"><i class="twa twa-warning me-2"></i>No files uploaded</span><% } %></td>
               </tr>
               <tr>
                 <th scope="row">Additional comments</th>
-                <td><% if (!matchingTender.additionalComment) {%><i class="twa twa-warning me-2"></i>No comments added<%} else { %><%= matchingTender.additionalComment %><% } %></td>
+                <td><% if (!matchingTender.additionalComment) {%><span data-bs-toggle="tooltip" data-bs-placement="top" title="Unusual value"><i class="twa twa-warning me-2"></i>No comments added</span><%} else { %><%= matchingTender.additionalComment %><% } %></td>
               </tr>
             </tbody>
           </table>

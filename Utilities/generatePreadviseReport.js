@@ -24,7 +24,7 @@ const {
 
 // ----- Report generation functions
 const generatePreadviseReport = async function (preadvisedId, fileIdentifier) {
-    const matchingTender = await PreadvisedTender.findById(preadvisedId);
+    const matchingTender = await PreadvisedTender.findById(preadvisedId).populate("register");
     const pdfContent = await fs.readFile("./reports/templates/reportTemplate_preadvise.pdf");
     const pdfDoc = await PDFDocument.load(pdfContent);
     pdfDoc.registerFontkit(fontkit);
@@ -70,183 +70,202 @@ const generatePreadviseReport = async function (preadvisedId, fileIdentifier) {
         form.getCheckBox("hasRailFreight").check()
     }
     const airFreightVolumeField = form.getTextField("airFreightVolume")
-    airFreightVolumeField.setText(`${matchingTender.airFreightVolume.toLocaleString('en-US', { minimumFractionDigits: 2 })}`)
+    if (!matchingTender.airFreightVolume) {
+        airFreightVolumeField.setText("---")
+    } else {
+        airFreightVolumeField.setText(`${matchingTender.airFreightVolume.toLocaleString('en-US', { minimumFractionDigits: 2 })}`)
+    }
     const seaFreightFCLVolumeField = form.getTextField("seaFreightFCLVolume")
-    seaFreightFCLVolumeField.setText(`${matchingTender.seaFreightFCLVolume.toLocaleString('en-US', { minimumFractionDigits: 2 })}`)
+    if (!matchingTender.seaFreightFCLVolume) {
+        seaFreightFCLVolumeField.setText("---")
+    } else {
+        seaFreightFCLVolumeField.setText(`${matchingTender.seaFreightFCLVolume.toLocaleString('en-US', { minimumFractionDigits: 2 })}`)
+    }
     const seaFreightLCLVolumeField = form.getTextField("seaFreightLCLVolume")
-    seaFreightLCLVolumeField.setText(`${matchingTender.seaFreightLCLVolume.toLocaleString('en-US', { minimumFractionDigits: 2 })}`)
+    if (!matchingTender.seaFreightLCLVolume) {
+        seaFreightLCLVolumeField.setText("---")
+    } else {
+        seaFreightLCLVolumeField.setText(`${matchingTender.seaFreightLCLVolume.toLocaleString('en-US', { minimumFractionDigits: 2 })}`)
+    }
     const railFreightVolumeField = form.getTextField("railFreightVolume")
-    railFreightVolumeField.setText(`${matchingTender.railFreightVolume.toLocaleString('en-US', { minimumFractionDigits: 2 })}`)
+    if (!matchingTender.railFreightVolume) {
+        railFreightVolumeField.setText("---")
+    }
+    else {
+        railFreightVolumeField.setText(`${matchingTender.railFreightVolume.toLocaleString('en-US', { minimumFractionDigits: 2 })}`)
+    }
 
-        if(matchingTender.keyTradelanes.includes("africaToAfrica")){
+    if(matchingTender.keyTradelanes.includes("africaToAfrica")){
         const africaToAfricaBox = form.getCheckBox("africaToAfrica")
         africaToAfricaBox.check()
-        }
-        if(matchingTender.keyTradelanes.includes("africaToAmericas")){
+    }
+    if(matchingTender.keyTradelanes.includes("africaToAmericas")){
         const africaToAmericasBox = form.getCheckBox("africaToAmericas")
         africaToAmericasBox.check()
-        }
-        if(matchingTender.keyTradelanes.includes("africaToAsia")){
+    }
+    if(matchingTender.keyTradelanes.includes("africaToAsia")){
         const africaToAsiaBox = form.getCheckBox("africaToAsia")
         africaToAsiaBox.check()
-        }
-        if(matchingTender.keyTradelanes.includes("africaToEurope")){
+    }
+    if(matchingTender.keyTradelanes.includes("africaToEurope")){
         const africaToEuropeBox = form.getCheckBox("africaToEurope")
         africaToEuropeBox.check()
-        }
-        if(matchingTender.keyTradelanes.includes("africaToOceania")){
+    }
+    if(matchingTender.keyTradelanes.includes("africaToOceania")){
         const africaToOceaniaBox = form.getCheckBox("africaToOceania")
         africaToOceaniaBox.check()
-        }
-        if(matchingTender.keyTradelanes.includes("americasToAfrica")){
+    }
+    if(matchingTender.keyTradelanes.includes("americasToAfrica")){
         const americasToAfricaBox = form.getCheckBox("americasToAfrica")
         americasToAfricaBox.check()
-        }
-        if(matchingTender.keyTradelanes.includes("americasToAmericas")){
+    }
+    if(matchingTender.keyTradelanes.includes("americasToAmericas")){
         const americasToAmericasBox = form.getCheckBox("americasToAmericas")
         americasToAmericasBox.check()
-        }
-        if(matchingTender.keyTradelanes.includes("americasToAsia")){
+    }
+    if(matchingTender.keyTradelanes.includes("americasToAsia")){
         const americasToAsiaBox = form.getCheckBox("americasToAsia")
         americasToAsiaBox.check()
-        }
-        if(matchingTender.keyTradelanes.includes("americasToEurope")){
+    }
+    if(matchingTender.keyTradelanes.includes("americasToEurope")){
         const americasToEuropeBox = form.getCheckBox("americasToEurope")
         americasToEuropeBox.check()
-        }
-        if(matchingTender.keyTradelanes.includes("americasToOceania")){
+    }
+    if(matchingTender.keyTradelanes.includes("americasToOceania")){
         const americasToOceaniaBox = form.getCheckBox("americasToOceania")
         americasToOceaniaBox.check()
-        }
-        if(matchingTender.keyTradelanes.includes("asiaToAfrica")){
+    }
+    if(matchingTender.keyTradelanes.includes("asiaToAfrica")){
         const asiaToAfricaBox = form.getCheckBox("asiaToAfrica")
         asiaToAfricaBox.check()
-        }
-        if(matchingTender.keyTradelanes.includes("asiaToAmericas")){
+    }
+    if(matchingTender.keyTradelanes.includes("asiaToAmericas")){
         const asiaToAmericasBox = form.getCheckBox("asiaToAmericas")
         asiaToAmericasBox.check()
-        }
-        if(matchingTender.keyTradelanes.includes("asiaToAsia")){
+    }
+    if(matchingTender.keyTradelanes.includes("asiaToAsia")){
         const asiaToAsiaBox = form.getCheckBox("asiaToAsia")
         asiaToAsiaBox.check()
-        }
-        if(matchingTender.keyTradelanes.includes("asiaToEurope")){
+    }
+    if(matchingTender.keyTradelanes.includes("asiaToEurope")){
         const asiaToEuropeBox = form.getCheckBox("asiaToEurope")
         asiaToEuropeBox.check()
-        }
-        if(matchingTender.keyTradelanes.includes("asiaToOceania")){
+    }
+    if(matchingTender.keyTradelanes.includes("asiaToOceania")){
         const asiaToOceaniaBox = form.getCheckBox("asiaToOceania")
         asiaToOceaniaBox.check()
-        }
-        if(matchingTender.keyTradelanes.includes("europeToAfrica")){
+    }
+    if(matchingTender.keyTradelanes.includes("europeToAfrica")){
         const europeToAfricaBox = form.getCheckBox("europeToAfrica")
         europeToAfricaBox.check()
-        }
-        if(matchingTender.keyTradelanes.includes("europeToAmericas")){
+    }
+    if(matchingTender.keyTradelanes.includes("europeToAmericas")){
         const europeToAmericasBox = form.getCheckBox("europeToAmericas")
         europeToAmericasBox.check()
-        }
-        if(matchingTender.keyTradelanes.includes("europeToAsia")){
+    }
+    if(matchingTender.keyTradelanes.includes("europeToAsia")){
         const europeToAsiaBox = form.getCheckBox("europeToAsia")
         europeToAsiaBox.check()
-        }
-        if(matchingTender.keyTradelanes.includes("europeToEurope")){
+    }
+    if(matchingTender.keyTradelanes.includes("europeToEurope")){
         const europeToEuropeBox = form.getCheckBox("europeToEurope")
         europeToEuropeBox.check()
-        }
-        if(matchingTender.keyTradelanes.includes("europeToOceania")){
+    }
+    if(matchingTender.keyTradelanes.includes("europeToOceania")){
         const europeToOceaniaBox = form.getCheckBox("europeToOceania")
         europeToOceaniaBox.check()
-        }
-        if(matchingTender.keyTradelanes.includes("oceaniaToAfrica")){
+    }
+    if(matchingTender.keyTradelanes.includes("oceaniaToAfrica")){
         const oceaniaToAfricaBox = form.getCheckBox("oceaniaToAfrica")
         oceaniaToAfricaBox.check()
-        }
-        if(matchingTender.keyTradelanes.includes("oceaniaToAmericas")){
+    }
+    if(matchingTender.keyTradelanes.includes("oceaniaToAmericas")){
         const oceaniaToAmericasBox = form.getCheckBox("oceaniaToAmericas")
         oceaniaToAmericasBox.check()
-        }
-        if(matchingTender.keyTradelanes.includes("oceaniaToAsia")){
+    }
+    if(matchingTender.keyTradelanes.includes("oceaniaToAsia")){
         const oceaniaToAsiaBox = form.getCheckBox("oceaniaToAsia")
         oceaniaToAsiaBox.check()
-        }
-        if(matchingTender.keyTradelanes.includes("oceaniaToEurope")){
+    }
+    if(matchingTender.keyTradelanes.includes("oceaniaToEurope")){
         const oceaniaToEuropeBox = form.getCheckBox("oceaniaToEurope")
         oceaniaToEuropeBox.check()
-        }
-        if(matchingTender.keyTradelanes.includes("oceaniaToOceania")){
+    }
+    if(matchingTender.keyTradelanes.includes("oceaniaToOceania")){
         const oceaniaToOceaniaBox = form.getCheckBox("oceaniaToOceania")
         oceaniaToOceaniaBox.check()
-        }
+    }
 
-        if(!matchingTender.history.length > 0 || matchingTender.history === null || matchingTender.history === "historyNone"){
+    if(matchingTender.history === "historyNone" || matchingTender.history.includes("historyNone")){
         const historyNoneBox = form.getCheckBox("historyNone")
         historyNoneBox.check()
-        }
-        if(matchingTender.history.includes("historyAirOcean")){
+    }
+    if(matchingTender.history === "historyAirOcean" || matchingTender.history.includes("historyAirOcean")){
         const historyAirOceanBox = form.getCheckBox("historyAirOcean")
         historyAirOceanBox.check()
-        }
-        if(matchingTender.history.includes("historyPortLog")){
+    }
+    if(matchingTender.history === "historyPortLog" || matchingTender.history.includes("historyPortLog")){
         const historyPortLogBox = form.getCheckBox("historyPortLog")
         historyPortLogBox.check()
-        }
-        if(matchingTender.history.includes("historyContractLog")){
+    }
+    if(matchingTender.history === "historyContractLog" || matchingTender.history.includes("historyContractLog")){
         const historyContractLogBox = form.getCheckBox("historyContractLog")
         historyContractLogBox.check()
-        }
-        if(matchingTender.history.includes("historyRoadFreight")){
+    }
+    if(matchingTender.history === "historyRoadFreight" || matchingTender.history.includes("historyRoadFreight")){
         const historyRoadFreightBox = form.getCheckBox("historyRoadFreight")
         historyRoadFreightBox.check()
-        }
-        
-        if(matchingTender.existingCustomerSegment){
-        switch (matchingTender.existingCustomerSegment) {
-            case "A-customer":
-            const customerSegmentABox = form.getCheckBox("customerSegmentA")
-            customerSegmentABox.check()
-            break;
-            case "B-customer":
-            const customerSegmentBBox = form.getCheckBox("customerSegmentB")
-            customerSegmentBBox.check()
-            break;
-            case "C-customer":
-            const customerSegmentCBox = form.getCheckBox("customerSegmentC")
-            customerSegmentCBox.check()
-            break;
-        }
-        } else {
+    }
+    
+    if(matchingTender.existingCustomerSegment){
+    switch (matchingTender.existingCustomerSegment) {
+        case "A-customer":
+        const customerSegmentABox = form.getCheckBox("customerSegmentA")
+        customerSegmentABox.check()
+        break;
+        case "B-customer":
+        const customerSegmentBBox = form.getCheckBox("customerSegmentB")
+        customerSegmentBBox.check()
+        break;
+        case "C-customer":
+        const customerSegmentCBox = form.getCheckBox("customerSegmentC")
+        customerSegmentCBox.check()
+        break;
+    }
+    } else {
         const customerSegmentNoBox = form.getCheckBox("customerSegmentNo")
         customerSegmentNoBox.check()
-        }
+    }
 
-        if(matchingTender.additionalComment){
+    if(matchingTender.additionalComment){
         const additionalCommentField = form.getTextField("additionalComment")
         additionalCommentField.setText(`${matchingTender.additionalComment}`)
-        }
+    }
 
-        const reportIssueDateField = form.getTextField("reportIssueDate")
-        reportIssueDateField.setText(`${formatDate(currentDateAndTime())}`)
-        if(matchingTender.launched){
+    const reportIssueDateField = form.getTextField("reportIssueDate")
+    reportIssueDateField.setText(`${formatDate(currentDateAndTime())}`)
+
+    if(matchingTender.register){
         const tenderLaunchField = form.getTextField("tenderLaunch")
         tenderLaunchField.setText("Tender launched")
-        } else {
+    } else {
         const tenderLaunchField = form.getTextField("tenderLaunch")
         tenderLaunchField.setText("Tender not yet launched")
-        }
-        if(matchingTender.launchedTime){
-            const tenderLaunchDateField = form.getTextField("tenderLaunch")
-            tenderLaunchDateField.setText(`${formatDate(matchingTender.launchedTime)}`)
-            tenderLaunchDateField.updateAppearances(customFont)
-        } else {
-            const tenderLaunchDateField = form.getTextField("tenderLaunch")
-            tenderLaunchDateField.setText("---")
-            tenderLaunchDateField.updateAppearances(customFont)
-        }
+    }
 
-        for (let field of fields) {
-        field.enableReadOnly()
-        }
+    if(matchingTender.register){
+        const tenderLaunchDateField = form.getTextField("tenderLaunchDate")
+        tenderLaunchDateField.setText(`${formatDate(matchingTender.register.recordDate)}`)
+        tenderLaunchDateField.updateAppearances(customFont)
+    } else {
+        const tenderLaunchDateField = form.getTextField("tenderLaunchDate")
+        tenderLaunchDateField.setText("---")
+        tenderLaunchDateField.updateAppearances(customFont)
+    }
+
+    for (let field of fields) {
+    field.enableReadOnly()
+    }
 
     const newReportContent = await pdfDoc.save()
 
@@ -256,9 +275,6 @@ const generatePreadviseReport = async function (preadvisedId, fileIdentifier) {
     } catch (error) {
         console.log(`${colors.brightYellow.bgBrightRed("*!* ERROR *!*")} - Status Code: ${error.statusCode} - Message: ${error.message}`)
     }
-    // await fs.writeFile(`./reports/reportsGenerated/${matchingTender.companyName}_${fileIdentifier}.pdf`, newReportContent, (err) => {
-    //     if (err) throw err;
-    //     console.log("The pdf report was succesfully created !");
-    // });
+
 }
 module.exports = generatePreadviseReport

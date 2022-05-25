@@ -8,6 +8,7 @@
     <title>Moonshot | Home</title>
     <%- include("../partials/commonStyles.ejs") %>
     <%- include("../partials/commonFonts.ejs") %>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css">
 </head>
 
 <body>
@@ -25,6 +26,28 @@
     <div class="container mb-3">
     <h1><%= matchingTender.companyName %></h1>
     <h2>Tender pre-advised</h2>
+  </div>
+  <div class="row justify-content-center my-5">
+    <div class="col-6">
+      <div class="bs-stepper">
+        <div class="bs-stepper-header" role="tablist">
+          <!-- your steps here -->
+          <div class="step px-2" <% if (matchingTender.id) { %>data-bs-toggle="tooltip" data-bs-placement="top" title="Tender is pre-advised"<% } else {%>data-bs-toggle="tooltip" data-bs-placement="top" title="Tender is not pre-advised"<% } %>>
+            <div role="tab">
+              <span class="bs-stepper-circle <% if (matchingTender.id) { %>bg-success<% } else { %>bg-danger<% } %>">1</span>
+              <span class="bs-stepper-label">Preadvise</span>
+            </div>
+          </div>
+          <div class="line"></div>
+          <div class="step px-2" <% if (matchingTender.register) { %>data-bs-toggle="tooltip" data-bs-placement="top" title="Tender is launched"<% } else { %>data-bs-toggle="tooltip" data-bs-placement="top" title="Tender is not launched yet"<% } %>>
+            <div role="tab">
+              <span class="bs-stepper-circle <% if (matchingTender.register) { %>bg-success<% } else { %>bg-light text-dark border border-secondary<% } %>">2</span>
+              <span class="bs-stepper-label">Registration</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
     <table class="table">
         <tbody>
@@ -120,9 +143,9 @@
                   </nav>
               </div>
               <div class="rounded-3 border my-3 p-3 sticky-lg-top">
-                <nav class="nav flex-column">
+                <nav class="nav flex-column" <% if (matchingTender.register) { %>data-bs-toggle="tooltip" data-bs-placement="left" title="This pre-advise is already launched"<% } %>>
                     <h5 class="text-center">Launch the tender</h5>
-                    <a class="btn btn-disabled btn-outline-success btn-sm border-success me-1" href="/preadvise/launch/<%= matchingTender.id %>"><i class="bi bi-send-check me-1"></i>Launch</a>
+                    <a class="btn btn-outline-success btn-sm border-success me-1 <% if (matchingTender.register) { %>disabled<% } %>" href="/preadvise/launch/<%= matchingTender.id %>"><i class="bi bi-send-check me-1"></i>Launch</a>
                 </nav>
               </div>
               <div class="rounded-3 border my-3 p-3 sticky-lg-top">

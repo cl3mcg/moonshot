@@ -17,11 +17,16 @@ const StandardFonts = require("pdf-lib").StandardFonts;
 const fontkit = require("@pdf-lib/fontkit")
 // const Joi = require("joi") // Joi is exported in its own file called joiSchema.js, no need to require it again here.
 const fileUpload = require("express-fileupload");
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
 const {
   preadviseSchema,
   registerSchema,
   officeSchema,
 } = require("./utilities/joiSchemas.js");
+
+const delayEmail = require("./utilities/cronDelayEmail.js");
+
 // ----- Extended error class
 const ExpressError = require("./utilities/expressError.js");
 
@@ -29,6 +34,7 @@ const ExpressError = require("./utilities/expressError.js");
 const PreadvisedTender = require("./models/preadvisedTender.js");
 const Office = require("./models/office.js");
 const RegisteredTender = require("./models/registeredTender.js");
+const User = require("./models/user.js");
 
 // ----- Ressources
 // const countriesData = require("./public/ressources/countries.json");
@@ -42,6 +48,11 @@ const RegisteredTender = require("./models/registeredTender.js");
 // const businessVerticals = require("./public/ressources/businessVerticals.json");
 // const specialHandling = require("./public/ressources/specialHandling.json");
 // const freightForwarders = require("./public/ressources/freightForwarders.json");
+
+// ----- Initialization functions
+
+const initEmailScheduler = require("./utilities/cronInitDelayEmail.js");
+initEmailScheduler();
 
 // ----- Middlewares
 app.use(express.static(path.join(__dirname, "public")));
@@ -59,14 +70,25 @@ const sessionConfig = {
   resave: false,
   saveUninitialized: true,
   cookie: {
-      httpOnly: true,
-      expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
-      maxAge: 1000 * 60 * 60 * 24 * 7
+    sameSite: "lax",
+    // secure: true,
+    httpOnly: true,
+    expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+    maxAge: 1000 * 60 * 60 * 24 * 7
   }
 }
-app.use(session(sessionConfig))
 
+app.use(session(sessionConfig))
 app.use(flash())
+
+// ----- Passport setup and middleware
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 app.use(function (req, res, next) {
   res.locals.success = req.flash("success")
@@ -114,21 +136,31 @@ app.get("/start", function (req, res) {
 
 // ----- Routes MOONSHOT PREADVISED
 
-const preadvise = require("./routes/preadvise")
+const preadvise = require("./routes/preadvise.js")
 app.use("/preadvise", preadvise)
 
 
 // ----- Routes MOONSHOT REGISTRATION
 
-const register = require("./routes/register")
+const register = require("./routes/register.js")
 app.use("/register", register)
-
 
 
 // ----- Routes MOONSHOT OFFICES
 
-const office = require("./routes/office")
+const office = require("./routes/office.js")
 app.use("/office", office)
+
+// ----- Routes MOONSHOT DASHBOARD
+
+const dashboard = require("./routes/dashboard.js")
+app.use("/dashboard", dashboard)
+
+// ----- Routes MOONSHOT USERS
+
+const user = require("./routes/user.js");
+const { NONAME } = require("dns");
+app.use("/user", user)
 
 
 // ----- Routes for TEST PURPOSES
@@ -326,221 +358,11 @@ app.get("/test/:fileName", async function (req, res) {
   res.redirect("/")
 });
 
-// app.get("/test/:fileName", async function (req, res) {
-//   const fileName = `${req.params.fileName}.xlsx`;
-//   console.log(fileName);
-//   const wb = new Excel.Workbook();
-//   const ws = wb.addWorksheet("My Sheet");
-//   ws.getCell("A1").value = "John Doe";
-//   ws.getCell("B1").value = "gardener";
-//   ws.getCell("C1").value = new Date().toLocaleString();
-
-//   let createFile = async function () {
-//     await wb.xlsx.writeFile(fileName);
-//     console.log("File created");
-//     try {
-//       fs.mkdir(`./uploads/test/${req.params.fileName}`, { recursive: true });
-//       fs.rename(
-//         `./${fileName}`,
-//         `./uploads/test/${req.params.fileName}/${fileName}`
-//       );
-//     } catch (err) {
-//       console.log("File not moved");
-//       console.log(err.message);
-//     }
-//   };
-
-//   try {
-//     createFile();
-//   } catch (err) {
-//     console.log("File not created");
-//     console.log(err.message);
-//   }
-// });
-
-// app.get("/test/:fileName/:id", async function (req, res) {
-//   const fileName = `${req.params.fileName}.xlsx`;
-//   const matchingTender = await PreadvisedTender.findById(req.params.id);
-//     const wb = new Excel.Workbook();
-//     await wb.xlsx.readFile("./reports/templates/reportTemplate_preadvise.xlsx")
-//     const ws = wb.getWorksheet("Sheet1");
-//     ws.getCell("E4").value = "Jean-Marie DOE";
-//     ws.getCell("E5").value = `${matchingTender.countryLocation} - ${findCountryName(matchingTender.countryLocation)}`;
-//     ws.getCell("E6").value = matchingTender.companyName;
-//     ws.getCell("E7").value = matchingTender.sugarID;
-//     ws.getCell("E10").value = matchingTender.expectedReceiveDate;
-//     if (matchingTender.transportMode.includes("hasAirFreight")) {
-//       ws.getCell("A17").value = "✓";
-//       ws.getCell("G17").value = matchingTender.airFreightVolume;
-//     } else {
-//       ws.getCell("A17").value = "╳";
-//       ws.getCell("A17").font = {
-//         color: { argb: 'FF0B1320' }
-//       }; 
-//     }
-//     if (matchingTender.transportMode.includes("hasSeaFreightFCL")) {
-//       ws.getCell("B17").value = "✓";
-//       ws.getCell("H17").value = matchingTender.seaFreightFCLVolume;
-//     } else {
-//       ws.getCell("B17").value = "╳";
-//       ws.getCell("B17").font = {
-//         color: { argb: 'FF0B1320' }
-//       }; 
-//     }
-//     if (matchingTender.transportMode.includes("hasSeaFreightLCL")) {
-//       ws.getCell("C17").value = "✓";
-//       ws.getCell("I17").value = matchingTender.seaFreightLCLVolume;
-//     } else {
-//       ws.getCell("C17").value = "╳";
-//       ws.getCell("C17").font = {
-//         color: { argb: 'FF0B1320' }
-//       }; 
-//     }
-//     if (matchingTender.transportMode.includes("hasRailFreight")) {
-//       ws.getCell("D17").value = "✓";
-//       ws.getCell("J17").value = matchingTender.railFreightVolume;
-//     } else {
-//       ws.getCell("D17").value = "╳";
-//       ws.getCell("D17").font = {
-//         color: { argb: 'FF0B1320' }
-//       }; 
-//     }
-
-//     if (matchingTender.history.includes("historyAirOcean")) {
-//       ws.getCell("A24").value = "✓";
-//       if (matchingTender.existingCustomerSegment === "A-customer") {
-//         ws.getCell("G24").value = "✓";
-//         ws.getCell("H24").value = "╳";
-//         ws.getCell("H24").font = {
-//           color: { argb: 'FF0B1320' }
-//         }; 
-//         ws.getCell("I24").value = "╳";
-//         ws.getCell("I24").font = {
-//           color: { argb: 'FF0B1320' }
-//         }; 
-//       } else if (matchingTender.existingCustomerSegment === "B-customer") {
-//         ws.getCell("G24").value = "╳";
-//         ws.getCell("G24").font = {
-//           color: { argb: 'FF0B1320' }
-//         }; 
-//         ws.getCell("H24").value = "✓";
-//         ws.getCell("I24").value = "╳";
-//         ws.getCell("I24").font = {
-//           color: { argb: 'FF0B1320' }
-//         }; 
-//       } else if (matchingTender.existingCustomerSegment === "C-customer") {
-//         ws.getCell("G24").value = "╳";
-//         ws.getCell("G24").font = {
-//           color: { argb: 'FF0B1320' }
-//         }; 
-//         ws.getCell("H24").value = "╳";
-//         ws.getCell("H24").font = {
-//           color: { argb: 'FF0B1320' }
-//         }; 
-//         ws.getCell("I24").value = "✓";
-//       }
-//     } else {
-//       ws.getCell("A24").value = "╳";
-//       ws.getCell("A24").font = {
-//         color: { argb: 'FF0B1320' }
-//       }; 
-//     }
-//     if (matchingTender.history.includes("historyRoadFreight")) {
-//       ws.getCell("B24").value = "✓";
-//     } else {
-//       ws.getCell("B24").value = "╳";
-//       ws.getCell("B24").font = {
-//         color: { argb: 'FF0B1320' }
-//       }; 
-//     }
-//     if (matchingTender.history.includes("historyContractLog")) {
-//       ws.getCell("C24").value = "✓";
-//     } else {
-//       ws.getCell("C24").value = "╳";
-//       ws.getCell("C24").font = {
-//         color: { argb: 'FF0B1320' }
-//       }; 
-//     }
-//     if (matchingTender.history.includes("historyPortLog")) {
-//       ws.getCell("D24").value = "✓";
-//     } else {
-//       ws.getCell("D24").value = "╳";
-//       ws.getCell("D24").font = {
-//         color: { argb: 'FF0B1320' }
-//       }; 
-//     }
-//     if (matchingTender.history.includes("historyNone")) {
-//       ws.getCell("E24").value = "✓";
-//     } else {
-//       ws.getCell("E24").value = "╳";
-//       ws.getCell("E24").font = {
-//         color: { argb: 'FF0B1320' }
-//       }; 
-//     } ws.getCell("E24").font = {
-//         color: { argb: 'FF0B1320' }
-//       }; 
-
-//     if(matchingTender.keyTradelanes.includes("africaToAfrica")){ws.getCell("C30").value = "✓"} else {ws.getCell("C30").value = "╳" ;ws.getCell("C30").font = {color: { argb: 'FF0B1320' }}}
-//     if(matchingTender.keyTradelanes.includes("africaToAmericas")){ws.getCell("D30").value = "✓"} else {ws.getCell("D30").value = "╳" ;ws.getCell("D30").font = {color: { argb: 'FF0B1320' }}}
-//     if(matchingTender.keyTradelanes.includes("africaToAsia")){ws.getCell("E30").value = "✓"} else {ws.getCell("E30").value = "╳" ;ws.getCell("E30").font = {color: { argb: 'FF0B1320' }}}
-//     if(matchingTender.keyTradelanes.includes("africaToEurope")){ws.getCell("F30").value = "✓"} else {ws.getCell("F30").value = "╳" ;ws.getCell("F30").font = {color: { argb: 'FF0B1320' }}}
-//     if(matchingTender.keyTradelanes.includes("africaToOceania")){ws.getCell("G30").value = "✓"} else {ws.getCell("G30").value = "╳" ;ws.getCell("G30").font = {color: { argb: 'FF0B1320' }}}
-//     if(matchingTender.keyTradelanes.includes("americasToAfrica")){ws.getCell("C31").value = "✓"} else {ws.getCell("C31").value = "╳" ;ws.getCell("C31").font = {color: { argb: 'FF0B1320' }}}
-//     if(matchingTender.keyTradelanes.includes("americasToAmericas")){ws.getCell("D31").value = "✓"} else {ws.getCell("D31").value = "╳" ;ws.getCell("D31").font = {color: { argb: 'FF0B1320' }}}
-//     if(matchingTender.keyTradelanes.includes("americasToAsia")){ws.getCell("E31").value = "✓"} else {ws.getCell("E31").value = "╳" ;ws.getCell("E31").font = {color: { argb: 'FF0B1320' }}}
-//     if(matchingTender.keyTradelanes.includes("americasToEurope")){ws.getCell("F31").value = "✓"} else {ws.getCell("F31").value = "╳" ;ws.getCell("F31").font = {color: { argb: 'FF0B1320' }}}
-//     if(matchingTender.keyTradelanes.includes("americasToOceania")){ws.getCell("G31").value = "✓"} else {ws.getCell("G31").value = "╳" ;ws.getCell("G31").font = {color: { argb: 'FF0B1320' }}}
-//     if(matchingTender.keyTradelanes.includes("asiaToAfrica")){ws.getCell("C32").value = "✓"} else {ws.getCell("C32").value = "╳" ;ws.getCell("C32").font = {color: { argb: 'FF0B1320' }}}
-//     if(matchingTender.keyTradelanes.includes("asiaToAmericas")){ws.getCell("D32").value = "✓"} else {ws.getCell("D32").value = "╳" ;ws.getCell("D32").font = {color: { argb: 'FF0B1320' }}}
-//     if(matchingTender.keyTradelanes.includes("asiaToAsia")){ws.getCell("E32").value = "✓"} else {ws.getCell("E32").value = "╳" ;ws.getCell("E32").font = {color: { argb: 'FF0B1320' }}}
-//     if(matchingTender.keyTradelanes.includes("asiaToEurope")){ws.getCell("F32").value = "✓"} else {ws.getCell("F32").value = "╳" ;ws.getCell("F32").font = {color: { argb: 'FF0B1320' }}}
-//     if(matchingTender.keyTradelanes.includes("asiaToOceania")){ws.getCell("G32").value = "✓"} else {ws.getCell("G32").value = "╳" ;ws.getCell("G32").font = {color: { argb: 'FF0B1320' }}}
-//     if(matchingTender.keyTradelanes.includes("europeToAfrica")){ws.getCell("C33").value = "✓"} else {ws.getCell("C33").value = "╳" ;ws.getCell("C33").font = {color: { argb: 'FF0B1320' }}}
-//     if(matchingTender.keyTradelanes.includes("europeToAsia")){ws.getCell("D33").value = "✓"} else {ws.getCell("D33").value = "╳" ;ws.getCell("D33").font = {color: { argb: 'FF0B1320' }}}
-//     if(matchingTender.keyTradelanes.includes("europeToAmericas")){ws.getCell("E33").value = "✓"} else {ws.getCell("E33").value = "╳" ;ws.getCell("E33").font = {color: { argb: 'FF0B1320' }}}
-//     if(matchingTender.keyTradelanes.includes("europeToEurope")){ws.getCell("F33").value = "✓"} else {ws.getCell("F33").value = "╳" ;ws.getCell("F33").font = {color: { argb: 'FF0B1320' }}}
-//     if(matchingTender.keyTradelanes.includes("europeToOceania")){ws.getCell("G33").value = "✓"} else {ws.getCell("G33").value = "╳" ;ws.getCell("G33").font = {color: { argb: 'FF0B1320' }}}
-//     if(matchingTender.keyTradelanes.includes("oceaniaToAfrica")){ws.getCell("C34").value = "✓"} else {ws.getCell("C34").value = "╳" ;ws.getCell("C34").font = {color: { argb: 'FF0B1320' }}}
-//     if(matchingTender.keyTradelanes.includes("oceaniaToAsia")){ws.getCell("D34").value = "✓"} else {ws.getCell("D34").value = "╳" ;ws.getCell("D34").font = {color: { argb: 'FF0B1320' }}}
-//     if(matchingTender.keyTradelanes.includes("oceaniaToEurope")){ws.getCell("E34").value = "✓"} else {ws.getCell("E34").value = "╳" ;ws.getCell("E34").font = {color: { argb: 'FF0B1320' }}}
-//     if(matchingTender.keyTradelanes.includes("oceaniaToOceania")){ws.getCell("F34").value = "✓"} else {ws.getCell("F34").value = "╳" ;ws.getCell("F34").font = {color: { argb: 'FF0B1320' }}}
-//     if(matchingTender.keyTradelanes.includes("oceaniaToOceania")){ws.getCell("G34").value = "✓"} else {ws.getCell("G34").value = "╳" ;ws.getCell("G34").font = {color: { argb: 'FF0B1320' }}}
-     
-//     if(!matchingTender.additionalComment === null){
-//       ws.getCell("A37").value = matchingTender.additionalComment
-//     }
-
-//     ws.getCell("E42").value = currentDateAndTime()
-
-//     if(matchingTender.launched){
-//       ws.getCell("E37").value = "Yes"
-//       ws.getCell("E38").value = matchingTender.launchedTime
-//     }
-
-//   let createFile = async function () {
-//     await wb.xlsx.writeFile(fileName);
-//     console.log("File created");
-//     try {
-//       let fileTimeStamp = `${new Date().getFullYear()}${new Date().getMonth()+1}${new Date().getDate()}${new Date().getHours()}${new Date().getMinutes()}${new Date().getSeconds()}`
-//       fs.mkdir(`./reports/${req.params.fileName}_${fileTimeStamp}`, { recursive: true });
-//       fs.rename(`./${fileName}`,`./reports/${req.params.fileName}_${fileTimeStamp}/${fileName}`);
-//     } catch (err) {
-//       console.log("File not moved");
-//       console.log(err.message);
-//     }
-//   };
-
-//   try {
-//     createFile();
-//   } catch (err) {
-//     console.log("File not created");
-//     console.log(err.message);
-//   }
-
-//   res.redirect("/")
-
-// });
-
+app.get("/test/emailDelay/:id", async function (req, res){
+let matchingId = req.params.id;
+delayEmail(matchingId)
+res.redirect("/")
+})
 
 // ----- Routes for ERROR HANDLING
 

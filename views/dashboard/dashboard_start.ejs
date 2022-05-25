@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moonshot | Dashboard</title>
+    <%- include("../partials/commonStyles.ejs") %>
+    <%- include("../partials/commonFonts.ejs") %>
+</head>
+<body>
+    <%- include("../partials/navbar.ejs") %>
+    <%- include("../partials/flash.ejs") %>
+<a href="/start" class="btn btn-secondary btn-sm d-inline-block z-index-1 position-relative top-0 start-0 mt-2 ms-3"><i class="bi bi-arrow-left-circle me-2"></i>Back</a>
+<div class="mt-2">
+    <h1 class="text-center">Dashboard</h1>
+    <div class="container rounded-3 mt-5">
+        <div class="container p-3">
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                <div class="col-sm-6">
+                    <div class="card">
+                        <div class="card-body">
+                        <h5 class="card-title">Space 1</h5>
+                        <p class="card-text">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Et repellat unde rem vero doloremque quod natus quis! Ipsum, eligendi! Optio corrupti sequi numquam. Deserunt, possimus amet aspernatur qui repellat sunt.</p>
+                        <a href="#" class="btn btn-primary">Go</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="card">
+                        <div class="card-body">
+                        <h5 class="card-title">Space 2</h5>
+                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos ipsa adipisci doloremque repellendus soluta placeat illo magni neque. Reiciendis distinctio amet nihil repellendus sit obcaecati quia enim atque repudiandae laudantium!</p>
+                        <a href="#" class="btn btn-primary">Go</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="card">
+                        <div class="card-body">
+                        <h5 class="card-title">Space 3</h5>
+                        <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus architecto consectetur facere quasi similique incidunt voluptatibus modi dignissimos atque. Rerum mollitia dolores accusantium illum tenetur nulla et eum esse iste.</p>
+                        <a href="#" class="btn btn-primary disabled">Soon</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+    <%- include("../partials/commonBootstrap.ejs") %>
+</body>
+</html>

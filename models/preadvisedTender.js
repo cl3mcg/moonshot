@@ -10,14 +10,6 @@ const preAdvisedTenderSchema = new Schema({
         type: Date,
         min: "2021-01-01"
     },
-    launched: {
-        type: Boolean,
-        required: true
-    },
-    launchedTime: {
-        type: Date,
-        min: "2021-01-01"
-    },
     countryLocation: {
         type: String,
         required: true
@@ -63,7 +55,19 @@ const preAdvisedTenderSchema = new Schema({
     existingCustomerSegment: {
         type: String,
     },
-    additionalComment: String
+    additionalComment: String,
+    // launched: {
+    //     type: Boolean,
+    //     required: true
+    // },
+    // launchedTime: {
+    //     type: Date,
+    //     min: "2021-01-01"
+    // },
+    register: {
+        type: Schema.Types.ObjectID,
+        ref: "registeredTender"
+    },
 })
 
-module.exports = mongoose.model("PreadvisedTender", preAdvisedTenderSchema)
+module.exports = mongoose.model("preadvisedTender", preAdvisedTenderSchema)

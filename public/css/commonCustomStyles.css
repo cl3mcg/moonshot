@@ -1,0 +1,16 @@
+html,
+body {
+    background-color: #fbfdff
+}
+
+.card {
+    transition: all 0.15s ease-out;
+}
+
+.card:hover {
+    box-shadow: 0 0 7px #AFC1D0;
+}
+
+.btn-okta {
+    cursor: not-allowed;
+}

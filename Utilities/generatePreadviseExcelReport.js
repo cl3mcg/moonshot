@@ -14,7 +14,7 @@ const {
   } = require("./commonFunctions.js");
 
 let generatePreadviseExcelReport = async function (newFilename) {
-  let allPreadvise = await PreadvisedTender.find({});
+  let allPreadvise = await PreadvisedTender.find({}).populate("register");
   const fileName = `${newFilename}.xlsx`;
   console.log(fileName);
   const wb = new Excel.Workbook();
@@ -90,16 +90,16 @@ let generatePreadviseExcelReport = async function (newFilename) {
 
   for (let preadvise of allPreadvise) {
     let dataToPush = []
-    dataToPush.push(preadvise._id)
+    dataToPush.push(preadvise.id)
     dataToPush.push(preadvise.recordDate)
     if (preadvise.lastModifiedDate) {
       dataToPush.push(preadvise.lastModifiedDate)
     } else {
       dataToPush.push("Not modified")
     }
-    if (preadvise.launched) {
-      dataToPush.push(preadvise.launched)
-      dataToPush.push(preadvise.launchedTime)
+    if (preadvise.register) {
+      dataToPush.push("Yes")
+      dataToPush.push(preadvise.register.recordDate)
     } else {
       dataToPush.push("Not launched")
       dataToPush.push("Not launched")

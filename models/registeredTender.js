@@ -7,11 +7,15 @@ const registeredTenderSchema = new Schema({
         required: true
     },
     lastModifiedDate: Date,
-    isPreadvised: {
-        type: Boolean,
-        required: true
+    // isPreadvised: {
+    //     type: Boolean,
+    //     required: true
+    // },
+    // preadviseID: String,
+    preadvise: {
+        type: Schema.Types.ObjectID,
+        ref: "preadvisedTender"
     },
-    preadviseID: String,
     countryLocation: {
         type: String,
         required: true
@@ -194,6 +198,10 @@ const registeredTenderSchema = new Schema({
     },
     tenderTeamComment: {
         type: String
+    },
+    tenderTeamSubmissionDate: {
+        type: Date,
+        min: "2021-01-01"
     }
 })
 

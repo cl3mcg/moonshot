@@ -10,6 +10,7 @@ const mongoose = require("mongoose")
 
 // ----- Database models
 const PreadvisedTender = require("./models/preadvisedTender.js")
+const RegisteredTender = require("./models/registeredTender.js")
 const Office = require("./models/office.js")
 
 // ----- Ressources
@@ -103,16 +104,22 @@ var randomIndex = function (array) {
 return Math.floor(Math.random()*array.length)
 }
 
-
 // ----- Routes MOONSHOT SEEDS - Seeds for preadvised tenders
 app.get("/", async function(req, res){
 
+    //----- PURGE DATABASE - Function to delete all data for pre-advised tenders and registered tenders
+const purgeDatabase = async function () {
+    await PreadvisedTender.deleteMany({})
+    await RegisteredTender.deleteMany({})
+}
+purgeDatabase()
+
 for (let i = 0; i < 25; i++){
-let seed_recordDate = randomDate(new Date(2021, 9, 1), new Date(2022, 3, 30));
+let seed_recordDate = randomDate(new Date(2022, 3, 15), new Date(2022, 4, 15));
 let seed_lastModifiedDate = null;
 let seed_companyName = fakeCompanies[Math.floor(Math.random()*40)]["Company Name"];
 let seed_sugarID = fakeCompanies[Math.floor(Math.random()*40)]["Ein"];
-let seed_expectedReceiveDate = randomDate(seed_recordDate, new Date(2022, 2, 30));
+let seed_expectedReceiveDate = randomDate(seed_recordDate, new Date(2022, 6, 30));
 let seed_transportMode = [];
 let transportModeRand = function () {for (let i = 0; i < randomIndex(transportModeOptions)+1; i++) {
     let randomNum = Math.floor(Math.random()*10)+1
