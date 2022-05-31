@@ -17,7 +17,7 @@
 <div class="container">
   <div class="row align-items-center my-3">
     <div class="col">
-      <p><a class="btn btn-light btn-sm border" href="/preadvise/index"><i class="bi bi-arrow-left-circle me-1"></i>Back</a></p>
+      <p><a class="btn btn-light btn-sm border" <% if (currentUser.isTenderTeam || currentUser.isUser) {%>href="/preadvise/index"<% } else {%>href="/preadvise/history"<% } %>><i class="bi bi-arrow-left-circle me-1"></i>Back</a></p>
     </div>
     <div class="col d-flex justify-content-end">
       <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="bi bi-gear me-1"></i>Options</button>
@@ -64,8 +64,8 @@
             <td><%= matchingTender.sugarID %></td>
           </tr>
           <tr>
-            <th scope="row">User</th>
-            <td></td>
+            <th scope="row">Pre-advised by</th>
+            <td><% if (matchingTender.author) { %><%= matchingTender.author.email %><% } else { %><span data-bs-toggle="tooltip" data-bs-placement="top" title="Unusual value"><i class="twa twa-warning me-2"></i>Unknown user</span><% } %></td>
           </tr>
           <tr>
             <th scope="row">Country related</th>
@@ -104,6 +104,7 @@
       </table>
 </div>
 <!-- Modal -->
+<% if (matchingTender.author.equals(currentUser) || matchingTender.author.isAdmin || matchingTender.author.isTenderTeam) { %>
 <div class="modal fade" id="deleteConfirmModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-fullscreen-md-down modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
@@ -126,6 +127,7 @@
     </div>
   </div>
 </div>
+<% } %>
 <!-- OFF-CANVAS MODAL below -->
 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
   <div class="offcanvas-header">
@@ -138,14 +140,14 @@
               <div class="rounded-3 border p-3 sticky-lg-top">
                   <nav class="nav flex-column">
                       <h5 class="text-center">Modify & delete</h5>
-                      <a class="btn btn-light btn-sm border mb-2" href="/preadvise/edit/<%= matchingTender.id %>"><i class="bi bi-pencil-square me-1"></i>Edit</a>
-                      <button class="btn btn-outline-danger btn-sm border-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal"><i class="bi bi-trash me-1"></i>Delete</button>
+                      <div <% if (matchingTender.register) { %>data-bs-toggle="tooltip" data-bs-placement="left" title="This pre-advise is already launched"<% } else if (!matchingTender.author.equals(currentUser)) {%>data-bs-toggle="tooltip" data-bs-placement="left" title="You can't edit this tender"<% } %>><a class="btn btn-light btn-sm border mb-2 w-100 <% if ((!matchingTender.author.equals(currentUser) && !matchingTender.author.isAdmin && !matchingTender.author.isTenderTeam) || matchingTender.register) { %>disabled<% } %>" href="/preadvise/edit/<%= matchingTender.id %>"><i class="bi bi-pencil-square me-1"></i>Edit</a></div>
+                      <div <% if (matchingTender.register) { %>data-bs-toggle="tooltip" data-bs-placement="left" title="This pre-advise is already launched"<% } else if (!matchingTender.author.equals(currentUser)) {%>data-bs-toggle="tooltip" data-bs-placement="left" title="You can't delete this tender"<% } %>><button class="btn btn-outline-danger btn-sm border-danger w-100" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" <% if ((!matchingTender.author.equals(currentUser) && !matchingTender.author.isAdmin && !matchingTender.author.isTenderTeam) || matchingTender.register) { %>disabled<% } %>><i class="bi bi-trash me-1"></i>Delete</button></div>
                   </nav>
               </div>
               <div class="rounded-3 border my-3 p-3 sticky-lg-top">
-                <nav class="nav flex-column" <% if (matchingTender.register) { %>data-bs-toggle="tooltip" data-bs-placement="left" title="This pre-advise is already launched"<% } %>>
+                <nav class="nav flex-column" <% if (matchingTender.register) { %>data-bs-toggle="tooltip" data-bs-placement="left" title="This pre-advise is already launched"<% } else if (!matchingTender.author.equals(currentUser)) {%>data-bs-toggle="tooltip" data-bs-placement="left" title="You can't launch this tender"<% } %>>
                     <h5 class="text-center">Launch the tender</h5>
-                    <a class="btn btn-outline-success btn-sm border-success me-1 <% if (matchingTender.register) { %>disabled<% } %>" href="/preadvise/launch/<%= matchingTender.id %>"><i class="bi bi-send-check me-1"></i>Launch</a>
+                    <a class="btn btn-outline-success btn-sm border-success me-1 <% if ((!matchingTender.author.equals(currentUser) && !matchingTender.author.isAdmin && !matchingTender.author.isTenderTeam) || matchingTender.register) { %>disabled<% } %>" href="/preadvise/launch/<%= matchingTender.id %>"><i class="bi bi-send-check me-1"></i>Launch</a>
                 </nav>
               </div>
               <div class="rounded-3 border my-3 p-3 sticky-lg-top">

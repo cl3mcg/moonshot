@@ -22,7 +22,11 @@
           <a class="nav-link" href="/office/start">Offices</a>
           </div>
           <div class="navbar-nav ms-auto">
+            <% if (!currentUser) { %>
             <a class="nav-link position-absolute top-50 end-0 translate-middle-y me-4" href="/user/login">Login / Register</a>
+            <% } else { %>
+            <a class="nav-link position-absolute top-50 end-0 translate-middle-y me-4" href="/user/logout">Logout</a>
+            <% } %>
           </div>
       </div>
   </div>

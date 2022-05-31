@@ -20,6 +20,14 @@ const businessVerticals = require("../public/ressources/businessVerticals.json")
 const tenderLaunchMethod = require("../public/ressources/tenderLaunchMethod.json")
 const decisionCriteria = require("../public/ressources/decisionCriteria.json")
 
+// ----- Middleware used
+
+const {
+  // ----- isLoggedIn middleware used to check if the user is properly logged in - Check the value of req.user stored in Express Session
+  isLoggedIn,
+  isTenderTeam
+} = require("../utilities/middleware.js");
+
 // ----- catchAsync middleware used to handle Async functions errors
 
 const catchAsync = require("../utilities/catchAsync.js");
@@ -57,7 +65,7 @@ const {
 
 // ----- Routes MOONSHOT PREADVISED
 
-router.get("/start", function (req, res) {
+router.get("/start", isLoggedIn, isTenderTeam, function (req, res) {
     res.render("dashboard/dashboard_start.ejs");
   });
 

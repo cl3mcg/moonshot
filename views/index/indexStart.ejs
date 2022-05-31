@@ -10,6 +10,7 @@
 </head>
 <body>
     <%- include("../partials/navbar.ejs") %>
+    <%- include("../partials/flash.ejs") %>
 <div class="container mt-5">
     <h1 class="text-center">Start page</h1>
     <div class="container rounded-3 mt-3">
@@ -36,6 +37,7 @@
                 </div>
             </div>
         </div>
+        <% if (currentUser && currentUser.isTenderTeam) { %> 
         <div class="container rounded-3 p-3 my-2">
             <h2>Tender Team</h2>
             <div class="alert alert-info" role="alert">
@@ -62,6 +64,7 @@
                 </div>
             </div>
         </div>
+        <% } %> 
     </div>
 </div>
     <%- include("../partials/commonBootstrap.ejs") %>

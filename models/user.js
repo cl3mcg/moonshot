@@ -7,9 +7,21 @@ const UserSchema = new Schema({
         type: String,
         required: true,
         unique: true
+    },
+    isAdmin: {
+        type: Boolean,
+        default: false
+    },
+    isTenderTeam: {
+        type: Boolean,
+        default: false
+    },
+    isVerifiedEmail: {
+        type: Boolean,
+        default: false
     }
 });
 
 UserSchema.plugin(passportLocalMongoose);
 
-module.exports = moongose.model('User', UserSchema);
+module.exports = moongose.model('user', UserSchema);

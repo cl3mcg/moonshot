@@ -6,6 +6,10 @@ const preAdvisedTenderSchema = new Schema({
         type: Date,
         required: true
     },
+    author: {
+        type: Schema.Types.ObjectID,
+        ref: "user",
+    },
     lastModifiedDate: {
         type: Date,
         min: "2021-01-01"
@@ -56,14 +60,6 @@ const preAdvisedTenderSchema = new Schema({
         type: String,
     },
     additionalComment: String,
-    // launched: {
-    //     type: Boolean,
-    //     required: true
-    // },
-    // launchedTime: {
-    //     type: Date,
-    //     min: "2021-01-01"
-    // },
     register: {
         type: Schema.Types.ObjectID,
         ref: "registeredTender"

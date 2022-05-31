@@ -12,6 +12,7 @@ const mongoose = require("mongoose")
 const PreadvisedTender = require("./models/preadvisedTender.js")
 const RegisteredTender = require("./models/registeredTender.js")
 const Office = require("./models/office.js")
+const User = require("./models/user.js")
 
 // ----- Ressources
 const countriesData = require('./public/ressources/countries.json')
@@ -180,6 +181,7 @@ amountofSeeds = amountofSeeds + 1
 
 let newEntry = new PreadvisedTender({
     recordDate: seed_recordDate,
+    author: await User.findById("6295e7b3d4b4b27e7d8388fb"),
     lastModifiedDate: seed_lastModifiedDate,
     companyName: seed_companyName,
     sugarID: seed_sugarID,

@@ -17,17 +17,69 @@
             <div class="card border shadow rounded-3 my-5">
               <div class="card-body p-4 p-sm-5">
                 <h1 class="card-title text-center mb-5">Account registration</h1>
+                <% if (success.length || error.length || warning.length || info.length) { %> 
+                  <div class="toast-container w-100 mb-3">
+                    <% if (success && success.length) { %> 
+                        <div role="alert" aria-live="assertive" aria-atomic="true" class="toast fade show rounded-3 border border-5 border-success border-top-0 border-end-0 border-bottom-0 w-100" data-autohide="false" data-bs-autohide="false">
+                            <div class="toast-header bg-success bg-opacity-25">
+                              <strong class="me-auto my-auto text-success h5"><i class="bi bi-check-circle-fill me-2"></i>Success</strong>
+                              <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                            </div>
+                            <div class="toast-body">
+                              <%= success %> 
+                            </div>
+                          </div>
+                    <% } %>
+                    <% if (error && error.length) { %> 
+                        <div role="alert" aria-live="assertive" aria-atomic="true" class="toast fade show rounded-3 border border-5 border-danger border-top-0 border-end-0 border-bottom-0 w-100" data-autohide="false" data-bs-autohide="false">
+                            <div class="toast-header bg-danger bg-opacity-25">
+                              <strong class="me-auto my-auto text-danger h5"><i class="bi bi bi-x-circle-fill me-2"></i>Error</strong>
+                              <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                            </div>
+                            <div class="toast-body">
+                              <%= error %> 
+                            </div>
+                          </div>
+                    <% } %>
+                    <% if (warning && warning.length) { %> 
+                        <div role="alert" aria-live="assertive" aria-atomic="true" class="toast fade show rounded-3 border border-5 border-warning border-top-0 border-end-0 border-bottom-0 w-100" data-autohide="false" data-bs-autohide="false">
+                            <div class="toast-header bg-warning bg-opacity-25">
+                              <strong class="me-auto my-auto text-warning h5"><i class="bi bi bi-exclamation-circle-fill me-2"></i>Warning !</strong>
+                              <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                            </div>
+                            <div class="toast-body">
+                              <%= warning %> 
+                            </div>
+                          </div>
+                    <% } %>
+                    <% if (info && info.length) { %> 
+                        <div role="alert" aria-live="assertive" aria-atomic="true" class="toast fade show rounded-3 border border-5 border-info border-top-0 border-end-0 border-bottom-0 w-100" data-autohide="false" data-bs-autohide="false">
+                            <div class="toast-header bg-info bg-opacity-25">
+                              <strong class="me-auto my-auto text-info h5"><i class="bi bi bi-info-circle-fill me-2"></i>Information</strong>
+                              <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                            </div>
+                            <div class="toast-body">
+                              <%= info %> 
+                            </div>
+                          </div>
+                    <% } %>
+                  </div>
+                <% } %>
                 <form action="/user/registration" method="POST" class="needs-validation" novalidate>
                   <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" required>
+                    <input type="text" class="form-control" id="floatingInput" placeholder="John Doe" name="username" required>
+                    <label for="floatingInput">Username</label>
+                  </div>
+                  <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" name="email" required>
                     <label for="floatingInput">Email address</label>
                   </div>
                   <div class="form-floating mb-3">
-                    <input type="password" class="form-control" id="floatingPassword" placeholder="Password" required>
+                    <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password" required>
                     <label for="floatingPassword">Password</label>
                   </div>
                   <div class="form-floating mb-3">
-                    <input type="password" class="form-control" id="floatingPassword" placeholder="Repeat the password" required>
+                    <input type="password" class="form-control" id="floatingPassword" placeholder="Repeat the password" name="password2" required>
                     <label for="floatingPassword">Repeat the password</label>
                   </div>
                   <div class="d-grid">

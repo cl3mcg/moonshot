@@ -27,23 +27,25 @@ const ExpressError = require("../utilities/expressError.js");
 
 // ----- validateOffice middleware used with JOI to validate new offices according to JOI schema
 
-const validateOffice = function (req, res, next) {
-    const result = officeSchema.validate(req.body);
-    if (result.error) {
-      console.log(
-        `${colors.brightYellow.bgBrightRed("*!* WARNING *!*")} JOI validation failed - validateOffice`);
-      const errorMsg = result.error.details
-        .map(function (element) {
-          return element.message;
-        })
-        .join(",");
-      throw new ExpressError(errorMsg, 400);
-    } else {
-      console.log(
-        `${colors.black.bgBrightGreen("* OK *")} JOI validation passed - validateOffice`);
-      next();
-    }
-  };
+const { validateOffice } = require("../utilities/middleware.js");
+
+// const validateOffice = function (req, res, next) {
+//     const result = officeSchema.validate(req.body);
+//     if (result.error) {
+//       console.log(
+//         `${colors.brightYellow.bgBrightRed("*!* WARNING *!*")} JOI validation failed - validateOffice`);
+//       const errorMsg = result.error.details
+//         .map(function (element) {
+//           return element.message;
+//         })
+//         .join(",");
+//       throw new ExpressError(errorMsg, 400);
+//     } else {
+//       console.log(
+//         `${colors.black.bgBrightGreen("* OK *")} JOI validation passed - validateOffice`);
+//       next();
+//     }
+//   };
 
 
 // ----- Routes MOONSHOT OFFICES

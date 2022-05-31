@@ -26,6 +26,7 @@
                         </div>
                     </div>
                 </div>
+                <% if (currentUser.isAdmin || currentUser.isTenderTeam) { %>
                 <div class="col-sm-6">
                     <div class="card">
                         <div class="card-body">
@@ -35,12 +36,13 @@
                         </div>
                     </div>
                 </div>
+                <% } %>
                 <div class="col-sm-6">
                     <div class="card">
                         <div class="card-body">
                         <h5 class="card-title">History</h5>
                         <p class="card-text">Check the information provided, modify or delete a tender registration.</p>
-                        <a href="#" class="btn btn-primary disabled">Soon</a>
+                        <a href="/register/history" class="btn btn-primary">Go</a>
                         </div>
                     </div>
                 </div>
