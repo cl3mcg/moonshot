@@ -21,7 +21,7 @@ const PDFDocument = require("pdf-lib").PDFDocument;
 const StandardFonts = require("pdf-lib").StandardFonts;
 const fontkit = require("@pdf-lib/fontkit")
 // const Joi = require("joi") // Joi is exported in its own file called joiSchema.js, no need to require it again here.
-const fileUpload = require("express-fileupload");
+// const fileUpload = require("express-fileupload");
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const mongoSanitize = require('express-mongo-sanitize');
@@ -70,7 +70,7 @@ app.use(methodOverride("_method"));
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 app.engine("ejs", ejsMate);
-app.use(fileUpload({ createParentPath: true }));
+// app.use(fileUpload({ createParentPath: true }));
 
 // ----- Session & Flash middleware
 let sessionConfig
