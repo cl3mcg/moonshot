@@ -454,7 +454,7 @@ app.use(function (err, req, res, next) {
 // ----- Port listening
 
 if (process.env.NODE_ENV === "production") {
-  app.listen(process.env.PORT, function () {
+  app.listen(process.env.PORT, '0.0.0.0', function () {
     console.log(`${colors.black.bgBrightGreen("* OK *")} MOONSHOT PROJECT - App is listening on port 0.0.0.0:8080`);
   });
 } else {
