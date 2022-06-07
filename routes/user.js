@@ -26,68 +26,31 @@ const catchAsync = require("../utilities/catchAsync.js");
 
 const ExpressError = require("../utilities/expressError.js");
 
-// ----- validateUser middleware used with JOI to validate new offices according to JOI schema
+// ----- Controllers used for USER MANAGEMENT ROUTES
 
-// const validateOffice = function (req, res, next) {
-//     const result = officeSchema.validate(req.body);
-//     if (result.error) {
-//       console.log(
-//         `${colors.brightYellow.bgBrightRed("*!* WARNING *!*")} JOI validation failed - validateOffice`);
-//       const errorMsg = result.error.details
-//         .map(function (element) {
-//           return element.message;
-//         })
-//         .join(",");
-//       throw new ExpressError(errorMsg, 400);
-//     } else {
-//       console.log(
-//         `${colors.black.bgBrightGreen("* OK *")} JOI validation passed - validateOffice`);
-//       next();
-//     }
-//   };
-
+const userCtrl = require("../controllers/user_ctrl.js");
 
 // ----- Routes MOONSHOT USER
 
-router.get("/login", function (req, res) {
-  res.render("user/user_login.ejs");
-});
+router.route("/login")
+  .get(userCtrl.renderLoginPage)
+  .post(passport.authenticate('local', { failureFlash: true, failureRedirect: '/user/login' }), userCtrl.loginUser)
 
-router.post("/login", passport.authenticate('local', { failureFlash: true, failureRedirect: 'user/login' }), function (req, res) {
-  console.log("Route hit")
-  const redirectUrl = req.session.returnTo || "/start";
-  req.flash("success", "Welcome back !")
-  delete req.session.returnTo
-  res.redirect(redirectUrl)
-});
+router.route("/registration")
+  .get(userCtrl.renderRegistrationPage)
+  .post(userCtrl.registerUser)
 
-router.get("/registration", function (req, res) {
-    res.render("user/user_registration.ejs");
-  });
+router.get("/logout", userCtrl.logoutUser);
 
-  router.post("/registration", catchAsync(async function (req, res) {
-    try {
-      const { username, email, password } = req.body;
-      const user = new User({ email, username });
-      const registeredUser = await User.register(user, password)
-      req.login(registeredUser, function(err) {
-          if (err) { 
-                  return next(err);
-              }
-          });
-      req.flash("success", "Welcome to The Moonshot project!")
-      res.redirect("/start")
-  } catch (error) {
-      req.flash('error', error.message);
-      res.redirect('/user/registration');
-  }
-  }));
+// router.get("/login", userCtrl.renderLoginPage);
 
-router.get("/logout", function (req, res) {
-  req.logout();
-  req.flash("success", "Logged out ! Bye !")
-  res.redirect("/")
-})
+// router.post("/login", passport.authenticate('local', { failureFlash: true, failureRedirect: '/user/login' }), userCtrl.loginUser);
+
+// router.get("/registration", userCtrl.renderRegistrationPage);
+
+// router.post("/registration", userCtrl.registerUser);
+
+
 
 // ----- Export the router
 module.exports = router;

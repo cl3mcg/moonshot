@@ -635,9 +635,10 @@ module.exports.renderShowPage = catchAsync(async function (req, res) {
 
         //Below is a  function that checks if the decision date is passed
         //If the decision date is passed, the function returns true
-        //If the decision date is not passed, the feedback button is disabled on the "show" page
+        //If the decision date is not passed, the Tender Outcome button is disabled on the "show" page
         const decisionDate = new Date(matchingTender.decisionDate);
-        const isDecisionDatePassed = decisionDate < today;
+        const isDecisionDatePassed = decisionDate <= today;
+
         let isSubmitted
         if (matchingTender.tenderTeamSubmissionDate) {
         isSubmitted = true
@@ -645,9 +646,20 @@ module.exports.renderShowPage = catchAsync(async function (req, res) {
         isSubmitted = false
         }
 
+        let priviledge = false;
+        if (req.user.isAdmin || req.user.isTenderTeam) {
+            priviledge = true;
+        }
+        let editRestriction = false;
+        if (matchingTender.author.id !== req.user.id || matchingTender.tenderTeamDecision || matchingTender.outcome || matchingTender.tenderTeamSubmissionDate) {
+            editRestriction = true;
+        }
+
         res.render("register/register_show.ejs", {
         isDecisionDatePassed,
         isSubmitted,
+        priviledge,
+        editRestriction,
         countriesData,
         monthsData,
         tradelanes,

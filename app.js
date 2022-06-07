@@ -1,3 +1,8 @@
+// ----- .env setup
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+
 // ----- App
 const express = require("express");
 const app = express();
@@ -19,6 +24,8 @@ const fontkit = require("@pdf-lib/fontkit")
 const fileUpload = require("express-fileupload");
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
+const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
 const {
   preadviseSchema,
   registerSchema,
@@ -58,6 +65,7 @@ initEmailScheduler();
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(mongoSanitize());
 app.use(methodOverride("_method"));
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
@@ -65,21 +73,85 @@ app.engine("ejs", ejsMate);
 app.use(fileUpload({ createParentPath: true }));
 
 // ----- Session & Flash middleware
-const sessionConfig = {
-  secret: "placeholder",
-  resave: false,
-  saveUninitialized: true,
-  cookie: {
-    // sameSite: "lax",
-    // secure: true,
-    httpOnly: true,
-    expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
-    maxAge: 1000 * 60 * 60 * 24 * 7
+let sessionConfig
+if (process.env.NODE_ENV === "production") {
+  sessionConfig = {
+    name: `_${Math.floor(Math.random() * 1000000000000000)}`,
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      sameSite: "lax",
+      secure: true,
+      httpOnly: true,
+      expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+      maxAge: 1000 * 60 * 60 * 24 * 7
+    }
+  }
+} else {
+  sessionConfig = {
+    // name: `_${Math.floor(Math.random() * 1000000000000000)}`,
+    secret: "placeholder",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      // sameSite: "lax",
+      // secure: true,
+      httpOnly: true,
+      expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+      maxAge: 1000 * 60 * 60 * 24 * 7
+    }
   }
 }
 
 app.use(session(sessionConfig))
 app.use(flash())
+
+// ----- Helmet configuration and middleware
+
+const scriptSrcUrls = [
+  "https://stackpath.bootstrapcdn.com/",
+  "https://cdnjs.cloudflare.com/",
+  "https://cdn.jsdelivr.net/"
+];
+const styleSrcUrls = [
+  "https://stackpath.bootstrapcdn.com/",
+  "https://cdn.jsdelivr.net/",
+  "https://cdnjs.cloudflare.com/",
+  "https://fonts.googleapis.com"
+];
+const connectSrcUrls = [
+  // "https://api.mapbox.com/",
+  // "https://a.tiles.mapbox.com/",
+  // "https://b.tiles.mapbox.com/",
+  // "https://events.mapbox.com/",
+];
+const fontSrcUrls = [
+  "https://fonts.googleapis.com",
+  "https://fonts.gstatic.com/",
+  "https://cdn.jsdelivr.net/"
+];
+app.use(
+  helmet.contentSecurityPolicy({
+      directives: {
+          defaultSrc: [],
+          connectSrc: ["'self'", ...connectSrcUrls],
+          scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+          styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+          workerSrc: ["'self'", "blob:"],
+          objectSrc: [],
+          imgSrc: [
+              "'self'",
+              "blob:",
+              "data:",
+              // "https://res.cloudinary.com/THECLOUDINARYACCOUNTNAME/",
+              // `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/`,
+              "https://images.unsplash.com/",
+          ],
+          fontSrc: ["'self'", ...fontSrcUrls],
+      },
+  })
+);
 
 // ----- Passport setup and middleware
 
@@ -381,6 +453,12 @@ app.use(function (err, req, res, next) {
 
 // ----- Port listening
 
-app.listen(3000, function () {
-  console.log(`${colors.black.bgBrightGreen("* OK *")} MOONSHOT PROJECT - App is listening on port 3000`);
-});
+if (process.env.NODE_ENV === "production") {
+  app.listen(process.env.PORT, function () {
+    console.log(`${colors.black.bgBrightGreen("* OK *")} MOONSHOT PROJECT - App is listening on port 0.0.0.0:8080`);
+  });
+} else {
+  app.listen(3000, function () {
+    console.log(`${colors.black.bgBrightGreen("* OK *")} MOONSHOT PROJECT - App is listening on port 3000`);
+  });
+}

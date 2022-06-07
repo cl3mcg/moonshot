@@ -75,23 +75,35 @@ const preadviseCtrl = require("../controllers/preadvise_ctrl.js");
 
 router.get("/start", isLoggedIn, preadviseCtrl.renderStartPage);
 
-router.get("/new", isLoggedIn, preadviseCtrl.renderNewPage);
+router.route("/new")
+  .get(isLoggedIn, preadviseCtrl.renderNewPage)
+  .post(isLoggedIn, validatePreadvise, preadviseCtrl.createPreadvise)
 
-router.post("/new", isLoggedIn, validatePreadvise, preadviseCtrl.createPreadvise);
+// router.get("/new", isLoggedIn, preadviseCtrl.renderNewPage);
+
+// router.post("/new", isLoggedIn, validatePreadvise, preadviseCtrl.createPreadvise);
 
 router.get("/index", isLoggedIn, preadviseCtrl.renderIndexPage);
 
 router.get("/history", isLoggedIn, preadviseCtrl.renderHistoryPage);
 
-router.get("/:id", isLoggedIn, preadviseCtrl.renderShowPage);
+router.route("/:id")
+  .get(isLoggedIn, preadviseCtrl.renderShowPage)
+  .delete(isLoggedIn, preadviseCtrl.deletePreadvise)
 
-router.delete("/:id", isLoggedIn, preadviseCtrl.deletePreadvise);
+// router.get("/:id", isLoggedIn, preadviseCtrl.renderShowPage);
 
-router.get("/edit/:id", isLoggedIn, preadviseCtrl.renderEditPage);
+// router.delete("/:id", isLoggedIn, preadviseCtrl.deletePreadvise);
+
+router.route("/edit/:id")
+  .get(isLoggedIn, preadviseCtrl.renderEditPage)
+  .patch(isLoggedIn, validatePreadvise, preadviseCtrl.patchPreadvise)
+
+// router.get("/edit/:id", isLoggedIn, preadviseCtrl.renderEditPage);
+
+// router.patch("/edit/:id", isLoggedIn, validatePreadvise, preadviseCtrl.patchPreadvise);
 
 router.get("/launch/:id", isLoggedIn, preadviseCtrl.renderLaunchPage);
-
-router.patch("/edit/:id", isLoggedIn, validatePreadvise, preadviseCtrl.patchPreadvise);
 
 router.post("/report/:id", isLoggedIn, preadviseCtrl.postReport);
 

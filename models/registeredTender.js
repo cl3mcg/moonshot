@@ -201,6 +201,9 @@ const registeredTenderSchema = new Schema({
     tenderTeamSubmissionDate: {
         type: Date,
         min: "2021-01-01"
+    },
+    outcome: {
+        type: String
     }
 })
 

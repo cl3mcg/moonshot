@@ -9,7 +9,7 @@ const RegisteredTender = require("../models/registeredTender.js");
 
 // ----- Ressources required
 
-const { preadviseSchema, registerSchema, decisionSchema } = require("../utilities/joiSchemas.js");
+const { preadviseSchema, registerSchema, decisionSchema, officeSchema } = require("../utilities/joiSchemas.js");
 
 // ----- Extended error class
 
@@ -88,7 +88,7 @@ const isLoggedIn = function (req, res, next) {
     console.log(`The req.user is: ${req.user}`);
     if (!req.isAuthenticated()) {
         req.session.returnTo = req.originalUrl;
-        req.flash("warning", "You must be logged in to do that.")
+        req.flash("warning", "You must be logged in.")
         return res.redirect("/user/login")
     }
     next()

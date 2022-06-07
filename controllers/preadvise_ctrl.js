@@ -68,12 +68,12 @@ const {
 // ----- Controllers for MOONSHOT PREADVISED TENDERS
 
 module.exports.renderStartPage = function (req, res) {
-        res.render("preadvise/preadvised_start.ejs");
-    }
+    res.render("preadvise/preadvised_start.ejs");
+}
 
 module.exports.renderNewPage = function (req, res) {
-        res.render("preadvise/preadvised_new.ejs", { countriesData });
-    }
+    res.render("preadvise/preadvised_new.ejs", { countriesData });
+}
 
 module.exports.createPreadvise = catchAsync(async function (req, res, next) {
     console.log(`${colors.black.bgBrightCyan("* ATTEMPT *")} A new TENDER PRE-ADVISE submit has been attempted with the following data:`);
@@ -456,6 +456,14 @@ module.exports.renderShowPage = catchAsync(async function (req, res) {
         req.flash("error", "The preadvised tender with the given ID was not found.");
         return res.redirect("/preadvise/start");
     } else {
+        let priviledge = false;
+        if (req.user.isAdmin || req.user.isTenderTeam) {
+            priviledge = true;
+        }
+        let editRestriction = false;
+        if (matchingTender.author.id !== req.user.id || matchingTender.register) {
+            editRestriction = true;
+        }
         res.render("preadvise/preadvised_show.ejs", {
             countriesData,
             monthsData,
@@ -463,6 +471,8 @@ module.exports.renderShowPage = catchAsync(async function (req, res) {
             transportModes,
             history,
             matchingTender,
+            priviledge,
+            editRestriction
         });
     }
 })
@@ -507,7 +517,7 @@ module.exports.renderLaunchPage = catchAsync(async function (req, res) {
             preadviseTender,
         });
     }
-  })
+})
 
   module.exports.patchPreadvise = catchAsync(async function (req, res) {
     console.log(`${colors.black.bgBrightCyan("* ATTEMPT *")} A TENDER PRE-ADVISE has been selected for update: ${req.body.companyName}`);
@@ -591,16 +601,15 @@ module.exports.postReport = catchAsync(async function (req, res) {
     let fileIdentifier = Date.now();
     await generatePreadviseReport(matchingId, fileIdentifier);
     await preadviseTenderEmailConfirmation(matchingId, fileIdentifier)
-  
-  fs.unlink(`./reports/reportsGenerated/${matchingTender.companyName}_${fileIdentifier}.pdf`, function (err) {
+
+    fs.unlink(`./reports/reportsGenerated/${matchingTender.companyName}_${fileIdentifier}.pdf`, function (err) {
     if (err) {
-      console.error(err)
-      return
+        console.error(err)
+        return
     }
-  })
-  console.log(`${colors.black.bgBrightGreen("* OK *")} The PDF report related to the preadvise of ${companyName} has been deleted from the server`);
-  
+    })
+    console.log(`${colors.black.bgBrightGreen("* OK *")} The PDF report related to the preadvise of ${companyName} has been deleted from the server`);
+
     req.flash("success", "The report has been sent by email.");
     res.redirect(`/preadvise/${matchingId}`);
-  
-  })
+})

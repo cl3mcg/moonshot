@@ -70,10 +70,10 @@
                 </div>
               </div>
               <div class="line"></div>
-              <div class="step px-2" <% if ((matchingTender.submissionFeedback === "winAll" || matchingTender.submissionFeedback === "winPartly") && matchingTender.isSubmitted) { %>data-bs-toggle="tooltip" data-bs-placement="top" title="Feedback is received and positive"<% } else if (matchingTender.submissionFeedback === "loose") {%>data-bs-toggle="tooltip" data-bs-placement="top" title="Feedback is received and negative"<% } else if (!matchingTender.tenderTeamDecision || (matchingTender.tenderTeamDecision === "accept" && !matchingTender.isSubmitted)) {%>data-bs-toggle="tooltip" data-bs-placement="top" title="No feedback yet"<% } else { %>data-bs-toggle="tooltip" data-bs-placement="top" title="Feedback won't be received"<% } %>>
+              <div class="step px-2" <% if ((matchingTender.outcome === "winAll" || matchingTender.outcome === "winPartly") && matchingTender.isSubmitted) { %>data-bs-toggle="tooltip" data-bs-placement="top" title="Outcome is received and positive"<% } else if (matchingTender.outcome === "loose") {%>data-bs-toggle="tooltip" data-bs-placement="top" title="Outcome is received and negative"<% } else if (!matchingTender.tenderTeamDecision || (matchingTender.tenderTeamDecision === "accept" && !matchingTender.isSubmitted)) {%>data-bs-toggle="tooltip" data-bs-placement="top" title="No results yet"<% } else { %>data-bs-toggle="tooltip" data-bs-placement="top" title="Results won't be received"<% } %>>
                 <div role="tab">
-                  <span class="bs-stepper-circle <% if ((matchingTender.submissionFeedback === "winAll" || matchingTender.submissionFeedback === "winPartly") && matchingTender.isSubmitted) { %>bg-success<% } else if (matchingTender.tenderTeamDecision === "decline" || matchingTender.submissionFeedback === "loose") {%>bg-danger<% } else {%>bg-light text-dark border border-secondary<% } %>">5</span>
-                  <span class="bs-stepper-label">Feedback</span>
+                  <span class="bs-stepper-circle <% if ((matchingTender.outcome === "winAll" || matchingTender.outcome === "winPartly") && matchingTender.isSubmitted) { %>bg-success<% } else if (matchingTender.tenderTeamDecision === "decline" || matchingTender.outcome === "loose") {%>bg-danger<% } else {%>bg-light text-dark border border-secondary<% } %>">5</span>
+                  <span class="bs-stepper-label">Outcome</span>
                 </div>
               </div>
             </div>
@@ -346,7 +346,7 @@
 </div>
 <% } %>
 <!-- Modal Tender team acceptance -->
-<% if (currentUser.isTenderteam || currentUser.isAdmin) { %> 
+<% if (priviledge) { %> 
 <div class="modal fade" id="decisionAcceptModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-fullscreen-md-down modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
@@ -381,7 +381,7 @@
 </div>
 <% } %>
 <!-- Modal Tender team decline -->
-<% if (currentUser.isTenderteam || currentUser.isAdmin) { %> 
+<% if (priviledge) { %> 
 <div class="modal fade" id="decisionRejectModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-fullscreen-md-down modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
@@ -415,6 +415,53 @@
   </div>
 </div>
 <% } %>
+<!-- Customer feedback modal -->
+<% if (priviledge || (matchingTender.author.equals(currentUser) && !isDecisionDatePassed)) { %> 
+  <div class="modal fade" id="feedbackModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-fullscreen-md-down modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="feedbackModalLabel">Feedback confirmation</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div role="alert" aria-live="assertive" aria-atomic="true" class="toast fade show rounded-3 border border-5 border-warning border-top-0 border-end-0 border-bottom-0 w-100 mb-4" data-autohide="false" data-bs-autohide="false">
+            <div class="toast-header bg-warning bg-opacity-25">
+              <strong class="me-auto my-auto text-danger h6"><i class="bi bi-exclamation-triangle-fill me-2"></i>Warning</strong>
+            </div>
+            <div class="toast-body">
+              You are about to submit a customer feedback related to the tender of <i><%= matchingTender.companyName %></i>.<br>
+              You have to provide the customer decision as well as a feedback.<br>
+              Once submitted, this tender will be closed.
+            </div>
+          </div>
+          <form action="/register/<%= matchingTender.id %>/outcome" method="POST" id="feedbackForm">
+            <div class="mb-3 d-grid gap-2">
+              <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                <input type="radio" class="btn-check" name="outcome" value="positive" id="btnRadioPositive" autocomplete="off" required>
+                <label class="btn btn-outline-success border-end border-success" for="btnRadioPositive">Positive outcome</label>
+              
+                <input type="radio" class="btn-check" name="outcome" value="negative" id="btnRadioOr" autocomplete="off" required disabled>
+                <label class="btn btn-outline-light text-dark border-0" for="btnRadioOr">or</label>
+
+                <input type="radio" class="btn-check" name="outcome" value="negative" id="btnRadioNegative" autocomplete="off" required>
+                <label class="btn btn-outline-danger border-start border-danger" for="btnRadioNegative">Negative outcome</label>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="feedbackComment" class="form-label"><strong>Your comments</strong></label>
+              <textarea class="form-control" id="feedbackComment" name="feedbackComment" rows="5" required></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary position-relative top-50 start-0" id="mod_returnBtn" data-bs-dismiss="modal"><i class="bi bi-arrow-left-circle me-2"></i>Cancel</button>
+          <button class="btn btn-success border-success" type="submit" form="formAccept"><i class="bi bi-send-check me-2"></i>Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <% } %>
 <!-- OFF-CANVAS MODAL below -->
 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
   <div class="offcanvas-header">
@@ -424,28 +471,42 @@
   <div class="offcanvas-body">
       <div class="row mt-3">
           <div class="col col-12">
-              <div class="rounded-3 border p-3 sticky-lg-top">
+              <div class="rounded-3 border p-3">
                   <nav class="nav flex-column">
                       <h5 class="text-center">Modify & delete</h5>
-                      <div <% if (!matchingTender.author.equals(currentUser) || !currentUser.isAdmin || !currentUser.isTenderTeam) {%>data-bs-toggle="tooltip" data-bs-placement="left" title="You can't edit this tender"<% } %>><a class="btn btn-light btn-block btn-sm border m-1 w-100 <% if ((!matchingTender.author.equals(currentUser) && !matchingTender.author.isAdmin && !matchingTender.author.isTenderTeam) || matchingTender.register) { %>disabled<% } %>" href="/register/edit/<%= matchingTender.id %>"><i class="bi bi-pencil-square me-1"></i>Edit</a></div>
-                      <div <% if (!matchingTender.author.equals(currentUser) || !currentUser.isAdmin || !currentUser.isTenderTeam) {%>data-bs-toggle="tooltip" data-bs-placement="left" title="You can't delete this tender"<% } %>><button class="btn btn-outline-danger btn-block btn-sm border-danger m-1 w-100 <% if (!matchingTender.author.equals(currentUser) || !currentUser.isAdmin || !currentUser.isTenderTeam) {%>disabled<% } %>" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal"><i class="bi bi-trash me-1"></i>Delete</button></div>
+                      <a class="btn btn-light btn-block btn-sm border m-1 w-100 <% if (!priviledge && editRestriction) { %>disabled<% } %>" href="/register/edit/<%= matchingTender.id %>"><i class="bi bi-pencil-square me-1"></i>Edit</a>
+                      <button class="btn btn-outline-danger btn-block btn-sm border-danger m-1 w-100 <% if (!priviledge && editRestriction) {%>disabled<% } %>" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal"><i class="bi bi-trash me-1"></i>Delete</button>
                   </nav>
+                  <% if (!priviledge && editRestriction) { %>
+                    <div role="alert" aria-live="assertive" aria-atomic="true" class="toast fade show rounded-3 border border-5 border-primary border-top-0 border-end-0 border-bottom-0 w-100 mt-2" data-autohide="false" data-bs-autohide="false">
+                      <div class="toast-header bg-primary bg-opacity-25">
+                        <strong class="me-auto my-auto text-primary h6"><i class="bi bi bi-info-circle-fill me-2"></i>Information</strong>
+                      </div>
+                      <div class="toast-body">
+                        You can't edit or delete this tender.
+                        <% if (!matchingTender.author.equals(currentUser)) { %>This tender opportunity doesn't belong to you. <% } %>
+                        <% if (matchingTender.outcome) { %>The tender is closed. <% } %>
+                        <% if (matchingTender.tenderTeamDecision) { %>The tender team has already decided on his case. <% } %>
+                      </div>
+                    </div>
+                  <% } %>
               </div>
               <div class="rounded-3 border my-3 p-3 sticky-lg-top">
                 <nav class="nav flex-column">
-                    <h5 class="text-center">Feedback</h5>
-                    <div <% if (!matchingTender.author.equals(currentUser) || !currentUser.isAdmin || !currentUser.isTenderTeam) {%>data-bs-toggle="tooltip" data-bs-placement="left" title="You can't provide feedback for this tender"<% } %>><a class="btn btn-outline-success btn-block btn-sm border-success m-1 w-100 <%if (!isDecisionDatePassed || !matchingTender.author.equals(currentUser) || !currentUser.isAdmin || !currentUser.isTenderTeam) {%>disabled<%}%>" href=""><i class="bi bi-send-check me-1"></i>Feedback</a></div>
+                    <h5 class="text-center">Outcome</h5>
+                    <button class="btn btn-outline-success btn-block btn-sm m-1" <%if (!priviledge && !isDecisionDatePassed && !matchingTender.author.equals(currentUser)) {%>disabled<%}%> data-bs-toggle="modal" data-bs-target="#feedbackModal"><i class="bi bi-send-check me-1"></i>Provide the tender outcome</button>
+                    <!-- <a class="btn btn-outline-success btn-block btn-sm border-success m-1 w-100 <%if (!priviledge && !isDecisionDatePassed && !matchingTender.author.equals(currentUser)) {%>disabled<%}%>" href=""><i class="bi bi-send-check me-1"></i>Feedback</a> -->
                 </nav>
-                <%if (!isDecisionDatePassed) {%>
+                <% if (!isDecisionDatePassed && !priviledge) { %>
                   <div role="alert" aria-live="assertive" aria-atomic="true" class="toast fade show rounded-3 border border-5 border-primary border-top-0 border-end-0 border-bottom-0 w-100 mt-2" data-autohide="false" data-bs-autohide="false">
                     <div class="toast-header bg-primary bg-opacity-25">
                       <strong class="me-auto my-auto text-primary h6"><i class="bi bi bi-info-circle-fill me-2"></i>Information</strong>
                     </div>
                     <div class="toast-body">
-                      Feedback cannot be provided until the decision date (<% if (matchingTender.decisionDate.getDate() < 10) {%><%=`0${matchingTender.decisionDate.getDate()}`%><% } else { %><%=matchingTender.decisionDate.getDate()%><% } %>-<%=monthsData[matchingTender.decisionDate.getMonth() + 1]%>-<%=matchingTender.decisionDate.getFullYear() %>) is passed.
+                      The outcome of the tender cannot be provided until the decision date (<% if (matchingTender.decisionDate.getDate() < 10) {%><%=`0${matchingTender.decisionDate.getDate()}`%><% } else { %><%=matchingTender.decisionDate.getDate()%><% } %>-<%=monthsData[matchingTender.decisionDate.getMonth() + 1]%>-<%=matchingTender.decisionDate.getFullYear() %>) is passed.
                     </div>
                   </div>
-                <%}%>
+                <% } %>
               </div>
               <div class="rounded-3 border my-3 p-3 sticky-lg-top">
                 <nav class="nav flex-column">
@@ -456,7 +517,7 @@
                     </form>
                 </nav>
               </div>
-              <% if (currentUser.isAdmin || currentUser.isTenderTeam) { %> 
+              <% if (priviledge) { %> 
               <hr>
               <div class="rounded-3 border my-3 p-3 sticky-lg-top">
                 <nav class="nav flex-column">
