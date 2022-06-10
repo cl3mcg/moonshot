@@ -2,39 +2,26 @@ const express = require('express');
 const router = express.Router({ mergeParams: true });
 
 // ----- Database models
-const PreadvisedTender = require("../models/preadvisedTender.js");
+// const PreadvisedTender = require("../models/preadvisedTender.js");
 
 // ----- Ressources required
 
-const ejs = require("ejs");
-const colors = require("colors");
-const fs = require("fs").promises;
-const { preadviseSchema } = require("../utilities/joischemas.js");
-const nodemailer = require("nodemailer");
-const countriesData = require("../public/ressources/countries.json");
-const monthsData = require("../public/ressources/months.json");
-const tradelanes = require("../public/ressources/tradelanes.json");
-const history = require("../public/ressources/history.json");
-const transportModes = require("../public/ressources/transportModes.json");
-const businessVerticals = require("../public/ressources/businessVerticals.json");
+// const ejs = require("ejs");
+// const colors = require("colors");
+// const fs = require("fs").promises;
+// const { preadviseSchema } = require("../utilities/joischemas.js");
+// const nodemailer = require("nodemailer");
+// const countriesData = require("../public/ressources/countries.json");
+// const monthsData = require("../public/ressources/months.json");
+// const tradelanes = require("../public/ressources/tradelanes.json");
+// const history = require("../public/ressources/history.json");
+// const transportModes = require("../public/ressources/transportModes.json");
+// const businessVerticals = require("../public/ressources/businessVerticals.json");
 
 // ----- catchAsync middleware used to handle Async functions errors
 
 const catchAsync = require("../utilities/catchasync.js");
 
-// ----- Extended error class
-
-const ExpressError = require("../utilities/expresserror.js");
-const {
-  testSenderName,
-  testReceiverEmail,
-  testSenderEmail,
-  testSenderEmailPassword
-} = require('../secrets.js');
-// const testSenderName = process.env.testSenderName
-// const testReceiverEmail = process.env.testReceiverEmail
-// const testSenderEmail = process.env.testSenderEmail
-// const testSenderEmailPassword = process.env.testSenderEmailPassword
 
 // ----- Middleware used
 
@@ -53,19 +40,19 @@ const generatePreadviseExcelReport = require("../utilities/generatepreadviseexce
 
 // ----- preadviseTenderEmailConfirmation function used to send emails related to preadvise tenders operations
 
-const preadviseTenderEmailConfirmation = require("../utilities/preadviseemail.js");
+// const preadviseTenderEmailConfirmation = require("../utilities/preadviseemail.js");
 
 // ----- Commonly used functions
 
-const {
-  findCountryName,
-  findcca2,
-  findSubRegion,
-  findResponsibleTenderOffice,
-  currentDateAndTime,
-  formatDate,
-  capitalize
-} = require("../utilities/commonfunctions.js");
+// const {
+//   findCountryName,
+//   findcca2,
+//   findSubRegion,
+//   findResponsibleTenderOffice,
+//   currentDateAndTime,
+//   formatDate,
+//   capitalize
+// } = require("../utilities/commonfunctions.js");
 
 // ----- Controllers used for PREADVISE TENDERS ROUTES
 

@@ -35,12 +35,7 @@ const catchAsync = require("../utilities/catchasync.js");
 // ----- Extended error class
 
 const ExpressError = require("../utilities/expresserror.js");
-const {
-  testSenderName,
-  testReceiverEmail,
-  testSenderEmail,
-  testSenderEmailPassword
-} = require('../secrets.js');
+
 // const testSenderName = process.env.testSenderName
 // const testReceiverEmail = process.env.testReceiverEmail
 // const testSenderEmail = process.env.testSenderEmail

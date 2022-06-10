@@ -29,16 +29,6 @@ const freightForwarders = require("../public/ressources/freightForwarders.json")
 // ----- catchAsync middleware used to handle Async functions errors
 
 const catchAsync = require("../utilities/catchasync.js");
-const {
-  testSenderName,
-  testReceiverEmail,
-  testSenderEmail,
-  testSenderEmailPassword
-} = require('../secrets.js');
-// const testSenderName = process.env.testSenderName
-// const testReceiverEmail = process.env.testReceiverEmail
-// const testSenderEmail = process.env.testSenderEmail
-// const testSenderEmailPassword = process.env.testSenderEmailPassword
 
 // ----- Extended error class
 

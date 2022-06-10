@@ -6,13 +6,11 @@ const ExpressError = require("./ExpressError.js");
 
 const PreadvisedTender = require("../models/preadvisedTender.js");
 
-const {
-    testHost,
-    testSenderName,
-    testReceiverEmail,
-    testSenderEmail,
-    testSenderEmailPassword
-  } = require('../secrets.js');
+const testHost = process.env.EMAIL_HOST;
+const testSenderName = process.env.EMAIL_SENDER_NAME;
+const testReceiverEmail = process.env.EMAIL_RECEIVER_EMAIL;
+const testSenderEmail = process.env.EMAIL_SENDER_EMAIL;
+const testSenderEmailPassword = process.env.EMAIL_SENDER_PASSWORD;
 
 const preadviseTenderEmailConfirmation = async function (entryID, fileIdentifier) {
     let matchingPreadvise = await PreadvisedTender.findById(entryID);
