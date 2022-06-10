@@ -1,6 +1,6 @@
 const schedule = require('node-schedule');
 
-const ExpressError = require("./expressError.js");
+const ExpressError = require("./expresserror.js");
 
 const PreadvisedTender = require("../models/preadvisedTender.js");
 const RegisteredTender = require("../models/registeredTender.js");
