@@ -7,7 +7,7 @@ const PreadvisedTender = require("../models/preadvisedTender.js");
 const ejs = require("ejs");
 const colors = require("colors");
 const fs = require("fs").promises;
-const { preadviseSchema } = require("../utilities/joiSchemas.js");
+const { preadviseSchema } = require("../utilities/joischemas.js");
 const nodemailer = require("nodemailer");
 const countriesData = require("../public/ressources/countries.json");
 const monthsData = require("../public/ressources/months.json");
@@ -18,11 +18,11 @@ const businessVerticals = require("../public/ressources/businessVerticals.json")
 
 // ----- catchAsync middleware used to handle Async functions errors
 
-const catchAsync = require("../utilities/catchAsync.js");
+const catchAsync = require("../utilities/catchasync.js");
 
 // ----- Extended error class
 
-const ExpressError = require("../utilities/expressError.js");
+const ExpressError = require("../utilities/expresserror.js");
 const {
   testSenderName,
   testReceiverEmail,
@@ -46,12 +46,12 @@ const {
 
 // ----- generatePreadviseReport function used to generate the preadvise pdf report
 
-const generatePreadviseReport = require("../utilities/generatePreadviseReport.js");
-const generatePreadviseExcelReport = require("../utilities/generatePreadviseExcelReport.js");
+const generatePreadviseReport = require("../utilities/generatepreadvisereport.js");
+const generatePreadviseExcelReport = require("../utilities/generatepreadviseexcelreport.js");
 
 // ----- preadviseTenderEmailConfirmation function used to send emails related to preadvise tenders operations
 
-const preadviseTenderEmailConfirmation = require("../utilities/preadviseEmail.js");
+const preadviseTenderEmailConfirmation = require("../utilities/preadviseemail.js");
 
 // ----- Commonly used functions
 
@@ -63,7 +63,7 @@ const {
   currentDateAndTime,
   formatDate,
   capitalize
-} = require("../utilities/commonFunctions.js");
+} = require("../utilities/commonfunctions.js");
 
 // ----- Controllers for MOONSHOT PREADVISED TENDERS
 

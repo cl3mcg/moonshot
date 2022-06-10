@@ -11,7 +11,9 @@ const colors = require("colors");
 const ejs = require("ejs");
 const fs = require("fs").promises;
 const nodemailer = require("nodemailer");
-const { preadviseSchema, registerSchema, decisionSchema } = require("../utilities/joiSchemas.js");
+const multer  = require('multer')
+const upload = multer({ dest: 'uploads/' })
+const { preadviseSchema, registerSchema, decisionSchema } = require("../utilities/joischemas.js");
 const countriesData = require("../public/ressources/countries.json");
 const monthsData = require("../public/ressources/months.json");
 const tradelanes = require("../public/ressources/tradelanes.json");
@@ -26,7 +28,7 @@ const freightForwarders = require("../public/ressources/freightForwarders.json")
 
 // ----- catchAsync middleware used to handle Async functions errors
 
-const catchAsync = require("../utilities/catchAsync.js");
+const catchAsync = require("../utilities/catchasync.js");
 const {
   testSenderName,
   testReceiverEmail,
@@ -40,7 +42,7 @@ const {
 
 // ----- Extended error class
 
-const ExpressError = require("../utilities/expressError.js");
+const ExpressError = require("../utilities/expresserror.js");
 
 // ----- Middleware used
 
@@ -54,12 +56,12 @@ const {
 
 // ----- generateRegisterReport function used to generate the register pdf report
 
-const generateRegisterReport = require("../utilities/generateRegisterReport.js");
-const generateRegisterExcelReport = require("../utilities/generateRegisterExcelReport.js");
+const generateRegisterReport = require("../utilities/generateregisterreport.js");
+const generateRegisterExcelReport = require("../utilities/generateregisterexcelreport.js");
 
 // ----- registerTenderEmailConfirmation function used to send emails related to registered tenders operations
 
-const { registerTenderEmailConfirmation } = require("../utilities/registerEmail.js");
+const { registerTenderEmailConfirmation } = require("../utilities/registeremail.js");
 
 // ----- Commonly used functions
 // const currentDateAndTime = function () {
@@ -72,7 +74,7 @@ const {
   findResponsibleTenderOffice,
   currentDateAndTime,
   formatDate
-} = require("../utilities/commonFunctions.js");
+} = require("../utilities/commonfunctions.js");
 
   // ----- ----- The function below is used to retrieve the contents of a folder (typically the document upload folder)
   // ----- ----- the function listFiles() can be called (with await !! It's an async !!) and the result provided would be an array.
@@ -100,8 +102,14 @@ const registerCtrl = require("../controllers/register_ctrl.js");
 router.get("/start", isLoggedIn, registerCtrl.renderStartPage);
 
 router.route("/new")
-  .get(isLoggedIn, registerCtrl.renderNewPage)
-  .post(isLoggedIn, validateRegister, registerCtrl.createRegister)
+  .get(
+    // isLoggedIn,
+    registerCtrl.renderNewPage)
+  .post(
+    // isLoggedIn, 
+    upload.array('fileUpload'),
+    validateRegister,
+    registerCtrl.createRegister)
 
 router.get("/index", isLoggedIn, registerCtrl.renderIndexPage);
 
@@ -115,7 +123,11 @@ router.post("/:id/participation/:decision", isLoggedIn, validateDecision, regist
 
 router.route("/edit/:id")
   .get(isLoggedIn, registerCtrl.renderEditPage)
-  .patch(isLoggedIn, validateRegister, registerCtrl.patchRegister)
+  .patch(
+    // isLoggedIn,
+    upload.array('addFileUpload'),
+    // validateRegister,
+    registerCtrl.patchRegister)
 
 router.get("/excelReport", isLoggedIn, catchAsync(async function (req, res) {
   let fileName = `excelReport_${Date.now()}`

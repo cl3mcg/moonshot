@@ -6,7 +6,7 @@ const Office = require("../models/office.js");
 
 const ejs = require("ejs");
 const colors = require("colors");
-const { officeSchema } = require("../utilities/joiSchemas.js");
+const { officeSchema } = require("../utilities/joischemas.js");
 const nodemailer = require("nodemailer");
 const countriesData = require("../public/ressources/countries.json");
 const monthsData = require("../public/ressources/months.json");
@@ -17,11 +17,11 @@ const businessVerticals = require("../public/ressources/businessVerticals.json")
 
 // ----- catchAsync middleware used to handle Async functions errors
 
-const catchAsync = require("../utilities/catchAsync.js");
+const catchAsync = require("../utilities/catchasync.js");
 
 // ----- Extended error class
 
-const ExpressError = require("../utilities/expressError.js");
+const ExpressError = require("../utilities/expresserror.js");
 
 // ----- validateOffice middleware used with JOI to validate new offices according to JOI schema
 
@@ -36,7 +36,7 @@ const {
     findResponsibleTenderOffice,
     currentDateAndTime,
     formatDate
-  } = require("../utilities/commonFunctions.js");
+  } = require("../utilities/commonfunctions.js");
 
 // ----- Controllers for MOONSHOT OFFICE
 

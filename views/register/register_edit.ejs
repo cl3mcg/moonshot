@@ -77,8 +77,8 @@
                         <label class="form-label" for="isPreadvised">Was the tender announced prior to launch?</label>
                         <div class="input-group has-validation">
                             <select class="form-select" id="isPreadvised" name="isPreadvised" required>
-                                <option value="yes"<% if (matchingTender.isPreadvised) {%>selected<% } %>>Yes</option>
-                                <option value="no"<% if (!matchingTender.isPreadvised) {%>selected<% } %>>No</option>
+                                <option value="yes"<% if (matchingTender.preadvise) {%>selected<% } %>>Yes</option>
+                                <option value="no"<% if (!matchingTender.preadvise) {%>selected<% } %>>No</option>
                             </select>
                             <div class="invalid-feedback">Please make a selection.</div>
                         </div>
@@ -86,7 +86,7 @@
                     <div class="col-12 mb-3" id="opt_preadviseID">
                         <div>
                             <label class="form-label" for="preadviseID">What is the tender pre-advise ID?</label>
-                            <input class="form-control" type="text" id="preadviseID" name="preadviseID" <% if (matchingTender.isPreadvised && matchingTender.preadviseID) {%>value="<%= matchingTender.preadviseID %>"<% } %>>
+                            <input class="form-control" type="text" id="preadviseID" name="preadviseID" <% if (matchingTender.preadvise) {%>value="<%= matchingTender.preadvise._id %>"<% } %>>
                             <div class="form-text">Enter the tender pre-advise ID received by email when you pre-advised the tender.</div>
                             <div class="invalid-feedback">Please fill this field.</div>
                         </div>
@@ -847,7 +847,7 @@
                             Documents will be reviewed by the tender team.<br>
                             <small>Files allowed are: .doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, OpenDocument formats and images</small>
                         </p>
-                        <% if (!filesUploaded) { %> 
+                        <% if (!matchingTender.documentUpload) { %> 
                             <div class="row justify-content-md-center">
                                 <div class="col-12 px-3">
                                     <label for="fileUpload" class="form-label">Upload</label>
@@ -865,17 +865,17 @@
                                             <button class="btn btn-outline-secondary mx-3 border-0" id="pills-or" data-bs-toggle="pill" data-bs-target="#pills-or" type="button" role="tab" aria-controls="pills-" aria-selected="false" disabled>or</button>
                                           </li>
                                         <li class="nav-item border-primary" role="presentation">
-                                          <button class="nav-link" id="pills-new-tab" data-bs-toggle="pill" data-bs-target="#pills-new" type="button" role="tab" aria-controls="pills-new" aria-selected="false">Re-upload a set of docs.</button>
+                                          <button class="nav-link" id="pills-new-tab" data-bs-toggle="pill" data-bs-target="#pills-new" type="button" role="tab" aria-controls="pills-new" aria-selected="false">Remove some docs.</button>
                                         </li>
                                     </ul>
                                     <div class="tab-content border rounded-3 mt-3 py-3" id="pills-tabContent">
                                         <div class="tab-pane fade show active" id="pills-add" role="tabpanel" aria-labelledby="pills-home-tab">
                                             <div class="col-12 px-3">
-                                                <h3 class="h5">Use this feature to add documents on top of those uploaded previously.</h3>
+                                                <h3 class="h5">Use this feature to remove documents previously uploaded.</h3>
                                                 The following documents were previously uploaded:
                                                 <ul>
-                                                    <% for (let file of filesUploaded) { %>
-                                                        <li><%= file %></li>
+                                                    <% for (let file of matchingTender.documentUpload) { %>
+                                                        <li><%= file.originalname %></li>
                                                     <% } %>  
                                                 </ul>
                                                 <label for="addFileUpload" class="form-label">Upload</label>
@@ -886,48 +886,25 @@
                                             <div class="col-12 px-3">
                                                 <h3 class="h5">Use this feature to re-upload a full set of documents.</h3>
                                                 <div class="alert alert-danger" role="alert">
-                                                    Documents previously uploaded (if any) will be erased and replaced by the documents uploaded in this step.
+                                                    Documents selected will be permanently erased from the database.
                                                 </div>
-                                                The following documents were previously uploaded and will be erased by the newly uploaded documents:
-                                                <ul>
-                                                    <% for (let file of filesUploaded) { %>
-                                                        <li><%= file %></li>
-                                                    <% } %>  
-                                                </ul>
-                                                <label for="newFileUpload" class="form-label">Upload</label>
-                                                <input class="form-control" type="file" id="newFileUpload" name="newFileUpload" multiple>
+                                                Select the documents to be removed:
+                                                <div class="my-2">
+                                                    <% matchingTender.documentUpload.forEach(function(file, index) { %>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" id="file_<%= index %>" type="checkbox" value="<%= file.filename %>" name="toDeleteDoc[]">
+                                                            <label class="form-check-label" for="file_<%= index %>"><%= file.originalname %> </label>
+                                                        </div>
+                                                    <% }) %>
+                                                </div>
+                                                <!-- <label for="newFileUpload" class="form-label">Upload</label>
+                                                <input class="form-control" type="file" id="newFileUpload" name="newFileUpload" multiple> -->
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         <% } %>
-                       
-
-
-                        <!-- <div class="row justify-content-md-center">
-                            <div class="col-12 px-3">
-                                <label for="fileUpload" class="form-label">Upload</label>
-                                <input class="form-control" type="file" id="fileUpload" name="fileUpload" multiple>
-                            </div>
-                            <% if (filesUploaded) { %> 
-                                <div class="col-12 px-3 mt-3">
-                                    <div class="container border rounded-3 bg-secondary bg-opacity-25 pt-2">
-                                        <p>The following documents were previously uploaded</p>
-                                        <ul>
-                                            <% for (let file of filesUploaded) { %>
-                                            <li><%= file %></li>
-                                            <% } %> 
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="col-12 px-3 mt-3">
-                                    <div class="container border rounded-3 bg-danger bg-opacity-25 py-2">
-                                        It is recommended to re-upload all the files in the upload.
-                                    </div>
-                                </div>
-                            <% } %> 
-                        </div> -->
                     </div>
                 </div>
             </div>

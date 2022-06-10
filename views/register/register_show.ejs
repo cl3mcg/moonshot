@@ -304,7 +304,7 @@
             <tbody>
               <tr>
                 <th scope="row">Documents uploaded</th>
-                <td><% if (filesUploaded.length) {for (i=0; i < filesUploaded.length; i++) { if (i!==filesUploaded.length -1){%><%=`${filesUploaded[i]}`%><br><% } else { %><%=`${filesUploaded[i]}`%><% } } } else { %><span data-bs-toggle="tooltip" data-bs-placement="top" title="Unusual value"><i class="twa twa-warning me-2"></i>No files uploaded</span><% } %></td>
+                <td><% if (matchingTender.documentUpload.length) {for (i=0; i < matchingTender.documentUpload.length; i++) { if (i!==matchingTender.documentUpload.length -1){%><a class="me-2" href="/register/download/<%= matchingTender.documentUpload[i].filename %>" target="_blank" rel="noopener noreferrer"><i class="bi bi-download"></i></a><%=`${matchingTender.documentUpload[i].originalname}`%><br><% } else { %><a class="me-2" href="/register/download/<%= matchingTender.documentUpload[i].filename %>" target="_blank" rel="noopener noreferrer"><i class="bi bi-download"></i></a><%=`${matchingTender.documentUpload[i].originalname}`%><% } } } else { %><span data-bs-toggle="tooltip" data-bs-placement="top" title="Unusual value"><i class="twa twa-warning me-2"></i>No files uploaded</span><% } %></td>
               </tr>
               <tr>
                 <th scope="row">Additional comments</th>
@@ -318,7 +318,7 @@
   </div>
 </div>
 <!-- Modal -->
-<% if (currentUser.equals(matchingTender.author)) {%> 
+<% if (priviledge || currentUser.equals(matchingTender.author)) {%> 
 <div class="modal fade" id="deleteConfirmModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-fullscreen-md-down modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">

@@ -42,5 +42,4 @@ try {
 
 }
 
-
 module.exports = delayEmail;

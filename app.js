@@ -20,22 +20,25 @@ const Excel = require("exceljs");
 const PDFDocument = require("pdf-lib").PDFDocument;
 const StandardFonts = require("pdf-lib").StandardFonts;
 const fontkit = require("@pdf-lib/fontkit")
-// const Joi = require("joi") // Joi is exported in its own file called joiSchema.js, no need to require it again here.
-// const fileUpload = require("express-fileupload");
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
+const multer  = require('multer')
+const upload = multer({ dest: 'uploads/' })
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
+// const Joi = require("joi") // Joi is exported in its own file called joiSchema.js, no need to require it again here.
 const {
   preadviseSchema,
   registerSchema,
   officeSchema,
-} = require("./utilities/joiSchemas.js");
+} = require("./utilities/joischemas.js");
 
-const delayEmail = require("./utilities/cronDelayEmail.js");
+const delayEmail = require("./utilities/crondelayemail.js");
+
+const { uploadFile, downloadFile, deleteFile }  = require("./utilities/s3.js");
 
 // ----- Extended error class
-const ExpressError = require("./utilities/expressError.js");
+const ExpressError = require("./utilities/expresserror.js");
 
 // ----- Database models
 const PreadvisedTender = require("./models/preadvisedTender.js");
@@ -58,7 +61,7 @@ const User = require("./models/user.js");
 
 // ----- Initialization functions
 
-const initEmailScheduler = require("./utilities/cronInitDelayEmail.js");
+const initEmailScheduler = require("./utilities/croninitdelayemail.js");
 initEmailScheduler();
 
 // ----- Middlewares
@@ -112,15 +115,18 @@ app.use(flash())
 const scriptSrcUrls = [
   "https://stackpath.bootstrapcdn.com/",
   "https://cdnjs.cloudflare.com/",
-  "https://cdn.jsdelivr.net/"
+  "https://cdn.jsdelivr.net/",
+  "https://twemoji.maxcdn.com/"
 ];
 const styleSrcUrls = [
   "https://stackpath.bootstrapcdn.com/",
   "https://cdn.jsdelivr.net/",
   "https://cdnjs.cloudflare.com/",
-  "https://fonts.googleapis.com"
+  "https://fonts.googleapis.com",
+  "https://twemoji.maxcdn.com/"
 ];
 const connectSrcUrls = [
+  "https://twemoji.maxcdn.com/"
   // "https://api.mapbox.com/",
   // "https://a.tiles.mapbox.com/",
   // "https://b.tiles.mapbox.com/",
@@ -129,7 +135,8 @@ const connectSrcUrls = [
 const fontSrcUrls = [
   "https://fonts.googleapis.com",
   "https://fonts.gstatic.com/",
-  "https://cdn.jsdelivr.net/"
+  "https://cdn.jsdelivr.net/",
+  "https://twemoji.maxcdn.com/"
 ];
 app.use(
   helmet.contentSecurityPolicy({
@@ -147,6 +154,7 @@ app.use(
               // "https://res.cloudinary.com/THECLOUDINARYACCOUNTNAME/",
               // `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/`,
               "https://images.unsplash.com/",
+              "https://twemoji.maxcdn.com/"
           ],
           fontSrc: ["'self'", ...fontSrcUrls],
       },
@@ -164,7 +172,6 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use(function (req, res, next) {
   res.locals.currentUser = req.user;
-  console.log(req.user)
   res.locals.success = req.flash("success")
   res.locals.warning = req.flash("warning")
   res.locals.error = req.flash("error")
@@ -173,7 +180,7 @@ app.use(function (req, res, next) {
 })
 
 // ----- catchAsync middleware used to handle Async functions errors
-const catchAsync = require("./utilities/catchAsync.js");
+const catchAsync = require("./utilities/catchasync.js");
 
 // ----- Database connection
 mongoose
@@ -191,8 +198,8 @@ mongoose
 
 // ----- Commonly used functions
 
-const findSubRegion = require("./utilities/commonFunctions.js");
-const findResponsibleTenderOffice = require("./utilities/commonFunctions.js");
+const findSubRegion = require("./utilities/commonfunctions.js");
+const findResponsibleTenderOffice = require("./utilities/commonfunctions.js");
 
 // ----- Routes MOONSHOT HOME & START
 app.get("/", function (req, res) {
@@ -436,6 +443,15 @@ app.get("/test/emailDelay/:id", async function (req, res){
 let matchingId = req.params.id;
 delayEmail(matchingId)
 res.redirect("/")
+})
+
+app.get("/test/download/:id", async function (req, res) {
+  let matchingId = req.params.id;
+  let matchingTender = await RegisteredTender.findById(matchingId);
+  for (let file of matchingTender.documentUpload) {
+    downloadFile(file)
+  }
+  res.redirect("/")
 })
 
 // ----- Routes for ERROR HANDLING

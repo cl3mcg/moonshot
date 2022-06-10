@@ -8,7 +8,7 @@ const User = require("../models/user.js");
 
 const ejs = require("ejs");
 const colors = require("colors");
-const { officeSchema } = require("../utilities/joiSchemas.js");
+const { officeSchema } = require("../utilities/joischemas.js");
 const nodemailer = require("nodemailer");
 const countriesData = require("../public/ressources/countries.json");
 const monthsData = require("../public/ressources/months.json");
@@ -20,11 +20,11 @@ const passport = require('passport');
 
 // ----- catchAsync middleware used to handle Async functions errors
 
-const catchAsync = require("../utilities/catchAsync.js");
+const catchAsync = require("../utilities/catchasync.js");
 
 // ----- Extended error class
 
-const ExpressError = require("../utilities/expressError.js");
+const ExpressError = require("../utilities/expresserror.js");
 
 // ----- Controllers used for USER MANAGEMENT ROUTES
 

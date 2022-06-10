@@ -9,11 +9,11 @@ const RegisteredTender = require("../models/registeredTender.js");
 
 // ----- Ressources required
 
-const { preadviseSchema, registerSchema, decisionSchema, officeSchema } = require("../utilities/joiSchemas.js");
+const { preadviseSchema, registerSchema, decisionSchema, officeSchema } = require("../utilities/joischemas.js");
 
 // ----- Extended error class
 
-const ExpressError = require("../utilities/expressError.js");
+const ExpressError = require("../utilities/expresserror.js");
 
 // ----- Middleware functions
 
@@ -85,7 +85,7 @@ if (result.error) {
 
   
 const isLoggedIn = function (req, res, next) {
-    console.log(`The req.user is: ${req.user}`);
+    // console.log(`The req.user is: ${req.user}`);
     if (!req.isAuthenticated()) {
         req.session.returnTo = req.originalUrl;
         req.flash("warning", "You must be logged in.")
@@ -95,7 +95,7 @@ const isLoggedIn = function (req, res, next) {
 }
 
 const isAdmin = function (req, res, next) {
-  console.log(`The req.user is: ${req.user}`);
+  // console.log(`The req.user is: ${req.user}`);
   if (!req.user.isAdmin) {
       req.session.returnTo = req.originalUrl;
       req.flash("warning", "You do not have adminsitrative privileges.")
@@ -105,7 +105,7 @@ const isAdmin = function (req, res, next) {
 }
 
 const isTenderTeam = function (req, res, next) {
-  console.log(`The req.user is: ${req.user}`);
+  // console.log(`The req.user is: ${req.user}`);
   if (!req.user.isTenderTeam) {
       req.session.returnTo = req.originalUrl;
       req.flash("warning", "Only the tender team has access to this module.")

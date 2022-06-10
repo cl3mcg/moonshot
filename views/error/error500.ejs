@@ -22,7 +22,7 @@
               <div class="alert alert-danger" role="alert">
                   <h4 class="alert-heading">There's a problem !</h4>
                   <h5><%= err.message  %></h5>
-                  <% if (process.env.NODE_ENV !=== "production") { %> 
+                  <% if (process.env.NODE_ENV !== "production") { %> 
                     <p class="font-monospace errStack"><%= err.stack  %></p>
                   <% } %>
                   <hr>

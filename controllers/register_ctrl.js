@@ -9,7 +9,9 @@ const colors = require("colors");
 const ejs = require("ejs");
 const fs = require("fs").promises;
 const nodemailer = require("nodemailer");
-const { preadviseSchema, registerSchema, decisionSchema } = require("../utilities/joiSchemas.js");
+const multer  = require('multer')
+const upload = multer({ dest: 'uploads/' })
+const { preadviseSchema, registerSchema, decisionSchema } = require("../utilities/joischemas.js");
 const countriesData = require("../public/ressources/countries.json");
 const monthsData = require("../public/ressources/months.json");
 const tradelanes = require("../public/ressources/tradelanes.json");
@@ -21,10 +23,11 @@ const bidRequirements = require("../public/ressources/bidRequirements.json");
 const businessVerticals = require("../public/ressources/businessVerticals.json");
 const specialHandling = require("../public/ressources/specialHandling.json");
 const freightForwarders = require("../public/ressources/freightForwarders.json");
+const { uploadFile, downloadFile, deleteFile }  = require("../utilities/s3.js");
 
 // ----- catchAsync middleware used to handle Async functions errors
 
-const catchAsync = require("../utilities/catchAsync.js");
+const catchAsync = require("../utilities/catchasync.js");
 const {
   testSenderName,
   testReceiverEmail,
@@ -38,7 +41,7 @@ const {
 
 // ----- Extended error class
 
-const ExpressError = require("../utilities/expressError.js");
+const ExpressError = require("../utilities/expresserror.js");
 
 // ----- Middleware used
 
@@ -52,12 +55,12 @@ const {
 
 // ----- generateRegisterReport function used to generate the register pdf report
 
-const generateRegisterReport = require("../utilities/generateRegisterReport.js");
-const generateRegisterExcelReport = require("../utilities/generateRegisterExcelReport.js");
+const generateRegisterReport = require("../utilities/generateregisterreport.js");
+const generateRegisterExcelReport = require("../utilities/generateregisterexcelreport.js");
 
 // ----- registerTenderEmailConfirmation function used to send emails related to registered tenders operations
 
-const registerTenderEmailConfirmation = require("../utilities/registerEmail.js");
+const registerTenderEmailConfirmation = require("../utilities/registeremail.js");
 
 // ----- Commonly used functions
 // const currentDateAndTime = function () {
@@ -70,24 +73,24 @@ const {
   findResponsibleTenderOffice,
   currentDateAndTime,
   formatDate
-} = require("../utilities/commonFunctions.js");
+} = require("../utilities/commonfunctions.js");
 
   // ----- ----- The function below is used to retrieve the contents of a folder (typically the document upload folder)
   // ----- ----- the function listFiles() can be called (with await !! It's an async !!) and the result provided would be an array.
   // ----- ----- more informationa available at https://dev.to/sinedied/work-with-files-and-directories-in-a-node-js-app-4kh8
   // ----- ----- refer to the part called "List directories contents"
-  let listFiles = async function (folderId) {
-    try {
-      let id = folderId;
-      let fileList = await fs.readdir(`./uploads/${id}`);
-      if (typeof fileList != "object") {
-        fileList = [fileList];
-      }
-      return fileList;
-    } catch (error) {
-      return null;
-    }
-  };
+//   let listFiles = async function (folderId) {
+//     try {
+//       let id = folderId;
+//       let fileList = await fs.readdir(`./uploads/${id}`);
+//       if (typeof fileList != "object") {
+//         fileList = [fileList];
+//       }
+//       return fileList;
+//     } catch (error) {
+//       return null;
+//     }
+//   };
 
 // ----- Controllers for MOONSHOT REGISTER TENDERS
 
@@ -110,12 +113,10 @@ module.exports.createRegister = async function (req, res) {
     console.log(req.files);
 
     let preadvise = null;
-    // let preadviseID = null;
     if (req.body.isPreadvised === "yes") {
         let checkingPreadvise = await PreadvisedTender.findById(req.body.preadviseID);
         if (checkingPreadvise) {
         preadvise = checkingPreadvise;
-        // preadviseID = req.body.preadviseID;
         await PreadvisedTender.findByIdAndUpdate(req.body.preadviseID, {
             launched: true,
             launchedTime: currentDateAndTime(),
@@ -247,18 +248,25 @@ module.exports.createRegister = async function (req, res) {
     let additionalComment = req.body.additionalComment;
     let countryLocation = req.body.countryLocation;
     let documentUpload = [];
-    if (!req.files) {
-        documentUpload = null;
-    } else {
-        filesUploaded = req.files.fileUpload;
-        if (!filesUploaded.length) {
-        filesUploaded = [filesUploaded];
-        }
-        for (let file of filesUploaded) {
-        documentUpload.push(file.name);
-        }
-    }
 
+    let filesUploaded = req.files
+    console.log(`Files uploaded: ${filesUploaded}`);
+    for (let file of filesUploaded) {
+        documentUpload.push(file);
+    }
+    for (let file of filesUploaded) {
+        const s3Results = await uploadFile(file);
+        console.log(s3Results)
+        console.log(`${file.originalname} has been uploaded to S3`)
+        fs.unlink(`./${file.path}`, function (err) {
+            if (err) {
+            console.error(err)
+            return
+            }
+        })
+        console.log(`${file.originalname} was deleted from the server`)
+    }
+    
     let newEntry = new RegisteredTender({
         recordDate: currentDateAndTime(),
         author: req.user._id,
@@ -319,20 +327,6 @@ module.exports.createRegister = async function (req, res) {
         await PreadvisedTender.findByIdAndUpdate(req.body.preadviseID, {
         register: newEntry
         });
-    }
-
-    if (req.files) {
-        filesUploaded = req.files.fileUpload;
-        if (!filesUploaded.length) {
-        filesUploaded = [filesUploaded];
-        }
-        for (let file of filesUploaded) {
-        await file.mv(`./uploads/${newEntry._id}/${file.name}`, (err) => {
-            if (err) {
-            return res.status(500).send(err);
-            }
-        });
-        }
     }
 
     if (req.body.isPreadvised === "yes") {
@@ -628,11 +622,6 @@ module.exports.renderShowPage = catchAsync(async function (req, res) {
         req.flash("error", "Tender with the given ID was not found.");
         return res.redirect("/register/start");
     } else {
-        let filesUploaded = await listFiles(matchingId);
-        if (!filesUploaded) {
-        filesUploaded = [];
-        }
-
         //Below is a  function that checks if the decision date is passed
         //If the decision date is passed, the function returns true
         //If the decision date is not passed, the Tender Outcome button is disabled on the "show" page
@@ -654,7 +643,7 @@ module.exports.renderShowPage = catchAsync(async function (req, res) {
         if (matchingTender.author.id !== req.user.id || matchingTender.tenderTeamDecision || matchingTender.outcome || matchingTender.tenderTeamSubmissionDate) {
             editRestriction = true;
         }
-
+        console.log(matchingTender)
         res.render("register/register_show.ejs", {
         isDecisionDatePassed,
         isSubmitted,
@@ -670,7 +659,6 @@ module.exports.renderShowPage = catchAsync(async function (req, res) {
         history,
         specialHandling,
         matchingTender,
-        filesUploaded,
         });
     }
 });
@@ -706,13 +694,13 @@ module.exports.renderEditPage = catchAsync(async function (req, res) {
         req.flash("error", "The tender with the given ID was not found.");
         return res.redirect("/register/start");
     } else {
-        let filesUploaded = await listFiles(matchingId);
+        // let filesUploaded = await listFiles(matchingId);
         res.render("register/register_edit.ejs", {
         countriesData,
         monthsData,
         businessVerticals,
         matchingTender,
-        filesUploaded,
+        // filesUploaded,
         });
     }
 });
@@ -856,48 +844,31 @@ module.exports.patchRegister = catchAsync(async function (req, res) {
     let newPotential = req.body.potential;
     let newAdditionalComment = req.body.additionalComment;
     let newCountryLocation = req.body.countryLocation;
-    let newDocumentUpload = [];
-    if (!req.files) {
-        let filesUploaded;
-        try {
-        filesUploaded = await listFiles(matchingId);
-        } catch (error) {
-        filesUploaded = null;
-        }
-        if (!filesUploaded) {
-        newDocumentUpload = null;
-        } else {
-        for (file of filesUploaded) {
-            newDocumentUpload.push(file.name);
-        }
-        }
-    } else {
-        if (req.files.fileUpload) {
-        newFilesUploaded = req.files.fileUpload;
-        if (!newFilesUploaded.length) {
-            newFilesUploaded = [newFilesUploaded];
+
+    let registerToUpdate = await RegisteredTender.findById(matchingId);
+    let newDocumentUpload = registerToUpdate.documentUpload;
+    console.log("The value newDocumentUpload is:", newDocumentUpload)
+    if (!newDocumentUpload || !newDocumentUpload.length) {
+        newDocumentUpload = []
+    }
+    
+    let newFilesUploaded = req.files
+    if (newFilesUploaded.length) {
+        console.log(`Files uploaded: ${newFilesUploaded}`);
+        for (let file of newFilesUploaded) {
+            newDocumentUpload.push(file);
         }
         for (let file of newFilesUploaded) {
-            newDocumentUpload.push(file.name);
-        }
-        }
-        if (req.files.addFileUpload) {
-        newFilesUploaded = req.files.addFileUpload;
-        if (!newFilesUploaded.length) {
-            newFilesUploaded = [newFilesUploaded];
-        }
-        for (let file of newFilesUploaded) {
-            newDocumentUpload.push(file.name);
-        }
-        }
-        if (req.files.newFileUpload) {
-        newFilesUploaded = req.files.newFileUpload;
-        if (!newFilesUploaded.length) {
-            newFilesUploaded = [newFilesUploaded];
-        }
-        for (let file of newFilesUploaded) {
-            newDocumentUpload.push(file.name);
-        }
+            const s3Results = await uploadFile(file);
+            console.log(s3Results)
+            console.log(`${file.originalname} has been uploaded to S3`)
+            fs.unlink(`./${file.path}`, function (err) {
+                if (err) {
+                console.error(err)
+                return
+                }
+            })
+            console.log(`${file.originalname} was deleted from the server`)
         }
     }
 
@@ -905,6 +876,7 @@ module.exports.patchRegister = catchAsync(async function (req, res) {
         lastModifiedDate: currentDateAndTime(),
         isPreadvised: newIsPreadvised,
         preadviseID: newPreadviseID,
+        countryLocation: newCountryLocation,
         companyName: newCompanyName,
         sugarID: newSugarID,
         businessVertical: newBusinessVertical,
@@ -950,64 +922,43 @@ module.exports.patchRegister = catchAsync(async function (req, res) {
         feedbackAvailable: newFeedbackAvailable,
         documentUpload: newDocumentUpload,
         potential: newPotential,
-        additionalComment: newAdditionalComment,
-        countryLocation: newCountryLocation,
+        additionalComment: newAdditionalComment
     };
 
     await RegisteredTender.findByIdAndUpdate(matchingId, updatedEntry);
 
-    if (req.files) {
-        let filesUploaded;
-        if (req.files.fileUpload) {
-        filesUploaded = req.files.fileUpload;
-        if (!filesUploaded.length) {
-            filesUploaded = [filesUploaded];
+
+    let matchingRegister = await RegisteredTender.findById(matchingId)
+    if (req.body.toDeleteDoc) {
+        console.log(`matchingRegister is ${matchingRegister}`)
+        let existingUploads = matchingRegister.documentUpload
+        console.log(`existingUploads is ${existingUploads}`)
+        let toDeleteDocuments = req.body.toDeleteDoc
+        if (typeof toDeleteDocuments != 'object') {
+            toDeleteDocuments = [toDeleteDocuments]
         }
-        for (let file of filesUploaded) {
-            await file.mv(`./uploads/${matchingId}/${file.name}`, (err) => {
-            if (err) {
-                return res.status(500).send(err);
+        console.log(`toDeleteDocuments is ${toDeleteDocuments}`)
+        if (toDeleteDocuments) {
+            // Remove the documents from the MongoDb database
+            for (let doc of toDeleteDocuments) {
+                console.log(`doc is ${doc}`)
+                await RegisteredTender.findByIdAndUpdate(matchingId, {
+                    $pull: {
+                        documentUpload: { filename: { $in: req.body.toDeleteDoc } }
+                    }
+                })
             }
-            });
-        }
-        }
-        if (req.files.addFileUpload) {
-        filesUploaded = req.files.addFileUpload;
-        if (!filesUploaded.length) {
-            filesUploaded = [filesUploaded];
-        }
-        for (let file of filesUploaded) {
-            await file.mv(`./uploads/${matchingId}/${file.name}`, (err) => {
-            if (err) {
-                return res.status(500).send(err);
+            console.log("Files should have been pulled out of the documentUpload array")
+            // Remove the documents from the S3 bucket
+            for (let upload of existingUploads) {
+                if (toDeleteDocuments.includes(upload.filename)) {
+                    await deleteFile(upload);
+                    console.log(`${upload.originalname} was deleted from S3`)
+                }
             }
-            });
-        }
-        }
-        if (req.files.newFileUpload) {
-        filesUploaded = req.files.newFileUpload;
-        if (!filesUploaded.length) {
-            filesUploaded = [filesUploaded];
-        }
-        await fs.rmdir(`./uploads/${matchingId}`,
-            { recursive: true },
-            (err) => {
-            if (err) {
-                throw err;
-            }
-            }
-        );
-        for (let file of filesUploaded) {
-            await file.mv(`./uploads/${matchingId}/${file.name}`, (err) => {
-            if (err) {
-                return res.status(500).send(err);
-            }
-            });
-        }
         }
     }
 
-    console.log(updatedEntry);
     console.log(`${colors.black.bgBrightGreen("* OK *")} The TENDER data related to ${newCompanyName} has been updated in the database`);
     req.flash("success", "Tender is successfully modified !");
     res.redirect("/register/start");
@@ -1029,11 +980,11 @@ module.exports.deleteRegister = catchAsync(async function (req, res) {
         `${colors.black.bgBrightGreen("* OK *")} The TENDER REGISTRATION related to "${matchingTenderName}" has been deleted`
         );
         if (matchingTender.documentUpload.length > 0) {
-        await fs.rmdir(`./uploads/${matchingId}`, { recursive: true }, (err) => {
-            if (err) {
-            throw err;
+            // Remove all the documents from the S3 bucket
+            for (let upload of matchingTender.documentUpload) {
+                await deleteFile(upload);
+                console.log(`${upload.originalname} was deleted from S3`)
             }
-            console.log(`${colors.black.bgBrightGreen("* OK *")} The TENDER REGISTRATION ATTACHEMENT FOLDER related to "${matchingTenderName}" has been deleted`);});
         }
         req.flash("success", "Tender has been deleted !");
         res.redirect("/register/start");

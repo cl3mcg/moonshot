@@ -88,7 +88,8 @@ module.exports.registerSchema = Joi.object({
     decisionCritera: Joi.string().required().escapeHTML(),
     feedbackAvailable: Joi.string().required().escapeHTML(),
     potential: Joi.string().required().escapeHTML(),
-    additionalComment: Joi.optional()
+    additionalComment: Joi.optional(),
+    toDeleteDoc: Joi.array()
 })
 
 module.exports.decisionSchema = Joi.object({
