@@ -4,34 +4,41 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moonshot | Dashboard</title>
+    <title>Moonshot | Dashboard Reporting</title>
     <%- include("../partials/commonStyles.ejs") %>
     <%- include("../partials/commonFonts.ejs") %>
 </head>
 <body>
     <%- include("../partials/navbar.ejs") %>
     <%- include("../partials/flash.ejs") %>
-<a href="/start" class="btn btn-secondary btn-sm d-inline-block z-index-1 position-relative top-0 start-0 mt-2 ms-3"><i class="bi bi-arrow-left-circle me-2"></i>Back</a>
+<div class="col d-flex justify-content-between mx-3">
+    <a href="/dashboard/start" class="btn btn-secondary btn-sm"><i class="bi bi-arrow-left-circle me-2"></i>Back</a>
+    <!-- <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="bi bi-gear me-1"></i>Options</button> -->
+</div>
 <div class="mt-2">
-    <h1 class="text-center">Dashboard</h1>
+    <h1 class="text-center">Reporting</h1>
     <div class="container rounded-3 mt-5">
         <div class="container p-3">
             <div class="row row-cols-1 row-cols-md-2 g-4">
                 <div class="col-sm-6">
                     <div class="card">
                         <div class="card-body">
-                        <h5 class="card-title">Visual dashboad</h5>
-                        <p class="card-text">Access data in a visual way with charts and graphics.</p>
-                        <a href="/dashboard/visual" class="btn btn-primary disabled">Soon</a>
+                            <form action="/dashboard/issueReport/preadvise" method="POST">
+                                <h5 class="card-title">Preadvise report</h5>
+                                <p class="card-text">Issue and download an Excel report related to the tenders that have been preadvised.</p>
+                                <button class="btn btn-primary">Download</button>
+                            </form>
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="card">
                         <div class="card-body">
-                        <h5 class="card-title">Reports</h5>
-                        <p class="card-text">Issue Excel and pdf reports.</p>
-                        <a href="/dashboard/reporting" class="btn btn-primary">Go</a>
+                            <form action="/dashboard/issueReport/register"  method="POST">
+                                <h5 class="card-title">Registration report</h5>
+                                <p class="card-text">Issue and download an Excel report related to the tenders that have been registered.</p>
+                                <button class="btn btn-primary">Download</button>
+                            </form>
                         </div>
                     </div>
                 </div>
