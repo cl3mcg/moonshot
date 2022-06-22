@@ -19,7 +19,6 @@ const transportModes = require("../public/ressources/transportModes.json");
 const businessVerticals = require("../public/ressources/businessVerticals.json");
 const tenderLaunchMethod = require("../public/ressources/tenderLaunchMethod.json")
 const decisionCriteria = require("../public/ressources/decisionCriteria.json")
-const generateRegisterExcelReport = require("../utilities/generateRegisterExcelReport.js");
 
 // ----- Middleware used
 
@@ -42,10 +41,14 @@ const ExpressError = require("../utilities/expresserror.js");
 // const testSenderEmail = process.env.testSenderEmail
 // const testSenderEmailPassword = process.env.testSenderEmailPassword
 
-// ----- generatePreadviseReport function used to generate the preadvise pdf report
+// ----- generatePreadviseReport function used to generate the preadvise reports in pdf and Excel
 
 const generatePreadviseReport = require("../utilities/generatepreadvisereport.js");
 const generatePreadviseExcelReport = require("../utilities/generatepreadviseexcelreport.js");
+
+// ----- generateRegisterExcelReport function used to generate the register Excel report
+
+const generateRegisterExcelReport = require("../utilities/generateregisterexcelreport.js");
 
 // ----- Commonly used functions
 
