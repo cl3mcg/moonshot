@@ -207,6 +207,9 @@ const registeredTenderSchema = new Schema({
     },
     outcome: {
         type: String
+    },
+    outcomeDetails: {
+        type: Object
     }
 })
 
