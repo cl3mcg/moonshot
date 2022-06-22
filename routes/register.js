@@ -92,14 +92,8 @@ const registerCtrl = require("../controllers/register_ctrl.js");
 router.get("/start", isLoggedIn, registerCtrl.renderStartPage);
 
 router.route("/new")
-  .get(
-    // isLoggedIn,
-    registerCtrl.renderNewPage)
-  .post(
-    // isLoggedIn, 
-    upload.array('fileUpload'),
-    validateRegister,
-    registerCtrl.createRegister)
+  .get(isLoggedIn, registerCtrl.renderNewPage)
+  .post(isLoggedIn, upload.array('fileUpload'), validateRegister, registerCtrl.createRegister)
 
 router.get("/index", isLoggedIn, registerCtrl.renderIndexPage);
 
@@ -113,19 +107,21 @@ router.post("/:id/participation/:decision", isLoggedIn, validateDecision, regist
 
 router.route("/edit/:id")
   .get(isLoggedIn, registerCtrl.renderEditPage)
-  .patch(
-    // isLoggedIn,
-    upload.array('addFileUpload'),
-    // validateRegister,
-    registerCtrl.patchRegister)
+  .patch(isLoggedIn, upload.array('addFileUpload'), validateRegister, registerCtrl.patchRegister)
 
-router.get("/excelReport", isLoggedIn, catchAsync(async function (req, res) {
-  let fileName = `excelReport_${Date.now()}`
-      generateRegisterExcelReport(fileName)
-      req.flash("success", "The registered tender Excel report has been generated.");
-      return res.redirect("/register/start");
-  })
-);
+router.get("/:id/download/:docId", isLoggedIn, registerCtrl.downloadDocument);
+
+router.get("/:id/outcome", isLoggedIn, registerCtrl.renderOutcomePage);
+
+router.post("/:id/outcome/:result", isLoggedIn, registerCtrl.registerOutcome);
+
+// router.get("/excelReport", isLoggedIn, catchAsync(async function (req, res) {
+//   let fileName = `excelReport_${Date.now()}`
+//       generateRegisterExcelReport(fileName)
+//       req.flash("success", "The registered tender Excel report has been generated.");
+//       return res.redirect("/register/start");
+//   })
+// );
 
 // ----- Export the router
 module.exports = router;

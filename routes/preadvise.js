@@ -94,13 +94,13 @@ router.get("/launch/:id", isLoggedIn, preadviseCtrl.renderLaunchPage);
 
 router.post("/report/:id", isLoggedIn, preadviseCtrl.postReport);
 
-router.get("/excelReport", isLoggedIn, catchAsync(async function (req, res) {
-    let fileName = `excelReport_${Date.now()}`
-        generatePreadviseExcelReport(fileName)
-        req.flash("sucess", "The preadvised tender Excel report has been generated.");
-        return res.redirect("/preadvise/start");
-  })
-  );
+// router.get("/excelReport", isLoggedIn, catchAsync(async function (req, res) {
+//     let fileName = `excelReport_${Date.now()}`
+//         generatePreadviseExcelReport(fileName)
+//         req.flash("sucess", "The preadvised tender Excel report has been generated.");
+//         return res.redirect("/preadvise/start");
+//   })
+//   );
 
 // ----- Export the router
 module.exports = router;
