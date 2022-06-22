@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moonshot | Tender Outcome</title>
+    <%- include("../partials/commonStyles.ejs") %>
+    <%- include("../partials/commonFonts.ejs") %>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+</head>
+<body>
+    <%- include("../partials/navbar.ejs") %>
+    <%- include("../partials/flash.ejs") %>
+<button class="btn btn-secondary btn-sm d-inline-block z-index-1 position-relative top-0 start-0 mt-3 ms-3" data-bs-toggle="modal" data-bs-target="#abortConfirmModal"><i class="bi bi-arrow-left-circle me-2"></i>Abort</button>
+<div class="container mt-2">
+    <h1 class="text-center">Outcome of the tender related to <i><%= matchingTender.companyName %></i></h1>
+    <p class="lead my-5">Dear Account Owner,<br>
+        Providing the outcome of the tender opportunity is extremely important.<br>
+        Please invest the following 2-5 minutes record the positive or negative outcome of the tender opportunity.<br>
+        Thank you!</p>
+    <div class="container mb-5 py-4 border rounded bg-white">
+        <h2>Award result</h2>
+        <p>Has Rhenus Air & Ocean been awarded ?</p>
+        <nav class="nav nav-pills flex-column flex-sm-row py-4">
+            <a class="flex-sm-fill text-sm-center nav-link navPill mx-2" id="positiveOutcomePill" data-bs-toggle="tab" data-bs-target="#tabPositiveOutcome" href="#">Positive outcome</a>
+            <a class="flex-sm-fill text-sm-center nav-link navPill mx-2" data-bs-toggle="tab" data-bs-target="#tabNegativeOutcome" href="#">Negative outcome</a>
+            <a class="flex-sm-fill text-sm-center nav-link navPill mx-2" data-bs-toggle="tab" data-bs-target="#tabUnknownOutcome" href="#">No response provided</a>
+        </nav> 
+        <div class="tab-content py-4">
+            <hr>
+            <div class="tab-pane fade" id="tabPositiveOutcome" role="tabpanel" aria-labelledby="positive-outcome-tab">
+                <form class="mb-5 needs-validation" id="positiveOutcomeForm" action="/register/<%= matchingTender._id %>/outcome/positive" method="POST" autocomplete="off" novalidate>
+                    <div class="container row">
+                        <div class="col-12 col-md-6 px-3 my-4">
+                            <h3>Award result</h3>
+                            <p>Has Rhenus Air & Ocean been awarded ?</p>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="outcomeTenderResult" id="positivePartialOutcomeRadio" value="positivePartial" required>
+                                <label class="form-check-label" for="positivePartialOutcomeRadio">
+                                    Partial volume win
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="outcomeTenderResult" id="positiveFullOutcomeRadio" value="positiveFull" required>
+                                <label class="form-check-label" for="positiveFullOutcomeRadio">
+                                    Full volume win
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 px-3 my-4">
+                            <h3>Volume Split</h3>
+                            <p>How has the volume been split among the logistics service providers ?</p>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="awardVolumeSplit" value="perRegion" id="outcomeAwardVolumeSplitRegion" required>
+                                <label class="form-check-label" for="outcomeAwardVolumeSplitRegion">
+                                Per region
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="awardVolumeSplit" value="perCountry" id="outcomeAwardVolumeSplitCountry" required>
+                                <label class="form-check-label" for="outcomeAwardVolumeSplitCountry">
+                                Per country
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="awardVolumeSplit" value="perTransportMode" id="outcomeAwardVolumeSplitTransportMode" required>
+                                <label class="form-check-label" for="outcomeAwardVolumeSplitTransportMode">
+                                Per transport mode
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="awardVolumeSplit" value="perFlowDirection" id="outcomeAwardVolumeSplitFlowDirection" required>
+                                <label class="form-check-label" for="outcomeAwardVolumeSplitFlowDirection">
+                                Per flow direction (inbound or outbound)
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="awardVolumeSplit" value="perCompanyEntity" id="outcomeAwardVolumeCompanyEntity" required>
+                                <label class="form-check-label" for="outcomeAwardVolumeCompanyEntity">
+                                Per company entity
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="awardVolumeSplit" value="others" id="outcomeAwardVolumeOthers" required>
+                                <label class="form-check-label" for="outcomeAwardVolumeOthers">
+                                Others
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 px-3 my-4">
+                            <h3>Confirmation date</h3>
+                                <p>When did you receive the confirmation for the award ?</p>
+                                <input class="form-control" type="date" id="awardReceiveDate" name="outcomeAwardReceiveDate" required>
+                                <div class="invalid-feedback">Please fill this field.</div>
+                        </div>
+                        <div class="col-12 col-md-6 px-3 my-4">
+                            <h3>Start of business date</h3>
+                                <p>When does the bidding company expect to start the business ?</p>
+                                <input class="form-control" type="date" id="expectedBusinessStartDate" name="outcomeExpectedBusinessStartDate" required>
+                                <div class="invalid-feedback">Please fill this field.</div>
+                        </div>
+                        <div class="row my-4">
+                            <h2>Gained volumes & turnover</h2>
+                            <div class="col-12 col-md-6 px-3 mt-3 mb-2">
+                                <h3>Turnover</h3>
+                                <p>What is the expected turnover per year (in EUR)</p>
+                                <div class="input-group mb-3">
+                                    <input type="number" min="0" class="form-control" id="outcomeExpectedTurnover" name="outcomeExpectedTurnover" placeholder="Expected EUR turnover" aria-label="Expected turnover expressed in euros" required>
+                                    <span class="input-group-text">EUR</span>
+                                </div>
+                            </div>
+                            <div class="col-12 px-3 mt-3 mb-4">
+                                <h3>Volume awarded</h3>
+                                <p>What are the awarded volumes to expect per year</p>
+                                <div class="row">
+                                    <div class="col">
+                                        <h4>Airfreight</h4>
+                                        <div class="input-group mb-3">
+                                            <input type="number" min="0" class="form-control" id="outcomeExpectedAirfreightVol" name="outcomeExpectedAirfreightVol" placeholder="Expected volumes" aria-label="Expected Airfreight volumes in tons" required>
+                                            <span class="input-group-text">Tons</span>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <h4>Seafreight FCL</h4>
+                                        <div class="input-group mb-3">
+                                            <input type="number" min="0" class="form-control" id="outcomeExpectedSeafreightFCLVol" name="outcomeExpectedSeafreightFCLVol" placeholder="Expected volumes" aria-label="Expected Seafreight FCL volumes in TEU" required>
+                                            <span class="input-group-text">TEUs</span>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <h4>Seafreight LCL</h4>
+                                        <div class="input-group mb-3">
+                                            <input type="number" min="0" class="form-control" id="outcomeExpectedSeafreightLCLVol" name="outcomeExpectedSeafreightLCLVol" placeholder="Expected volumes" aria-label="Expected Seafreight LCL volumes in TEU" required>
+                                            <span class="input-group-text">CBMs</span>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <h4>Railfreight FCL</h4>
+                                        <div class="input-group mb-3">
+                                            <input type="number" min="0" class="form-control" id="outcomeExpectedRailfreightFCLVol" name="outcomeExpectedRailfreightFCLVol" placeholder="Expected volumes" aria-label="Expected Railfreight FCL volumes in TEU" required>
+                                            <span class="input-group-text">TEUs</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <h2>Additional Comments</h2>
+                        <div class="container mb-3">
+                            <p>Please feel free to share any comments that may be helpul for the tender team</p>
+                            <div class="row justify-content-md-center">
+                                <div class="col-12 px-3">
+                                    <textarea class="form-control" id="posOutcomeAdditionalComment" name="outcomeAdditionalComment" rows="3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="d-grid gap-2 col-6 mx-auto">
+                    <button type="button" class="btn btn-primary" id="positiveConfirmBtn">Confirm</button>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="tabNegativeOutcome" role="tabpanel" aria-labelledby="negative-tab">
+                <form class="mb-5 needs-validation" id="negativeOutcomeForm" action="/register/<%= matchingTender._id %>/outcome/negative" method="POST" novalidate>
+                    <div class="container row">
+                        <div class="col-12 col-md-6 px-3 my-3">
+                            <h3>Service provider</h3>
+                            <p>Did the customer change the logistics service provider ?</p>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="outcomeChangeProvider" id="outcomeChangeProviderTrue" value="yes" required>
+                                <label class="form-check-label" for="outcomeChangeProviderTrue">
+                                Yes
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="outcomeChangeProvider" id="outcomeChangeProviderFalse" value="no" required>
+                                <label class="form-check-label" for="outcomeChangeProviderFalse">
+                                    No
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="outcomeChangeProvider" id="outcomeChangeProviderUnknown" value="unknown" required>
+                                <label class="form-check-label" for="outcomeChangeProviderUnknown">
+                                    Unknown
+                                </label>
+                            </div>
+                        </div>
+                    
+                        <div class="col-12 col-md-6 px-3 my-3">
+                            <h3>Pricing & rates</h3>
+                            <p>If applicable, please describe as detailed as possible where Rhenus needs to improve per mode and/or region, etc.</p>
+                            <textarea class="form-control" id="outcomePricingComment" name="outcomePricingComment" rows="3" required></textarea>
+                        </div>
+
+                        <div class="col-12 col-md-6 px-3 my-3">
+                            <h3>IT Solution</h3>
+                            <p>If applicable, please describe what has been missing or should be developed and/or improved.</p>
+                            <textarea class="form-control" id="outcomeITComment" name="outcomeITComment" rows="3" required></textarea>
+                        </div>
+
+                        <div class="col-12 col-md-6 px-3 my-3">
+                            <h3>Rhenus network coverage</h3>
+                            <p>If applicable, please describe what countries and/or regions where not covered sufficiently ?</p>
+                            <textarea class="form-control" id="outcomeNetworkComment" name="outcomeNetworkComment" rows="3" required></textarea>
+                        </div>
+
+                        <div class="col-12 col-md-6 px-3 my-3">
+                            <h3>Overall concept</h3>
+                            <p>If applicable, please describe what Rhenus needs to do better ?</p>
+                            <textarea class="form-control" id="outcomeConceptComment" name="outcomeConceptComment" rows="3" required></textarea>
+                        </div>
+
+                        <div class="col-12 col-md-6 px-3 my-3">
+                            <h3>Improvements</h3>
+                            <p>What should Rhenus have done in order to win this business ?</p>
+                            <textarea class="form-control" id="outcomeImprovementComment" name="outcomeImprovementComment" rows="3" required></textarea>
+                        </div>
+
+                        <div class="col-12 col-md-6 px-3 my-3">
+                            <h3>Next steps</h3>
+                            <p>Will the customer invite Rhenus to the next opportunity to be launched in the future ?</p>
+                            <textarea class="form-control" id="outcomeNextStepsComment" name="outcomeNextStepsComment" rows="3" required></textarea>
+                        </div>
+
+                        <div class="col-12 col-md-6 px-3 my-3">
+                            <h3>Preparation</h3>
+                            <p>Please define the next steps which must be prepared by the account owner for this next opportunity.</p>
+                            <textarea class="form-control" id="outcomePreparationComment" name="outcomePreparationComment" rows="3" required></textarea>
+                        </div>
+        
+                        <div class="row justify-content-md-center mt-5">
+                            <h2>Customer feedback</h2>
+                            <div class="col-12">
+                                <h3>Criteria ponderation</h3>
+                                <p>Please grade the importance of the following criteria within the final decision making process.</p>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="outcomePricingPonderation" class="form-label">Pricing & Rates</label><span class="badge font-monospace bg-secondary bg-opacity-25 text-dark ms-2 fs-6">Test</span>
+                                        <input type="range" class="form-range" min="0" max="10" step="1" id="outcomePricingPonderation" name="outcomePricingPonderation" required>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="outcomeTransitTimePonderation" class="form-label">Transit time</label><span class="badge font-monospace bg-secondary bg-opacity-25 text-dark ms-2 fs-6">Test</span>
+                                        <input type="range" class="form-range" min="0" max="10" step="1" id="outcomeTransitTimePonderation" name="outcomeTransitTimePonderation" required>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="outcomeScopeResponsePonderation" class="form-label">Scope of Rhenus response</label><span class="badge font-monospace bg-secondary bg-opacity-25 text-dark ms-2 fs-6">Test</span>
+                                        <input type="range" class="form-range" min="0" max="10" step="1" id="outcomeScopeResponsePonderation" name="outcomeScopeResponsePonderation" required>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="outcomeRelationshipPonderation" class="form-label">Relationship to customer</label><span class="badge font-monospace bg-secondary bg-opacity-25 text-dark ms-2 fs-6">Test</span>
+                                        <input type="range" class="form-range" min="0" max="10" step="1" id="outcomeRelationshipPonderation" name="outcomeRelationshipPonderation" required>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="outcomeNetworkCoveragePonderation" class="form-label">Rhenus network coverage</label><span class="badge font-monospace bg-secondary bg-opacity-25 text-dark ms-2 fs-6">Test</span>
+                                        <input type="range" class="form-range" min="0" max="10" step="1" id="outcomeNetworkCoveragePonderation" name="outcomeNetworkCoveragePonderation" required>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="outcomeValueAddedServicesPonderation" class="form-label">Value added services</label><span class="badge font-monospace bg-secondary bg-opacity-25 text-dark ms-2 fs-6">Test</span>
+                                        <input type="range" class="form-range" min="0" max="10" step="1" id="outcomeValueAddedServicesPonderation" name="outcomeValueAddedServicesPonderation" required>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="outcomeITSolutionsPonderation" class="form-label">IT solutions</label><span class="badge font-monospace bg-secondary bg-opacity-25 text-dark ms-2 fs-6">Test</span>
+                                        <input type="range" class="form-range" min="0" max="10" step="1" id="outcomeITSolutionsPonderation" name="outcomeITSolutionsPonderation" required>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="outcomeOverallConceptPonderation" class="form-label">Overall concept</label><span class="badge font-monospace bg-secondary bg-opacity-25 text-dark ms-2 fs-6">Test</span>
+                                        <input type="range" class="form-range" min="0" max="10" step="1" id="outcomeOverallConceptPonderation" name="outcomeOverallConceptPonderation" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 my-5">
+                                <h3>New Service Provider</h3>
+                                <p>Who is/are the new service provider(s) (except Rhenus)?</p>
+                                <input class="form-control" type="text" id="outcomeNewProvider" name="outcomeNewProvider" required>
+                                <div class="form-check mt-2">
+                                    <input class="form-check-input" type="checkbox" name="outcomeNewProviderUnknown" id="outcomeNewProviderUnknown" value="unknown">
+                                    <label class="form-check-label" for="outcomeNewProviderUnknown">
+                                        Unknown
+                                    </label>
+                                </div>
+                            </div>
+                            <h2>Additional Comments</h2>
+                            <div class="container mb-3">
+                                <p>Please feel free to share any comments that may be helpul for the tender team</p>
+                                <div class="row justify-content-md-center">
+                                    <div class="col-12">
+                                        <textarea class="form-control" id="negOutcomeAdditionalComment" name="outcomeAdditionalComment" rows="3"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="d-grid gap-2 col-6 mx-auto">
+                    <button type="button" class="btn btn-primary" id="negativeConfirmBtn">Confirm</button>
+                </div>
+            </div>
+        
+            <div class="tab-pane fade" id="tabUnknownOutcome" role="tabpanel" aria-labelledby="unknown-tab">
+                <form class="mb-5 needs-validation" id="unknownOutcomeForm" action="/register/<%= matchingTender._id %>/outcome/unknown" method="POST" novalidate>
+                    <div class="alert alert-danger d-flex align-items-center" role="alert">
+                        <div>
+                            <h2><i class="bi bi-exclamation-triangle-fill me-3"></i></h2>
+                          </div>
+                        <div>
+                            You should register a "<i>No response</i>" outcome only when you are <strong>sure</strong> that the bidding company won't provide neither feedback nor outcome details.<br>
+                            If you are still waiting for a "yet-to-be provided" feedback or outcome, hold on and register the information when you have it on hand.<br>
+                            If you are not sure, please contact the Rhenus tender team.
+                        </div>
+                    </div>
+                    <h2>Additional Comments</h2>
+                    <div class="container mb-5">
+                        <p>Please feel free to share any comments that may be helpul for the tender team</p>
+                        <div class="row justify-content-md-center">
+                            <div class="col-12 px-3">
+                                <textarea class="form-control" id="unkOutcomeAdditionalComment" name="outcomeAdditionalComment" rows="3" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="d-grid gap-2 col-6 mx-auto">
+                    <button type="button" class="btn btn-primary" id="unknwownConfirmBtn">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal positive -->
+<div class="modal fade" id="positiveOutcomeConfirmModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-fullscreen-md-down modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Positive outcome confirmation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>You are about to register the outcome of the tender related <i><%= matchingTender.companyName %></i>.</strong> Take a few minutes to review the information below and ammend it if necessary.<br>
+                    Once everything is OK, you can submit your data.
+                </p>
+                <hr>
+                <div>
+                    <div class="row justify-content-md-center mb-2">
+                        <div class="col-12 col-md-6">
+                            <span><strong>Company name:</strong></span>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <span><%= matchingTender.companyName %></span>
+                        </div>
+                    </div>
+                    <div class="row justify-content-md-center mb-2">
+                        <div class="col-12 col-md-6">
+                            <span><strong>General outcome:</strong></span>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <span class="text-success"><strong>Positive</strong></span>
+                        </div>
+                    </div>
+                    <div class="row justify-content-md-center mb-2">
+                        <div class="col-12 col-md-6">
+                            <span><strong>Scope of the award:</strong></span>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <span id="mod_positive_awardResult"></span>
+                        </div>
+                    </div>
+                    <div class="row justify-content-md-center mb-2">
+                        <div class="col-12 col-md-6">
+                            <span><strong>Volume split:</strong></span>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <span id="mod_positive_volumeSplit"></span>
+                        </div>
+                    </div>
+                    <div class="row justify-content-md-center mb-2">
+                        <div class="col-12 col-md-6">
+                            <span><strong>Award confirmation date:</strong></span>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <span id="mod_positive_expectedReceiveDate"></span>
+                        </div>
+                    </div>
+                    <div class="row justify-content-md-center mb-2">
+                        <div class="col-12 col-md-6">
+                            <span><strong>Expected business start date:</strong></span>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <span id="mod_positive_expectedBusinessStart"></span>
+                        </div>
+                    </div>
+                    <div class="row justify-content-md-center mb-2">
+                        <div class="col-12 col-md-6">
+                            <span><strong>Turnover expected:</strong></span>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <span id="mod_positive_expectedTurnover"></span>
+                        </div>
+                    </div>
+                    <div class="row justify-content-md-center mb-2">
+                        <div class="col-12 col-md-6">
+                            <span><strong>Awarded Airfreight vol. expected:</strong></span>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <span id="mod_positive_expectedAirfreightVol"></span>
+                        </div>
+                    </div>
+                    <div class="row justify-content-md-center mb-2">
+                        <div class="col-12 col-md-6">
+                            <span><strong>Awarded Seafreight FCL vol. expected:</strong></span>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <span id="mod_positive_expectedSeafreightFCLVol"></span>
+                        </div>
+                    </div>
+                    <div class="row justify-content-md-center mb-2">
+                        <div class="col-12 col-md-6">
+                            <span><strong>Awarded Seafreight LCL vol. expected:</strong></span>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <span id="mod_positive_expectedSeafreightLCLVol"></span>
+                        </div>
+                    </div>
+                    <div class="row justify-content-md-center mb-2">
+                        <div class="col-12 col-md-6">
+                            <span><strong>Awarded Railfreight FCL vol. expected:</strong></span>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <span id="mod_positive_expectedRailfreightFCLVol"></span>
+                        </div>
+                    </div>
+                    <div class="row justify-content-md-center mb-2">
+                        <div class="col-12">
+                            <span><strong>Additional comments:</strong></span>
+                        </div>
+                        <div class="col-12">
+                            <span id="mod_positive_additionalComments"></span>
+                        </div>
+                    </div>
+                </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary position-relative top-50 start-0" id="mod_returnBtn" data-bs-dismiss="modal"><i class="bi bi-pencil-square me-2"></i>Change</button>
+                <button type="submit" form="positiveOutcomeForm" class="btn btn-success position-relative top-50 end-0" id="mod_submitBtn"><i class="bi bi-send-check me-2"></i>Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- Modal negative -->
+<div class="modal fade" id="negativeOutcomeConfirmModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-fullscreen-md-down modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Negative outcome confirmation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+        <p><strong>You are about to register the outcome of the tender related <i><%= matchingTender.companyName %></i>.</strong> Take a few minutes to review the information below and ammend it if necessary.<br>
+            Once everything is OK, you can submit your data.
+        </p>
+        <hr>
+        <div>
+            <div class="row justify-content-md-center mb-2">
+                <div class="col-12 col-md-4">
+                    <span><strong>Company name:</strong></span>
+                </div>
+                <div class="col-12 col-md-8">
+                    <span><%= matchingTender.companyName %></span>
+                </div>
+            </div>
+            <div class="row justify-content-md-center mb-2">
+                <div class="col-12 col-md-4">
+                    <span><strong>General outcome:</strong></span>
+                </div>
+                <div class="col-12 col-md-8">
+                    <span class="text-danger"><strong>Negative</strong></span>
+                </div>
+            </div>
+            <h4>Comments & Information</h4>
+            <div class="row justify-content-md-center mb-2">
+                <div class="col-12 col-md-8">
+                    <span><strong>Did the customer change the logistics service provider ?</strong></span>
+                </div>
+                <div class="col-12 col-md-4">
+                    <span id="mod_negative_changeProvider"></span>
+                </div>
+            </div>
+            <div class="row justify-content-md-center mb-2">
+                <div class="col-12">
+                    <span><strong>Pricing & rates comments</strong></span>
+                </div>
+                <div class="col-12">
+                    <span id="mod_negative_pricingComment"></span>
+                </div>
+            </div>
+            <div class="row justify-content-md-center mb-2">
+                <div class="col-12">
+                    <span><strong>IT solution comments</strong></span>
+                </div>
+                <div class="col-12">
+                    <span id="mod_negative_ITComment"></span>
+                </div>
+            </div>
+            <div class="row justify-content-md-center mb-2">
+                <div class="col-12">
+                    <span><strong>Rhenus network coverage comments</strong></span>
+                </div>
+                <div class="col-12">
+                    <span id="mod_negative_networkComment"></span>
+                </div>
+            </div>
+            <div class="row justify-content-md-center mb-2">
+                <div class="col-12">
+                    <span><strong>Overall concept comments</strong></span>
+                </div>
+                <div class="col-12">
+                    <span id="mod_negative_conceptComment"></span>
+                </div>
+            </div>
+            <div class="row justify-content-md-center mb-2">
+                <div class="col-12">
+                    <span><strong>Improvement suggestions</strong></span>
+                </div>
+                <div class="col-12">
+                    <span id="mod_negative_improvementComment"></span>
+                </div>
+            </div>
+            <div class="row justify-content-md-center mb-2">
+                <div class="col-12">
+                    <span><strong>Next steps</strong></span>
+                </div>
+                <div class="col-12">
+                    <span id="mod_negative_nextStepsComment"></span>
+                </div>
+            </div>
+            <div class="row justify-content-md-center mb-2">
+                <div class="col-12">
+                    <span><strong>Preparation for the next steps</strong></span>
+                </div>
+                <div class="col-12">
+                    <span id="mod_negative_preparationComment"></span>
+                </div>
+            </div>
+            <h4>Customer feedback</h4>
+            <div class="row justify-content-md-center mb-2">
+                <div class="col-12 col-md-4">
+                    <span><strong>Pricing & Rates</strong></span>
+                </div>
+                <div class="col-12 col-md-8">
+                    <div class="progress">
+                        <div class="progress-bar" id="mod_negative_pricingPonderationBar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span id="mod_negative_pricingPonderation"></span></div>
+                      </div>
+                </div>
+            </div>
+            <div class="row justify-content-md-center mb-2">
+                <div class="col-12 col-md-4">
+                    <span><strong>Transit time</strong></span>
+                </div>
+                <div class="col-12 col-md-8">
+                    <div class="progress">
+                        <div class="progress-bar" id="mod_negative_transitTimePonderationBar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span id="mod_negative_transitTimePonderation"></span></div>
+                      </div>
+                </div>
+            </div>
+            <div class="row justify-content-md-center mb-2">
+                <div class="col-12 col-md-4">
+                    <span><strong>Scope of Rhenus response</strong></span>
+                </div>
+                <div class="col-12 col-md-8">
+                    <div class="progress">
+                        <div class="progress-bar" id="mod_negative_scopeResponsePonderationBar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span id="mod_negative_scopeResponsePonderation"></span></div>
+                      </div>
+                </div>
+            </div>
+            <div class="row justify-content-md-center mb-2">
+                <div class="col-12 col-md-4">
+                    <span><strong>Relationship to customer</strong></span>
+                </div>
+                <div class="col-12 col-md-8">
+                    <div class="progress">
+                        <div class="progress-bar" id="mod_negative_relationshipPonderationBar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span id="mod_negative_relationshipPonderation"></span></div>
+                      </div>
+                </div>
+            </div>
+            <div class="row justify-content-md-center mb-2">
+                <div class="col-12 col-md-4">
+                    <span><strong>Rhenus network coverage</strong></span>
+                </div>
+                <div class="col-12 col-md-8">
+                    <div class="progress">
+                        <div class="progress-bar" id="mod_negative_networkCoveragePonderationBar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span id="mod_negative_networkCoveragePonderation"></span></div>
+                      </div>
+                </div>
+            </div>
+            <div class="row justify-content-md-center mb-2">
+                <div class="col-12 col-md-4">
+                    <span><strong>Value added services</strong></span>
+                </div>
+                <div class="col-12 col-md-8">
+                    <div class="progress">
+                        <div class="progress-bar" id="mod_negative_valueAddedServicesPonderationBar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span id="mod_negative_valueAddedServicesPonderation"></span></div>
+                      </div>
+                </div>
+            </div>
+            <div class="row justify-content-md-center mb-2">
+                <div class="col-12 col-md-4">
+                    <span><strong>IT solutions</strong></span>
+                </div>
+                <div class="col-12 col-md-8">
+                    <div class="progress">
+                        <div class="progress-bar" id="mod_negative_ITSolutionsPonderationBar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span id="mod_negative_ITSolutionsPonderation"></span></div>
+                      </div>
+                </div>
+            </div>
+            <div class="row justify-content-md-center mb-2">
+                <div class="col-12 col-md-4">
+                    <span><strong>Overall concept</strong></span>
+                </div>
+                <div class="col-12 col-md-8">
+                    <div class="progress">
+                        <div class="progress-bar" id="mod_negative_overallConceptPonderationBar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span id="mod_negative_OverallConceptPonderation"></span></div>
+                      </div>
+                </div>
+            </div>
+            <h4>Awarded company</h4>
+            <div class="row justify-content-md-center mb-2">
+                <div class="col-12">
+                    <span><strong>Awarded service provider:</strong></span>
+                </div>
+                <div class="col-12">
+                    <span id="mod_negative_outcomeNewProvider"></span>
+                </div>
+            </div>
+            <div class="row justify-content-md-center mb-2">
+                <div class="col-12">
+                    <span><strong>Additional comments:</strong></span>
+                </div>
+                <div class="col-12">
+                    <span id="mod_negative_additionalComments"></span>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary position-relative top-50 start-0" id="mod_returnBtn" data-bs-dismiss="modal"><i class="bi bi-pencil-square me-2"></i>Change</button>
+            <button type="submit" form="negativeOutcomeForm" class="btn btn-success position-relative top-50 end-0" id="mod_submitBtn"><i class="bi bi-send-check me-2"></i>Submit</button>
+        </div>
+    </div>
+    </div>
+</div>
+
+</div>
+
+<!-- Modal unknown -->
+<div class="modal fade" id="unknownOutcomeConfirmModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-fullscreen-md-down modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Unknown outcome confirmation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+        <p><strong>You are about to register the outcome of the tender related <i><%= matchingTender.companyName %></i>.</strong> Take a few minutes to review the information below and ammend it if necessary.<br>
+            Once everything is OK, you can submit the data.
+        </p>
+        <div class="alert alert-danger d-flex align-items-center" role="alert">
+            <div>
+                You should register a "<i>No response</i>" outcome only when you are <strong>sure</strong> that the bidding company won't provide neither feedback nor outcome details.<br>
+                If you are still waiting for a "yet-to-be provided" feedback or outcome, hold on and register the information when you have it on hand.<br>
+                If you are not sure, please contact the Rhenus tender team.
+            </div>
+        </div>
+        <hr>
+        <div>
+            <div class="row justify-content-md-center mb-2">
+                <div class="col-12 col-md-4">
+                    <span><strong>Company name:</strong></span>
+                </div>
+                <div class="col-12 col-md-8">
+                    <span><%= matchingTender.companyName %></span>
+                </div>
+            </div>
+            <div class="row justify-content-md-center mb-2">
+                <div class="col-12 col-md-4">
+                    <span><strong>General outcome:</strong></span>
+                </div>
+                <div class="col-12 col-md-8">
+                    <span class="text-danger"><strong>Unknown</strong></span>
+                </div>
+            </div>
+            <div class="row justify-content-md-center mb-2">
+                <div class="col-12">
+                    <span><strong>Additional comments:</strong></span>
+                </div>
+                <div class="col-12">
+                    <span id="mod_unknown_additionalComment"></span>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary position-relative top-50 start-0" id="mod_returnBtn" data-bs-dismiss="modal"><i class="bi bi-pencil-square me-2"></i>Change</button>
+            <button type="submit" form="unknownOutcomeForm" class="btn btn-success position-relative top-50 end-0" id="mod_submitBtn"><i class="bi bi-send-check me-2"></i>Submit</button>
+        </div>
+    </div>
+    </div>
+</div>
+
+</div>
+
+<!-- Modal abort -->
+<div class="modal fade" id="abortConfirmModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-fullscreen-md-down modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="abortConfirmModalLabel"><i class="twa twa-warning me-2"></i>Warning</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-danger" role="alert">
+              <strong>Are you sure you want to stop the registering the outcome of this tender ?</strong><br>
+              All the data provided so far will be not be considered.
+              A new outcome registration will need to be done from the start.
+          </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary position-relative top-50 start-0" id="mod_returnBtn" data-bs-dismiss="modal"><i class="bi bi-arrow-left-circle me-2"></i>Cancel</button>
+            <a href="/register/<%= matchingTender._id %> " class="btn btn-outline-danger border-danger"><i class="bi bi-x-circle-fill me-2"></i>Abort</a>
+        </div>
+      </div>
+    </div>
+</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>
+    <%- include("../partials/commonBootstrap.ejs") %>
+    <script src="/js/register_outcome.js"></script>
+</body>
+</html>
