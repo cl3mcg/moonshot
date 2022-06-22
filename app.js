@@ -157,6 +157,9 @@ app.use(
               "https://twemoji.maxcdn.com/"
           ],
           fontSrc: ["'self'", ...fontSrcUrls],
+          // The following line is added to avoid having a Content Security Policy error on Mozilla's Firefox
+          // More information on this GitHub page: https://github.com/directus/directus/discussions/10928?sort=old
+          'script-src-attr': null
       },
   })
 );
