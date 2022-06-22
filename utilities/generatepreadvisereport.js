@@ -20,7 +20,7 @@ const {
     currentDateAndTime,
     formatDate,
     capitalize
-  } = require("./commonFunctions.js");
+  } = require("./commonfunctions.js");
 
 // ----- Report generation functions
 const generatePreadviseReport = async function (preadvisedId, fileIdentifier) {

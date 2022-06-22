@@ -16,7 +16,7 @@ const {
     currentDateAndTime,
     formatDate,
     capitalize
-  } = require("./commonFunctions.js");
+  } = require("./commonfunctions.js");
 
 let generateRegisterExcelReport = async function (newFilename) {
   let allRegister = await RegisteredTender.find({}).populate("preadvise");

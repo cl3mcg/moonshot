@@ -23,7 +23,7 @@ const {
     currentDateAndTime,
     formatDate,
     capitalize
-  } = require("./commonFunctions.js");
+  } = require("./commonfunctions.js");
 
 // ----- Report generation functions
 
