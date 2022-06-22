@@ -19,6 +19,7 @@ const transportModes = require("../public/ressources/transportModes.json");
 const businessVerticals = require("../public/ressources/businessVerticals.json");
 const tenderLaunchMethod = require("../public/ressources/tenderLaunchMethod.json")
 const decisionCriteria = require("../public/ressources/decisionCriteria.json")
+const generateRegisterExcelReport = require("../utilities/generateRegisterExcelReport.js");
 
 // ----- Middleware used
 
@@ -62,6 +63,29 @@ const {
 
 router.get("/start", isLoggedIn, isTenderTeam, function (req, res) {
     res.render("dashboard/dashboard_start.ejs");
+  });
+
+router.get("/visual", isLoggedIn, isTenderTeam, function (req, res) {
+    res.render("dashboard/dashboard_visual.ejs");
+  });
+
+router.get("/reporting", isLoggedIn, isTenderTeam, function (req, res) {
+    res.render("dashboard/dashboard_reporting.ejs");
+  });
+
+router.post("/issueReport/:type", isLoggedIn, isTenderTeam, async function (req, res) {
+    const type = req.params.type;
+    const userId = req.user._id;
+    if (type === "preadvise") {
+    }
+    else if (type === "register") {
+      let fileName = `excelReport_${Date.now()}`
+      let file = await generateRegisterExcelReport(fileName);
+      req.flash("success", "The registered tender Excel report has been generated.");
+      setTimeout(() => {
+        res.download(`./reports/reportsGenerated/${fileName}.xlsx`, `${fileName}.xlsx`);
+      }, 5000);
+    }
   });
 
 // ----- Export the router
