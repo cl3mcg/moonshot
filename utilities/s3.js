@@ -24,7 +24,7 @@ const s3 = new S3({
 
 // Function to upload a file to s3
 module.exports.uploadFile = async function (file) {
-    const fileContent = await fs.readFile(file.path);
+    const fileContent = fs.readFileSync(file.path);
     const params = {
         Bucket: bucketName,
         Key: file.filename,
@@ -42,6 +42,15 @@ module.exports.downloadFile = async function (file) {
     let readStream = s3.getObject(params).createReadStream();
     let writeStream = fs.createWriteStream(path.join("./downloads/", `${file.originalname}`));
     readStream.pipe(writeStream);
+    // wait for the download to be completed
+    return new Promise((resolve, reject) => {
+        readStream.on("end", () => {
+            resolve();
+        });
+        readStream.on("error", (err) => {
+            reject(err);
+        });
+    });
 }
 
 // Function to delete a file from s3
