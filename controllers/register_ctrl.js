@@ -102,7 +102,7 @@ module.exports.renderNewPage = function (req, res) {
     });
 };
 
-module.exports.createRegister = async function (req, res) {
+module.exports.createRegister = catchAsync(async function (req, res) {
     console.log(`${colors.black.bgBrightCyan("* ATTEMPT *")} A new TENDER REGISTRATION submit has been attempted`);
     console.log(req.body);
     console.log(req.files);
@@ -353,7 +353,8 @@ module.exports.createRegister = async function (req, res) {
         }
 })
     console.log(`${colors.black.bgBrightGreen("* OK *")} The PDF report related to the registration of ${companyName} has been deleted from the server`);
-}};
+}
+});
 
 module.exports.renderIndexPage = catchAsync(async function (req, res) {
     const d = new Date();
@@ -985,3 +986,158 @@ module.exports.deleteRegister = catchAsync(async function (req, res) {
         res.redirect("/register/start");
     }
 });
+
+module.exports.downloadDocument = catchAsync(async function (req, res) {
+    let matchingId = req.params.id;
+    let docId = req.params.docId;
+    let matchingTender = await RegisteredTender.findById(matchingId);
+    if (!matchingTender) {
+        req.flash("error", "The tender with the given ID was not found.");
+        res.redirect("/register/start");
+    } else {
+        let matchingTenderDocs = matchingTender.documentUpload
+        if (!matchingTenderDocs) {
+            req.flash("error", "The document with the given ID was not found.");
+            res.redirect("/register/start");
+        } else {
+            let matchingTenderDoc = await matchingTenderDocs.find(doc => doc.filename == docId);
+            if (!matchingTenderDoc) {
+                req.flash("error", "The document with the given ID was not found.");
+                res.redirect("/register/start");
+            } else {
+                await downloadFile(matchingTenderDoc);
+                const file = `./downloads/${matchingTenderDoc.originalname}`;
+                res.download(file);
+            }
+        }
+    }
+})
+
+module.exports.renderOutcomePage = catchAsync(async function (req, res) {
+    let matchingId = req.params.id;
+    let matchingTender = await RegisteredTender.findById(matchingId);
+    if (!matchingTender) {
+        req.flash("error", "The tender with the given ID was not found.");
+        res.redirect("/register/start");
+    } else {
+        res.render("register/register_outcome.ejs", { 
+            matchingTender,
+            countriesData
+        });
+    }
+})
+
+module.exports.registerOutcome = catchAsync(async function (req, res) {
+    console.log(req.body)
+    let matchingId = req.params.id;
+    let matchingTender = await RegisteredTender.findById(matchingId);
+    if (!matchingTender) {
+        req.flash("error", "The tender with the given ID was not found.");
+        res.redirect("/register/start");
+    }
+    let result = req.params.result;
+    const rangeOfValidResults = ["positive", "negative", "unknown"]
+    if (!rangeOfValidResults.includes(result)){
+        req.flash("error", "The result provided is not valid.");
+        res.redirect("/register/start");
+    }
+    let updatedEntry
+    if (result === "positive") {
+            let awardResults = req.body.outcomeTenderResult
+            let awardVolumeSplit
+            if (typeof req.body.awardVolumeSplit != "object") {
+                awardVolumeSplit = [req.body.awardVolumeSplit]
+            } else {
+                awardVolumeSplit = req.body.awardVolumeSplit
+            }
+            let awardReceiveDate = new Date(req.body.outcomeAwardReceiveDate)
+            let expectedBusinessStartDate = new Date(req.body.outcomeExpectedBusinessStartDate)
+            let expectedTurnover = Number(req.body.outcomeExpectedTurnover)
+            let expectedAirfreightVol = Number(req.body.outcomeExpectedAirfreightVol)
+            let expectedSeafreightFCLVol = Number(req.body.outcomeExpectedSeafreightFCLVol)
+            let expectedSeafreightLCLVol = Number(req.body.outcomeExpectedSeafreightLCLVol)
+            let expectedRailfreightFCLVol = Number(req.body.outcomeExpectedRailfreightFCLVol)
+            let outcomeAdditionalComment = req.body.outcomeAdditionalComment
+
+            updatedEntry = {
+                outcome: "positive",
+                outcomeDetails : {
+                    awardResults: awardResults,
+                    awardVolumeSplit: awardVolumeSplit,
+                    awardReceiveDate: awardReceiveDate,
+                    expectedBusinessStartDate: expectedBusinessStartDate,
+                    expectedTurnover: expectedTurnover,
+                    expectedAirfreightVol : expectedAirfreightVol,
+                    expectedSeafreightFCLVol: expectedSeafreightFCLVol,
+                    expectedSeafreightLCLVol: expectedSeafreightLCLVol,
+                    expectedRailfreightFCLVol: expectedRailfreightFCLVol,
+                    outcomeAdditionalComment: outcomeAdditionalComment
+                }
+            }
+    } else if (result === "negative") {
+        let changeProvider = req.body.outcomeChangeProvider
+        let pricingComment = req.body.outcomePricingComment
+        let ITComment = req.body.outcomeITComment
+        let networkComment = req.body.outcomeNetworkComment
+        let conceptComment = req.body.outcomeConceptComment
+        let improvementComment = req.body.outcomeImprovementComment
+        let nextStepsComment = req.body.outcomeNextStepsComment
+        let preparationComment = req.body.outcomePreparationComment
+        let pricingPonderation = Number(req.body.outcomePricingPonderation)
+        let transitTimePonderation = Number(req.body.outcomeTransitTimePonderation)
+        let scopeResponsePonderation = Number(req.body.outcomeScopeResponsePonderation)
+        let relationshipPonderation = Number(req.body.outcomeRelationshipPonderation)
+        let networkCoveragePonderation = Number(req.body.outcomeNetworkCoveragePonderation)
+        let valueAddedServicesPonderation = Number(req.body.outcomeValueAddedServicesPonderation)
+        let ITSolutionsPonderation = Number(req.body.outcomeITSolutionsPonderation)
+        let overallConceptPonderation = Number(req.body.outcomeOverallConceptPonderation)
+
+        let newProvider
+        if (req.body.outcomeNewProviderUnknown && !req.body.outcomeNewProvider) {
+            newProvider = "unknown"
+        } else if (req.body.outcomeNewProvider) {
+            newProvider = req.body.outcomeNewProvider
+        } else {
+            newProvider = null
+        }
+
+        let additionalComment = req.body.outcomeAdditionalComment
+
+        updatedEntry = {
+            outcome: "negative",
+            outcomeDetails : {
+                changeProvider: changeProvider,
+                pricingComment: pricingComment,
+                ITComment: ITComment,
+                networkComment: networkComment,
+                conceptComment: conceptComment,
+                improvementComment: improvementComment,
+                nextStepsComment: nextStepsComment,
+                preparationComment: preparationComment,
+                pricingPonderation: pricingPonderation,
+                transitTimePonderation: transitTimePonderation,
+                scopeResponsePonderation: scopeResponsePonderation,
+                relationshipPonderation: relationshipPonderation,
+                networkCoveragePonderation: networkCoveragePonderation,
+                valueAddedServicesPonderation: valueAddedServicesPonderation,
+                ITSolutionsPonderation: ITSolutionsPonderation,
+                overallConceptPonderation: overallConceptPonderation,
+                newProvider: newProvider,
+                additionalComment: additionalComment
+            }
+        }
+    } else if (result === "unknown") {
+        updatedEntry = {
+            outcome: "unknown",
+            outcomeDetails : {
+                additionalComment: req.body.outcomeAdditionalComment
+            }
+        }
+    }
+
+    await RegisteredTender.findByIdAndUpdate(matchingId, updatedEntry);
+
+    console.log(updatedEntry)
+    req.flash("success", "The tender outcome has been registered.");
+    res.redirect(`/register/${matchingId}`)
+})

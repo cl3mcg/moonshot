@@ -514,7 +514,7 @@ module.exports.renderLaunchPage = catchAsync(async function (req, res) {
     }
 })
 
-  module.exports.patchPreadvise = catchAsync(async function (req, res) {
+module.exports.patchPreadvise = catchAsync(async function (req, res) {
     console.log(`${colors.black.bgBrightCyan("* ATTEMPT *")} A TENDER PRE-ADVISE has been selected for update: ${req.body.companyName}`);
     let matchingId = req.params.id;
     let newCompanyName = req.body.companyName;
