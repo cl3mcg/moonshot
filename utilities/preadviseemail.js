@@ -2,7 +2,7 @@ const ejs = require("ejs");
 const colors = require("colors");
 const nodemailer = require("nodemailer");
 
-const ExpressError = require("./ExpressError.js");
+const ExpressError = require("./expressrror.js");
 
 const PreadvisedTender = require("../models/preadvisedTender.js");
 
