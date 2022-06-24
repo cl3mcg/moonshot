@@ -115,6 +115,10 @@ router.get("/:id/outcome", isLoggedIn, registerCtrl.renderOutcomePage);
 
 router.post("/:id/outcome/:result", isLoggedIn, registerCtrl.registerOutcome);
 
+router.post("/:id/submitted", isLoggedIn, registerCtrl.registerSubmitted);
+
+router.post("/report/:id", isLoggedIn, registerCtrl.postReport)
+
 // router.get("/excelReport", isLoggedIn, catchAsync(async function (req, res) {
 //   let fileName = `excelReport_${Date.now()}`
 //       generateRegisterExcelReport(fileName)
