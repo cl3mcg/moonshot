@@ -603,7 +603,7 @@ module.exports.postReport = catchAsync(async function (req, res) {
         return
     }
     })
-    console.log(`${colors.black.bgBrightGreen("* OK *")} The PDF report related to the preadvise of ${companyName} has been deleted from the server`);
+    console.log(`${colors.black.bgBrightGreen("* OK *")} The PDF report related to the preadvise of ${matchingTender.companyName} has been deleted from the server`);
 
     req.flash("success", "The report has been sent by email.");
     res.redirect(`/preadvise/${matchingId}`);
