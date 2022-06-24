@@ -63,16 +63,16 @@
                 </div>
               </div>
               <div class="line"></div>
-              <div class="step px-2" <% if (matchingTender.tenderTeamDecision === "accept" && matchingTender.isSubmitted) { %>data-bs-toggle="tooltip" data-bs-placement="top" title="Tender submission is done"<% } else if (matchingTender.tenderTeamDecision === "decline") {%>data-bs-toggle="tooltip" data-bs-placement="top" title="Tender submission will not occur"<% } else {%>data-bs-toggle="tooltip" data-bs-placement="top" title="Tender submission is pending"<% } %>>
+              <div class="step px-2" <% if (matchingTender.tenderTeamDecision === "accept" && matchingTender.tenderTeamSubmissionDate) { %>data-bs-toggle="tooltip" data-bs-placement="top" title="Tender submission is done"<% } else if (matchingTender.tenderTeamDecision === "decline") {%>data-bs-toggle="tooltip" data-bs-placement="top" title="Tender submission will not occur"<% } else {%>data-bs-toggle="tooltip" data-bs-placement="top" title="Tender submission is pending"<% } %>>
                 <div role="tab">
-                  <span class="bs-stepper-circle <% if (matchingTender.tenderTeamDecision === "accept" && matchingTender.isSubmitted) { %>bg-success<% } else if (matchingTender.tenderTeamDecision === "decline") {%>bg-danger<% } else { %>bg-light text-dark border border-secondary<% } %>">4</span>
+                  <span class="bs-stepper-circle <% if (matchingTender.tenderTeamDecision === "accept" && matchingTender.tenderTeamSubmissionDate) { %>bg-success<% } else if (matchingTender.tenderTeamDecision === "decline") {%>bg-danger<% } else { %>bg-light text-dark border border-secondary<% } %>">4</span>
                   <span class="bs-stepper-label">Submission</span>
                 </div>
               </div>
               <div class="line"></div>
-              <div class="step px-2" <% if ((matchingTender.outcome === "winAll" || matchingTender.outcome === "winPartly") && matchingTender.isSubmitted) { %>data-bs-toggle="tooltip" data-bs-placement="top" title="Outcome is received and positive"<% } else if (matchingTender.outcome === "loose") {%>data-bs-toggle="tooltip" data-bs-placement="top" title="Outcome is received and negative"<% } else if (!matchingTender.tenderTeamDecision || (matchingTender.tenderTeamDecision === "accept" && !matchingTender.isSubmitted)) {%>data-bs-toggle="tooltip" data-bs-placement="top" title="No results yet"<% } else { %>data-bs-toggle="tooltip" data-bs-placement="top" title="Results won't be received"<% } %>>
+              <div class="step px-2" <% if ((matchingTender.outcome === "positive") && matchingTender.tenderTeamSubmissionDate) { %>data-bs-toggle="tooltip" data-bs-placement="top" title="Outcome is received and positive"<% } else if (matchingTender.outcome === "negative") {%>data-bs-toggle="tooltip" data-bs-placement="top" title="Outcome is received and negative"<% } else if (!matchingTender.tenderTeamDecision || (matchingTender.tenderTeamDecision === "accept" && !matchingTender.tenderTeamSubmissionDate)) {%>data-bs-toggle="tooltip" data-bs-placement="top" title="No results yet"<% } else { %>data-bs-toggle="tooltip" data-bs-placement="top" title="Results won't be received"<% } %>>
                 <div role="tab">
-                  <span class="bs-stepper-circle <% if ((matchingTender.outcome === "winAll" || matchingTender.outcome === "winPartly") && matchingTender.isSubmitted) { %>bg-success<% } else if (matchingTender.tenderTeamDecision === "decline" || matchingTender.outcome === "loose") {%>bg-danger<% } else {%>bg-light text-dark border border-secondary<% } %>">5</span>
+                  <span class="bs-stepper-circle <% if (matchingTender.outcome === "positive" && matchingTender.tenderTeamSubmissionDate) { %>bg-success<% } else if (matchingTender.tenderTeamDecision === "decline" || matchingTender.outcome === "negative") {%>bg-danger<% } else {%>bg-light text-dark border border-secondary<% } %>">5</span>
                   <span class="bs-stepper-label">Outcome</span>
                 </div>
               </div>
@@ -114,7 +114,7 @@
               </tr>
               <tr>
                 <th scope="row">Tender launch method</th>
-                <td><%= matchingTender.tenderLaunchMethod %></td>
+                <td><%= tenderLaunchMethod[matchingTender.tenderLaunchMethod] %></td>
               </tr>
             </tbody>
           </table>
@@ -150,7 +150,7 @@
               </tr>
               <tr>
                 <th scope="row">Volume split</th>
-                <td><%= matchingTender.volumeSplit %></td>
+                <td><%= volumeSplit[matchingTender.volumeSplit] %></td>
               </tr>
             </tbody>
           </table>
@@ -256,19 +256,19 @@
               </tr>
               <tr>
                 <th scope="row">Visit frequency</th>
-                <td><%= matchingTender.visitFrequency %></td>
+                <td><%= capitalize(matchingTender.visitFrequency) %></td>
               </tr>
               <tr>
                 <th scope="row">Visit history</th>
-                <td><%= matchingTender.visitHistory %></td>
+                <td><%= visitHistory[matchingTender.visitHistory] %></td>
               </tr>
               <tr>
                 <th scope="row">Reason for launching the tender</th>
-                <td><%= matchingTender.reasonForTender %></td>
+                <td><%= reasonForTender[matchingTender.reasonForTender] %></td>
               </tr>
               <tr>
                 <th scope="row">Decision criteria</th>
-                <td><%= matchingTender.decisionCritera %></td>
+                <td><%= decisionCriteria[matchingTender.decisionCritera] %></td>
               </tr>
               <tr>
                 <th scope="row">Feedback availability</th>
@@ -415,6 +415,36 @@
   </div>
 </div>
 <% } %>
+<!-- Modal Tender team submission -->
+<% if (priviledge) { %> 
+  <div class="modal fade" id="submissionModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-fullscreen-md-down modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="submissionModalLabel">Mark this tender as fully submitted</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div role="alert" aria-live="assertive" aria-atomic="true" class="toast fade show rounded-3 border border-5 border-warning border-top-0 border-end-0 border-bottom-0 w-100 mt-3 mb-3" data-autohide="false" data-bs-autohide="false">
+            <div class="toast-header bg-warning bg-opacity-25">
+              <strong class="me-auto my-auto text-danger h6"><i class="bi bi-exclamation-triangle-fill me-2"></i>Warning</strong>
+            </div>
+            <div class="toast-body">
+              You are about to mark the tender related to <i><%= matchingTender.companyName %></i> as <strong>fully submitted</strong>.<br>
+              This means that the tender team reached the <strong>last round</strong> of the tender and is now waiting for its outcome.<br>
+              If the tender team has not reached the final round submission yet, the tender should <strong>not</strong> be marked as fully submitted.
+            </div>
+          </div>
+          <form action="/register/<%= matchingTender.id %>/submitted" method="POST" id="formSubmitted"></form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary position-relative top-50 start-0" id="mod_returnBtn" data-bs-dismiss="modal"><i class="bi bi-arrow-left-circle me-2"></i>Cancel</button>
+          <button class="btn btn-success" type="submit" form="formSubmitted"><i class="bi bi-check2-circle me-2"></i>Proceed</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <% } %>
 <!-- Customer feedback modal -->
 <% if (priviledge || (matchingTender.author.equals(currentUser) && !isDecisionDatePassed)) { %> 
   <div class="modal fade" id="feedbackModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -494,8 +524,8 @@
               <div class="rounded-3 border my-3 p-3 sticky-lg-top">
                 <nav class="nav flex-column">
                     <h5 class="text-center">Outcome</h5>
-                    <button class="btn btn-outline-success btn-block btn-sm m-1" <%if (!priviledge && !isDecisionDatePassed && !matchingTender.author.equals(currentUser)) {%>disabled<%}%> data-bs-toggle="modal" data-bs-target="#feedbackModal"><i class="bi bi-send-check me-1"></i>Provide the tender outcome</button>
-                    <a class="btn btn-outline-success btn-block btn-sm border-success m-1 w-100 <%if (!priviledge && !isDecisionDatePassed && !matchingTender.author.equals(currentUser)) {%>disabled<%}%>" href="/register/<%= matchingTender._id %>/outcome"><i class="bi bi-send-check me-1"></i>Outcome page</a>
+                    <!-- <button class="btn btn-outline-success btn-block btn-sm m-1" <%if (!priviledge && !isDecisionDatePassed && !matchingTender.author.equals(currentUser)) {%>disabled<%}%> data-bs-toggle="modal" data-bs-target="#feedbackModal"><i class="bi bi-send-check me-1"></i>Provide the tender outcome</button> -->
+                    <a class="btn btn-outline-success btn-block btn-sm border-success m-1 w-100 <%if (!priviledge && !isDecisionDatePassed && !matchingTender.author.equals(currentUser)) {%>disabled<%}%>" href="/register/<%= matchingTender._id %>/outcome"><i class="bi bi-send-check me-1"></i>Provide the tender outcome</a>
                 </nav>
                 <% if (!isDecisionDatePassed && !priviledge) { %>
                   <div role="alert" aria-live="assertive" aria-atomic="true" class="toast fade show rounded-3 border border-5 border-primary border-top-0 border-end-0 border-bottom-0 w-100 mt-2" data-autohide="false" data-bs-autohide="false">
@@ -512,7 +542,7 @@
                 <nav class="nav flex-column">
                     <h5 class="text-center">Issue pdf report</h5>
                     <p>Send me a pdf report by email.</p>
-                    <form action="/register/report/<%= matchingTender.id %>" method="post">
+                    <form action="/register/report/<%= matchingTender.id %>" method="POST">
                       <button class="btn btn-light btn-sm border w-100"><i class="bi bi-envelope-fill me-1"></i>Get a report</button>
                     </form>
                 </nav>
@@ -525,7 +555,9 @@
                     <h6 class="text-start mt-3">Tender team decision</h6>
                     <button class="btn btn-outline-success btn-block btn-sm m-1" data-bs-toggle="modal" data-bs-target="#decisionAcceptModal"><i class="bi bi-check-circle-fill me-1"></i>Accept participation</button>
                     <button class="btn btn-outline-danger btn-block btn-sm m-1" data-bs-toggle="modal" data-bs-target="#decisionRejectModal"><i class="bi bi-x-circle-fill me-1"></i>Decline participation</button>
-                </nav>
+                    <h6 class="text-start mt-3">Tender team submission</h6>
+                    <button class="btn btn-outline-primary btn-block btn-sm m-1" data-bs-toggle="modal" data-bs-target="#submissionModal"><i class="bi bi-check2-circle me-1"></i>Mark as submitted</button>
+                  </nav>
               </div>
               <% } %>
           </div>

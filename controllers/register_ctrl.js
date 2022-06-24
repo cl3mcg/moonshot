@@ -15,9 +15,14 @@ const { preadviseSchema, registerSchema, decisionSchema } = require("../utilitie
 const countriesData = require("../public/ressources/countries.json");
 const monthsData = require("../public/ressources/months.json");
 const tradelanes = require("../public/ressources/tradelanes.json");
+const decisionCriteria = require("../public/ressources/decisionCriteria.json");
 const history = require("../public/ressources/history.json");
+const reasonForTender = require("../public/ressources/reasonForTender.json")
+const tenderLaunchMethod = require("../public/ressources/tenderLaunchMethod.json");
 const transportModes = require("../public/ressources/transportModes.json");
 const transportScope = require("../public/ressources/transportScope.json");
+const visitHistory = require("../public/ressources/visitHistory.json");
+const volumeSplit = require("../public/ressources/volumeSplit.json");
 const bidRestrictions = require("../public/ressources/bidRestrictions.json");
 const bidRequirements = require("../public/ressources/bidRequirements.json");
 const businessVerticals = require("../public/ressources/businessVerticals.json");
@@ -66,6 +71,7 @@ const {
   findcca2,
   findSubRegion,
   findResponsibleTenderOffice,
+  capitalize,
   currentDateAndTime,
   formatDate
 } = require("../utilities/commonfunctions.js");
@@ -646,15 +652,21 @@ module.exports.renderShowPage = catchAsync(async function (req, res) {
         priviledge,
         editRestriction,
         countriesData,
+        decisionCriteria,
         monthsData,
+        reasonForTender,
+        tenderLaunchMethod,
         tradelanes,
         transportModes,
         transportScope,
+        visitHistory,
+        volumeSplit,
         bidRestrictions,
         bidRequirements,
         history,
         specialHandling,
         matchingTender,
+        capitalize
         });
     }
 });
@@ -1013,6 +1025,25 @@ module.exports.downloadDocument = catchAsync(async function (req, res) {
     }
 })
 
+module.exports.postReport = catchAsync(async function (req, res) {
+    let matchingId = req.params.id;
+    let matchingTender = await RegisteredTender.findById(matchingId);
+    let fileIdentifier = Date.now();
+    await generateRegisterReport(matchingId, fileIdentifier);
+    await registerTenderEmailConfirmation(matchingId, fileIdentifier)
+
+    fs.unlink(`./reports/reportsGenerated/${matchingTender.companyName}_${fileIdentifier}.pdf`, function (err) {
+    if (err) {
+        console.error(err)
+        return
+    }
+    })
+    console.log(`${colors.black.bgBrightGreen("* OK *")} The PDF report related to the register of ${matchingTender.companyName} has been deleted from the server`);
+
+    req.flash("success", "The report has been sent by email.");
+    res.redirect(`/register/${matchingId}`);
+})
+
 module.exports.renderOutcomePage = catchAsync(async function (req, res) {
     let matchingId = req.params.id;
     let matchingTender = await RegisteredTender.findById(matchingId);
@@ -1028,7 +1059,6 @@ module.exports.renderOutcomePage = catchAsync(async function (req, res) {
 })
 
 module.exports.registerOutcome = catchAsync(async function (req, res) {
-    console.log(req.body)
     let matchingId = req.params.id;
     let matchingTender = await RegisteredTender.findById(matchingId);
     if (!matchingTender) {
@@ -1123,14 +1153,14 @@ module.exports.registerOutcome = catchAsync(async function (req, res) {
                 ITSolutionsPonderation: ITSolutionsPonderation,
                 overallConceptPonderation: overallConceptPonderation,
                 newProvider: newProvider,
-                additionalComment: additionalComment
+                outcomeAdditionalComment: additionalComment
             }
         }
     } else if (result === "unknown") {
         updatedEntry = {
             outcome: "unknown",
             outcomeDetails : {
-                additionalComment: req.body.outcomeAdditionalComment
+                outcomeAdditionalComment: req.body.outcomeAdditionalComment
             }
         }
     }
@@ -1140,4 +1170,21 @@ module.exports.registerOutcome = catchAsync(async function (req, res) {
     console.log(updatedEntry)
     req.flash("success", "The tender outcome has been registered.");
     res.redirect(`/register/${matchingId}`)
+})
+
+module.exports.registerSubmitted = catchAsync(async function (req, res) {
+    let matchingId = req.params.id;
+    let matchingTender = await RegisteredTender.findById(matchingId);
+    if (!matchingTender) {
+        req.flash("error", "The tender with the given ID was not found.");
+        res.redirect("/register/start");
+    }
+    let today = currentDateAndTime()
+    let updatedEntry = {
+        tenderTeamSubmissionDate: today
+    }
+    await RegisteredTender.findByIdAndUpdate(matchingId, updatedEntry);
+    console.log(`${colors.black.bgBrightGreen("* OK *")} The TENDER related to ${matchingTender.companyName} has been marked as submitted`);
+    req.flash("success", "Tender is marked as submitted !");
+    res.redirect(`/register/${matchingId}`);
 })
