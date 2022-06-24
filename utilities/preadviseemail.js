@@ -8,14 +8,15 @@ const PreadvisedTender = require("../models/preadvisedTender.js");
 
 const testHost = process.env.EMAIL_HOST;
 const testSenderName = process.env.EMAIL_SENDER_NAME;
-const testReceiverEmail = process.env.EMAIL_RECEIVER_EMAIL;
+// const testReceiverEmail = process.env.EMAIL_RECEIVER_EMAIL;
 const testSenderEmail = process.env.EMAIL_SENDER_EMAIL;
 const testSenderEmailPassword = process.env.EMAIL_SENDER_PASSWORD;
 
 const preadviseTenderEmailConfirmation = async function (entryID, fileIdentifier) {
-    let matchingPreadvise = await PreadvisedTender.findById(entryID);
+    let matchingPreadvise = await PreadvisedTender.findById(entryID).populate("author");
     let from = testSenderName;
-    let selectedEmail = testReceiverEmail; // Enter the recipient email here
+    let selectedEmail = matchingPreadvise.author.email; // Enter the recipient email here
+    console.log(selectedEmail)
     let subject = "Your tender has been preadvised";
     // let attachement = null;
     let attachement = [{
@@ -23,7 +24,7 @@ const preadviseTenderEmailConfirmation = async function (entryID, fileIdentifier
         path: `./reports/reportsGenerated/${matchingPreadvise.companyName}_${fileIdentifier}.pdf`
     }]
     let emailBody = await ejs.renderFile("./emails/preadviseConfirm.ejs", {
-      userName: "Jean-Marie", // Enter the user name here
+      userName: matchingPreadvise.author.username, // Enter the user name here
       companyName: matchingPreadvise.companyName, // Enter the company name here, it should be gathered from the form
       preadviseId: matchingPreadvise.id, // Enter the preadvise ID here, it should be gathered after being saved in the database
     });
