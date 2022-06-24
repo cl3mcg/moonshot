@@ -28,8 +28,23 @@ const {
 // ----- Report generation functions
 
 const generateRegisterReport = async function (registeredId, fileIdentifier) {
-    const matchingTender = await RegisteredTender.findById(registeredId).populate("preadvise");
-    const pdfContent = await fs.readFile("./reports/templates/reportTemplate_register.pdf");
+    const matchingTender = await RegisteredTender.findById(registeredId).populate("author").populate("preadvise");
+    let pdfContent
+    if (!matchingTender.outcome) {
+        pdfContent = await fs.readFile("./reports/templates/reportTemplate_register_outcomeNone.pdf");
+    } else {
+        switch (matchingTender.outcome) {
+            case "positive":
+                pdfContent = await fs.readFile("./reports/templates/reportTemplate_register_outcomePositive.pdf");
+                break;
+            case "negative":
+                pdfContent = await fs.readFile("./reports/templates/reportTemplate_register_outcomeNegative.pdf");
+                break;
+            case "unknown":
+                pdfContent = await fs.readFile("./reports/templates/reportTemplate_register_outcomeUnknown.pdf");
+                break;
+        }
+    }
     const pdfDoc = await PDFDocument.load(pdfContent);
     pdfDoc.registerFontkit(fontkit);
     const fontBytes = await fs.readFile("./public/css/common/fonts/FiraMono-Regular.ttf");
@@ -67,8 +82,7 @@ const generateRegisterReport = async function (registeredId, fileIdentifier) {
         deadlineRFIField.updateAppearances(customFont)
     }
     const userNameField = form.getTextField("userName")
-    userNameField.setText("Test User")
-    // userNameField.setText(`${matchingTender.userName}`)
+    userNameField.setText(`${matchingTender.author.email}`)
     userNameField.updateAppearances(customFont)
     const countryLocationField = form.getTextField("countryLocation")
     let countryName = findCountryName(matchingTender.countryLocation)
@@ -377,24 +391,24 @@ const generateRegisterReport = async function (registeredId, fileIdentifier) {
 
 
     if(matchingTender.history.length || matchingTender.history === null || matchingTender.history.includes("historyNone")){
-    const historyNoneBox = form.getCheckBox("historyNone")
-    historyNoneBox.check()
+        const historyNoneBox = form.getCheckBox("historyNone")
+        historyNoneBox.check()
     }
     if(matchingTender.history.includes("historyAirOcean")){
-    const historyAirOceanBox = form.getCheckBox("historyAirOcean")
-    historyAirOceanBox.check()
+        const historyAirOceanBox = form.getCheckBox("historyAirOcean")
+        historyAirOceanBox.check()
     }
     if(matchingTender.history.includes("historyPortLog")){
-    const historyPortLogBox = form.getCheckBox("historyPortLog")
-    historyPortLogBox.check()
+        const historyPortLogBox = form.getCheckBox("historyPortLog")
+        historyPortLogBox.check()
     }
     if(matchingTender.history.includes("historyContractLog")){
-    const historyContractLogBox = form.getCheckBox("historyContractLog")
-    historyContractLogBox.check()
+        const historyContractLogBox = form.getCheckBox("historyContractLog")
+        historyContractLogBox.check()
     }
     if(matchingTender.history.includes("historyRoadFreight")){
-    const historyRoadFreightBox = form.getCheckBox("historyRoadFreight")
-    historyRoadFreightBox.check()
+        const historyRoadFreightBox = form.getCheckBox("historyRoadFreight")
+        historyRoadFreightBox.check()
     }
     
     if(matchingTender.existingCustomerSegment){
@@ -500,7 +514,7 @@ const generateRegisterReport = async function (registeredId, fileIdentifier) {
     } else {
         let attachedDocsNameArray = matchingTender.documentUpload
         for (let i = 0; i < attachedDocsNameArray.length; i++) {
-            docAttachedFields[i].setText(`${attachedDocsNameArray[i]}`)
+            docAttachedFields[i].setText(`${attachedDocsNameArray[i].originalname}`)
             docAttachedFields[i].updateAppearances(customFont)
         }
         for (let docAttachedField of docAttachedFields) {
@@ -515,8 +529,8 @@ const generateRegisterReport = async function (registeredId, fileIdentifier) {
     potentialField.setText(`${matchingTender.potential}`)
     potentialField.updateAppearances(customFont)
 
-    if(matchingTender.additionalComment){
     const additionalCommentField = form.getTextField("additionalComment")
+    if(matchingTender.additionalComment){
     additionalCommentField.setText(`${matchingTender.additionalComment}`)
     }
 
@@ -524,15 +538,253 @@ const generateRegisterReport = async function (registeredId, fileIdentifier) {
     reportIssueDateField.setText(`${formatDate(currentDateAndTime())}`)
     reportIssueDateField.updateAppearances(customFont)
 
-    const awardField = form.getField("award")
-    awardField.setText("To be set in future...")
-    // awardField.setText(`${matchingTender.award}`)
-    awardField.updateAppearances(customFont)
+    const tenderOutcomeField = form.getField("tenderOutcome")
+    if (!matchingTender.outcome) {
+        tenderOutcomeField.setText("Tender outcome has not been registered yet")
+        tenderOutcomeField.updateAppearances(customFont)
+    } else {
+        const tenderAdditionalOutcomeComment = form.getTextField("additionalOutcomeComment")
+        tenderAdditionalOutcomeComment.setText(`${matchingTender.outcomeDetails.additionalComment}`)
+        tenderAdditionalOutcomeComment.updateAppearances(customFont)
+        switch (matchingTender.outcome) {
+            case "positive":
+                tenderOutcomeField.setText("Positive outcome")
+                tenderOutcomeField.updateAppearances(customFont)
+                const outcomeAwardResultField = form.getField("outcomeAwardResult")
+                if (matchingTender.outcomeDetails.awardResults === "positivePartial") {
+                    outcomeAwardResultField.setText("Partial vol. win")
+                } else {
+                    outcomeAwardResultField.setText("Full vol. win")
+                }
+                outcomeAwardResultField.updateAppearances(customFont)
+                const outcomeConfirmationDateField = form.getField("outcomeConfirmationDate")
+                outcomeConfirmationDateField.setText(`${formatDate(matchingTender.outcomeDetails.awardReceiveDate)}`)
+                outcomeConfirmationDateField.updateAppearances(customFont)
+                const outcomeBusinessStartDateField = form.getField("outcomeBusinessStartDate")
+                outcomeBusinessStartDateField.setText(`${formatDate(matchingTender.outcomeDetails.expectedBusinessStartDate)}`)
+                outcomeBusinessStartDateField.updateAppearances(customFont)
 
-    const feedbackProvidedField = form.getField("feedbackProvided")
-    feedbackProvidedField.setText("To be set in future...")
+                if(matchingTender.outcomeDetails.awardVolumeSplit.length || matchingTender.outcomeDetails.awardVolumeSplit === null || matchingTender.outcomeDetails.awardResults === "positiveFull"){
+                    const outcomeVolSplitNoBox = form.getCheckBox("outcomeVolSplitNo")
+                    outcomeVolSplitNoBox.check()
+                } else {
+                    if(matchingTender.outcomeDetails.awardVolumeSplit.includes("perRegion")){
+                        const outcomeVolSplitRegionBox = form.getCheckBox("outcomeVolSplitRegion")
+                        outcomeVolSplitRegionBox.check()
+                    }
+                    if(matchingTender.outcomeDetails.awardVolumeSplit.includes("perCountry")){
+                        const outcomeVolSplitCountryBox = form.getCheckBox("outcomeVolSplitCountry")
+                        outcomeVolSplitCountryBox.check()
+                    }
+                    if(matchingTender.outcomeDetails.awardVolumeSplit.includes("perTransportMode")){
+                        const outcomeVolSplitTrspModeBox = form.getCheckBox("outcomeVolSplitTrspMode")
+                        outcomeVolSplitTrspModeBox.check()
+                    }
+                    if(matchingTender.outcomeDetails.awardVolumeSplit.includes("perFlowDirection")){
+                        const outcomeVolSplitFlowBox = form.getCheckBox("outcomeVolSplitFlow")
+                        outcomeVolSplitFlowBox.check()
+                    }
+                    if(matchingTender.outcomeDetails.awardVolumeSplit.includes("perCompanyEntity")){
+                        const outcomeVolSplitCompanyBox = form.getCheckBox("outcomeVolSplitCompany")
+                        outcomeVolSplitCompanyBox.check()
+                    }
+                    if(matchingTender.outcomeDetails.awardVolumeSplit.includes("others")){
+                        const outcomeVolSplitOtherBox = form.getCheckBox("outcomeVolSplitOther")
+                        outcomeVolSplitOtherBox.check()
+                    }
+                }
+
+                const outcomeAirfreightVolField = form.getField("outcomeAirfreightVol")
+                if (!matchingTender.outcomeDetails.expectedAirfreightVol) {
+                    outcomeAirfreightVolField.setText("---")
+                    outcomeAirfreightVolField.updateAppearances(customFont)
+                } else {
+                    outcomeAirfreightVolField.setText(`${matchingTender.outcomeDetails.expectedAirfreightVol.toLocaleString('en-US', { minimumFractionDigits: 2 })}`)
+                    outcomeAirfreightVolField.updateAppearances(customFont)
+                }
+                const outcomeSeafreightFCLVolField = form.getField("outcomeSeafreightFCLVol")
+                if (!matchingTender.outcomeDetails.expectedSeafreightFCLVol) {
+                    outcomeSeafreightFCLVolField.setText("---")
+                    outcomeSeafreightFCLVolField.updateAppearances(customFont)
+                } else {
+                    outcomeSeafreightFCLVolField.setText(`${matchingTender.outcomeDetails.expectedSeafreightFCLVol.toLocaleString('en-US', { minimumFractionDigits: 2 })}`)
+                    outcomeSeafreightFCLVolField.updateAppearances(customFont)
+                }
+                const outcomeSeafreightLCLVolField = form.getField("outcomeSeafreightLCLVol")
+                if (!matchingTender.outcomeDetails.expectedSeafreightLCLVol) {
+                    outcomeSeafreightLCLVolField.setText("---")
+                    outcomeSeafreightLCLVolField.updateAppearances(customFont)
+                } else {
+                    outcomeSeafreightLCLVolField.setText(`${matchingTender.outcomeDetails.expectedSeafreightLCLVol.toLocaleString('en-US', { minimumFractionDigits: 2 })}`)
+                    outcomeSeafreightLCLVolField.updateAppearances(customFont)
+                }
+                const outcomeRailfreightFCLVolField = form.getField("outcomeRailfreightFCLVol")
+                if (!matchingTender.outcomeDetails.expectedRailfreightFCLVol) {
+                    outcomeRailfreightFCLVolField.setText("---")
+                    outcomeRailfreightFCLVolField.updateAppearances(customFont)
+                } else {
+                    outcomeRailfreightFCLVolField.setText(`${matchingTender.outcomeDetails.expectedRailfreightFCLVol.toLocaleString('en-US', { minimumFractionDigits: 2 })}`)
+                    outcomeRailfreightFCLVolField.updateAppearances(customFont)
+                }
+                const tenderExpectedTurnoverField = form.getField("tenderExpectedTurnover")
+                if (!matchingTender.outcomeDetails.expectedTurnover) {
+                    tenderExpectedTurnoverField.setText("---")
+                    tenderExpectedTurnoverField.updateAppearances(customFont)
+                } else {
+                    tenderExpectedTurnoverField.setText(`${matchingTender.outcomeDetails.expectedTurnover.toLocaleString('en-US', { minimumFractionDigits: 2 })} EUR`)
+                    tenderExpectedTurnoverField.updateAppearances(customFont)
+                }
+
+                if(matchingTender.outcomeDetails.outcomeAdditionalComment){
+                    const additionalOutcomeCommentField = form.getTextField("additionalOutcomeComment")
+                    additionalOutcomeCommentField.setText(`${matchingTender.outcomeDetails.outcomeAdditionalComment}`)
+                    additionalOutcomeCommentField.updateAppearances(customFont)    
+                }
+
+                break;
+            case "negative":
+                tenderOutcomeField.setText("Negative outcome")
+                tenderOutcomeField.updateAppearances(customFont)
+                
+                const outcomeChangeProviderField = form.getTextField("outcomeChangeProvider")
+                outcomeChangeProviderField.setText(`${capitalize(matchingTender.outcomeDetails.changeProvider)}`)
+                outcomeChangeProviderField.updateAppearances(customFont)
+                
+                const outcomePricingPdrtField = form.getField("outcomePricingPdrt")
+                if (!matchingTender.outcomeDetails.pricingPonderation && matchingTender.outcomeDetails.pricingPonderation !== 0) {
+                    outcomePricingPdrtField.setText("---")
+                    outcomePricingPdrtField.updateAppearances(customFont)
+                } else {
+                    outcomePricingPdrtField.setText(`${matchingTender.outcomeDetails.pricingPonderation} /10`)
+                    outcomePricingPdrtField.updateAppearances(customFont)
+                }
+                const outcomeResponsePdrtField = form.getField("outcomeResponsePdrt")
+                if (!matchingTender.outcomeDetails.scopeResponsePonderation && matchingTender.outcomeDetails.scopeResponsePonderation !== 0) {
+                    outcomeResponsePdrtField.setText("---")
+                    outcomeResponsePdrtField.updateAppearances(customFont)
+                } else {
+                    outcomeResponsePdrtField.setText(`${matchingTender.outcomeDetails.scopeResponsePonderation} /10`)
+                    outcomeResponsePdrtField.updateAppearances(customFont)
+                }
+                const outcomeNetworkPdrtField = form.getField("outcomeNetworkPdrt")
+                if (!matchingTender.outcomeDetails.networkCoveragePonderation && matchingTender.outcomeDetails.networkCoveragePonderation !== 0) {
+                    outcomeNetworkPdrtField.setText("---")
+                    outcomeNetworkPdrtField.updateAppearances(customFont)
+                } else {
+                    outcomeNetworkPdrtField.setText(`${matchingTender.outcomeDetails.networkCoveragePonderation} /10`)
+                    outcomeNetworkPdrtField.updateAppearances(customFont)
+                }
+                const outcomeITPdrtField = form.getField("outcomeITPdrt")
+                if (!matchingTender.outcomeDetails.ITSolutionsPonderation && matchingTender.outcomeDetails.ITSolutionsPonderation !== 0) {
+                    outcomeITPdrtField.setText("---")
+                    outcomeITPdrtField.updateAppearances(customFont)
+                } else {
+                    outcomeITPdrtField.setText(`${matchingTender.outcomeDetails.ITSolutionsPonderation} /10`)
+                    outcomeITPdrtField.updateAppearances(customFont)
+                }
+                const outcomeTransitTimePdrtField = form.getField("outcomeTransitTimePdrt")
+                if (!matchingTender.outcomeDetails.transitTimePonderation && matchingTender.outcomeDetails.transitTimePonderation !== 0) {
+                    outcomeTransitTimePdrtField.setText("---")
+                    outcomeTransitTimePdrtField.updateAppearances(customFont)
+                } else {
+                    outcomeTransitTimePdrtField.setText(`${matchingTender.outcomeDetails.transitTimePonderation} /10`)
+                    outcomeTransitTimePdrtField.updateAppearances(customFont)
+                }
+                const outcomeRelationshipPdrtField = form.getField("outcomeRelationshipPdrt")
+                if (!matchingTender.outcomeDetails.relationshipPonderation && matchingTender.outcomeDetails.relationshipPonderation !== 0) {
+                    outcomeRelationshipPdrtField.setText("---")
+                    outcomeRelationshipPdrtField.updateAppearances(customFont)
+                } else {
+                    outcomeRelationshipPdrtField.setText(`${matchingTender.outcomeDetails.relationshipPonderation} /10`)
+                    outcomeRelationshipPdrtField.updateAppearances(customFont)
+                }
+                const outcomeValueAddedPdrtField = form.getField("outcomeValueAddedPdrt")
+                if (!matchingTender.outcomeDetails.valueAddedServicesPonderation && matchingTender.outcomeDetails.valueAddedServicesPonderation !== 0) {
+                    outcomeValueAddedPdrtField.setText("---")
+                    outcomeValueAddedPdrtField.updateAppearances(customFont)
+                } else {
+                    outcomeValueAddedPdrtField.setText(`${matchingTender.outcomeDetails.valueAddedServicesPonderation} /10`)
+                    outcomeValueAddedPdrtField.updateAppearances(customFont)
+                }
+                const outcomeConceptPdrtField = form.getField("outcomeConceptPdrt")
+                if (!matchingTender.outcomeDetails.overallConceptPonderation && matchingTender.outcomeDetails.overallConceptPonderation !== 0) {
+                    outcomeConceptPdrtField.setText("---")
+                    outcomeConceptPdrtField.updateAppearances(customFont)
+                } else {
+                    outcomeConceptPdrtField.setText(`${matchingTender.outcomeDetails.overallConceptPonderation} /10`)
+                    outcomeConceptPdrtField.updateAppearances(customFont)
+                }
+                const outcomeAwardeeField = form.getField("outcomeAwardee")
+                if (!matchingTender.outcomeDetails.newProvider) {
+                    outcomeAwardeeField.setText("---")
+                    outcomeAwardeeField.updateAppearances(customFont)
+                } else if (matchingTender.outcomeDetails.newProvider === "unknown") {
+                    outcomeAwardeeField.setText(`${capitalize(matchingTender.outcomeDetails.newProvider)}`)
+                    outcomeAwardeeField.updateAppearances(customFont)
+                } else {
+                    outcomeAwardeeField.setText(`${matchingTender.outcomeDetails.newProvider}`)
+                    outcomeAwardeeField.updateAppearances(customFont)
+                }
+
+                if(matchingTender.outcomeDetails.pricingComment){
+                    const additionalPricingCommentField = form.getTextField("additionalPricingComment")
+                    additionalPricingCommentField.setText(`${matchingTender.outcomeDetails.pricingComment}`)
+                    additionalPricingCommentField.updateAppearances(customFont)    
+                }
+                if(matchingTender.outcomeDetails.networkComment){
+                    const additionalNetworkCommentField = form.getTextField("additionalNetworkComment")
+                    additionalNetworkCommentField.setText(`${matchingTender.outcomeDetails.networkComment}`)
+                    additionalNetworkCommentField.updateAppearances(customFont)    
+                }
+                if(matchingTender.outcomeDetails.ITComment){
+                    const additionalITCommentField = form.getTextField("additionalITComment")
+                    additionalITCommentField.setText(`${matchingTender.outcomeDetails.ITComment}`)
+                    additionalITCommentField.updateAppearances(customFont)    
+                }
+                if(matchingTender.outcomeDetails.conceptComment){
+                    const additionalConceptCommentField = form.getTextField("additionalConceptComment")
+                    additionalConceptCommentField.setText(`${matchingTender.outcomeDetails.conceptComment}`)
+                    additionalConceptCommentField.updateAppearances(customFont)    
+                }
+                if(matchingTender.outcomeDetails.improvementComment){
+                    const additionalImprovementCommentField = form.getTextField("additionalImprovementComment")
+                    additionalImprovementCommentField.setText(`${matchingTender.outcomeDetails.improvementComment}`)
+                    additionalImprovementCommentField.updateAppearances(customFont)    
+                }
+                if(matchingTender.outcomeDetails.nextStepsComment){
+                    const additionalNextStepsCommentField = form.getTextField("additionalNextStepsComment")
+                    additionalNextStepsCommentField.setText(`${matchingTender.outcomeDetails.nextStepsComment}`)
+                    additionalNextStepsCommentField.updateAppearances(customFont)    
+                }
+                if(matchingTender.outcomeDetails.preparationComment){
+                    const additionalPreparationCommentField = form.getTextField("additionalPreparationComment")
+                    additionalPreparationCommentField.setText(`${matchingTender.outcomeDetails.preparationComment}`)
+                    additionalPreparationCommentField.updateAppearances(customFont)    
+                }
+
+                if(matchingTender.outcomeDetails.outcomeAdditionalComment){
+                    const additionalOutcomeCommentField = form.getTextField("additionalOutcomeComment")
+                    additionalOutcomeCommentField.setText(`${matchingTender.outcomeDetails.outcomeAdditionalComment}`)
+                    additionalOutcomeCommentField.updateAppearances(customFont)    
+                }
+
+                break;
+            case "unknown":
+                tenderOutcomeField.setText("Unknown outcome")
+                tenderOutcomeField.updateAppearances(customFont)
+                if(matchingTender.outcomeDetails.outcomeAdditionalComment){
+                    const additionalOutcomeCommentField = form.getTextField("additionalOutcomeComment")
+                    additionalOutcomeCommentField.setText(`${matchingTender.outcomeDetails.outcomeAdditionalComment}`)
+                    additionalOutcomeCommentField.updateAppearances(customFont)    
+                }
+                break;
+        }
+    }
+
+    // const feedbackProvidedField = form.getField("feedbackProvided")
+    // feedbackProvidedField.setText("To be set in future...")
     // feedbackProvidedField.setText(`${matchingTender.award}`)
-    feedbackProvidedField.updateAppearances(customFont)
+    // feedbackProvidedField.updateAppearances(customFont)
 
     for (let field of fields) {
     field.enableReadOnly()
