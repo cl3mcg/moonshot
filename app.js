@@ -13,6 +13,7 @@ const path = require("path");
 const ejsMate = require("ejs-mate");
 const methodOverride = require("method-override");
 const mongoose = require("mongoose");
+const MongoStore = require('connect-mongo');
 const session = require("express-session");
 const flash = require("connect-flash");
 const nodemailer = require("nodemailer");
@@ -75,10 +76,26 @@ app.set("view engine", "ejs");
 app.engine("ejs", ejsMate);
 // app.use(fileUpload({ createParentPath: true }));
 
+// ----- Setup of the store variable used to store user's session in MongoDB
+// This is only activated when the code is pushed into production
+let store
+if (process.env.NODE_ENV === "production") {
+  store = new MongoStore({
+    mongoUrl: process.env.MONGODB_ADDON_URI,
+    secret: process.env.SESSION_SECRET,
+    touchAfter: 24 * 3600
+  })
+  store.on('error', function (error) {
+    console.log(error);
+  });
+}
+
 // ----- Session & Flash middleware
+// There are 2 versions of sessionConfig, one for production, the other for development.
 let sessionConfig
 if (process.env.NODE_ENV === "production") {
   sessionConfig = {
+    store,
     name: `_${Math.floor(Math.random() * 1000000000000000)}`,
     secret: process.env.SESSION_SECRET,
     resave: false,
@@ -186,7 +203,9 @@ app.use(function (req, res, next) {
 const catchAsync = require("./utilities/catchasync.js");
 
 // ----- Database connection
-mongoose
+
+if (process.env.NODE_ENV !== "production") {
+  mongoose
   .connect("mongodb://localhost:27017/moonshot", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -198,6 +217,20 @@ mongoose
     console.log(`${colors.brightYellow.bgBrightRed("*!* WARNING *!*")} MOONSHOT PROJECT - Database connection ERROR (Mongoose)`);
     console.log(err);
   });
+} else {
+  mongoose
+  .connect(process.env.MONGODB_ADDON_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(function () {
+    console.log(`${colors.black.bgBrightGreen("* OK *")} MOONSHOT PROJECT - Database connection OK (Mongoose)`);
+  })
+  .catch(function (err) {
+    console.log(`${colors.brightYellow.bgBrightRed("*!* WARNING *!*")} MOONSHOT PROJECT - Database connection ERROR (Mongoose)`);
+    console.log(err);
+  });
+}
 
 // ----- Commonly used functions
 
@@ -474,7 +507,7 @@ app.use(function (err, req, res, next) {
 
 if (process.env.NODE_ENV === "production") {
   app.listen(process.env.PORT, '0.0.0.0', function () {
-    console.log(`${colors.black.bgBrightGreen("* OK *")} MOONSHOT PROJECT - App is listening on port 0.0.0.0:8080`);
+    console.log(`${colors.black.bgBrightGreen("* OK *")} MOONSHOT PROJECT - App is listening`);
   });
 } else {
   app.listen(3000, function () {
