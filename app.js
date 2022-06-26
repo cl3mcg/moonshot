@@ -78,31 +78,39 @@ app.engine("ejs", ejsMate);
 
 // ----- Setup of the store variable used to store user's session in MongoDB
 // This is only activated when the code is pushed into production
-let store
-if (process.env.NODE_ENV === "production") {
-  store = new MongoStore({
+// let store
+// if (process.env.NODE_ENV === "production") {
+  const store = MongoStore.create({
     mongoUrl: process.env.MONGODB_ADDON_URI,
-    secret: process.env.SESSION_SECRET,
-    touchAfter: 24 * 3600
-  })
-  store.on('error', function (error) {
-    console.log(error);
-  });
-}
+    touchAfter: 7 * 24 * 60 * 60,
+    crypto: {
+        secret: process.env.SESSION_SECRET
+    }
+});
+  // store = new MongoStore({
+  //   mongoUrl: process.env.MONGODB_ADDON_URI,
+  //   secret: process.env.SESSION_SECRET,
+  //   touchAfter: 24 * 3600
+  // })
+  // store.on('error', function (error) {
+  //   console.log(error);
+  // });
+// }
 
 // ----- Session & Flash middleware
 // There are 2 versions of sessionConfig, one for production, the other for development.
 let sessionConfig
 if (process.env.NODE_ENV === "production") {
   sessionConfig = {
-    store,
+    store: store,
     name: `_${Math.floor(Math.random() * 1000000000000000)}`,
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
       sameSite: "lax",
-      secure: true,
+      // The "secure" attribute is removed otherwise, the cookies cannot be read and all goes breaking
+      // secure: true,
       httpOnly: true,
       expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
       maxAge: 1000 * 60 * 60 * 24 * 7
@@ -110,11 +118,12 @@ if (process.env.NODE_ENV === "production") {
   }
 } else {
   sessionConfig = {
-    // name: `_${Math.floor(Math.random() * 1000000000000000)}`,
+    name: `_${Math.floor(Math.random() * 1000000000000000)}`,
     secret: "placeholder",
     resave: false,
     saveUninitialized: true,
     cookie: {
+      // The "samesite" and "secure" attributes are removed for , the cookies cannot be read and all goes breaking
       // sameSite: "lax",
       // secure: true,
       httpOnly: true,
@@ -145,9 +154,6 @@ const styleSrcUrls = [
 const connectSrcUrls = [
   "https://twemoji.maxcdn.com/"
   // "https://api.mapbox.com/",
-  // "https://a.tiles.mapbox.com/",
-  // "https://b.tiles.mapbox.com/",
-  // "https://events.mapbox.com/",
 ];
 const fontSrcUrls = [
   "https://fonts.googleapis.com",
@@ -168,10 +174,9 @@ app.use(
               "'self'",
               "blob:",
               "data:",
-              // "https://res.cloudinary.com/THECLOUDINARYACCOUNTNAME/",
-              // `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/`,
               "https://images.unsplash.com/",
               "https://twemoji.maxcdn.com/"
+            // "https://res.cloudinary.com/THECLOUDINARYACCOUNTNAME/",
           ],
           fontSrc: ["'self'", ...fontSrcUrls],
           // The following line is added to avoid having a Content Security Policy error on Mozilla's Firefox
@@ -211,10 +216,10 @@ if (process.env.NODE_ENV !== "production") {
     useUnifiedTopology: true,
   })
   .then(function () {
-    console.log(`${colors.black.bgBrightGreen("* OK *")} MOONSHOT PROJECT - Database connection OK (Mongoose)`);
+    console.log(`${colors.black.bgBrightGreen("* OK *")} MOONSHOT PROJECT (Dev.) - Database connection OK (Mongoose)`);
   })
   .catch(function (err) {
-    console.log(`${colors.brightYellow.bgBrightRed("*!* WARNING *!*")} MOONSHOT PROJECT - Database connection ERROR (Mongoose)`);
+    console.log(`${colors.brightYellow.bgBrightRed("*!* WARNING *!*")} MOONSHOT PROJECT (Dev.) - Database connection ERROR (Mongoose)`);
     console.log(err);
   });
 } else {
@@ -224,10 +229,10 @@ if (process.env.NODE_ENV !== "production") {
     useUnifiedTopology: true,
   })
   .then(function () {
-    console.log(`${colors.black.bgBrightGreen("* OK *")} MOONSHOT PROJECT - Database connection OK (Mongoose)`);
+    console.log(`${colors.black.bgBrightGreen("* OK *")} MOONSHOT PROJECT (Prod.) - Database connection OK (Mongoose)`);
   })
   .catch(function (err) {
-    console.log(`${colors.brightYellow.bgBrightRed("*!* WARNING *!*")} MOONSHOT PROJECT - Database connection ERROR (Mongoose)`);
+    console.log(`${colors.brightYellow.bgBrightRed("*!* WARNING *!*")} MOONSHOT PROJECT (Prod.) - Database connection ERROR (Mongoose)`);
     console.log(err);
   });
 }
@@ -507,10 +512,10 @@ app.use(function (err, req, res, next) {
 
 if (process.env.NODE_ENV === "production") {
   app.listen(process.env.PORT, '0.0.0.0', function () {
-    console.log(`${colors.black.bgBrightGreen("* OK *")} MOONSHOT PROJECT - App is listening`);
+    console.log(`${colors.black.bgBrightGreen("* OK *")} MOONSHOT PROJECT (Prod.) - App is listening on port ${process.env.PORT}`);
   });
 } else {
   app.listen(3000, function () {
-    console.log(`${colors.black.bgBrightGreen("* OK *")} MOONSHOT PROJECT - App is listening on port 3000`);
+    console.log(`${colors.black.bgBrightGreen("* OK *")} MOONSHOT PROJECT (Dev.) - App is listening on port 3000`);
   });
 }
