@@ -26,6 +26,16 @@ const catchAsync = require("../utilities/catchasync.js");
 
 const ExpressError = require("../utilities/expresserror.js");
 
+// ----- Middleware used
+
+const {
+  // ----- isLoggedIn middleware used to check if the user is properly logged in - Check the value of req.user stored in Express Session
+  isLoggedIn,
+  // ----- validateRegister middleware used with JOI to validate new registered tenders according to JOI schema
+  validateRegister,
+  validateDecision
+} = require("../utilities/middleware.js");
+
 // ----- Controllers used for USER MANAGEMENT ROUTES
 
 const userCtrl = require("../controllers/user_ctrl.js");
@@ -41,6 +51,8 @@ router.route("/registration")
   .post(userCtrl.registerUser)
 
 router.get("/logout", userCtrl.logoutUser);
+
+router.get("/:id", isLoggedIn, userCtrl.renderUserPage)
 
 // router.get("/login", userCtrl.renderLoginPage);
 

@@ -75,3 +75,13 @@ module.exports.logoutUser = function (req, res) {
     req.flash("success", "Logged out ! Bye !")
     res.redirect("/")
 }
+
+module.exports.renderUserPage = catchAsync(async function (req, res) {
+    const userId = req.params.id
+    const matchingUser = await User.findById(userId)
+    if (req.user.id !== matchingUser.id) {
+        req.flash("error", "You can't access this page")
+        res.redirect("/start")
+    }
+    res.render("user/user_show.ejs")
+})

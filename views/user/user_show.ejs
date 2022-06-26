@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moonshot | User</title>
+    <%- include("../partials/commonStyles.ejs") %>
+    <%- include("../partials/commonFonts.ejs") %>
+</head>
+
+<body>
+    <%- include("../partials/navbar.ejs") %>
+    <%- include("../partials/flash.ejs") %>
+<div class="container">
+  <div class="row align-items-center my-3">
+    <div class="col">
+      <p><a class="btn btn-light btn-sm border" href="/start"><i class="bi bi-arrow-left-circle me-1"></i>Start page</a></p>
+    </div>
+  </div>
+    <div class="container mb-3">
+      <h1>My account</h1>
+    </div>
+    <table class="table">
+        <tbody>
+          <tr>
+            <th scope="row">User ID</th>
+            <td><span class="font-monospace"><%= currentUser.id %></span></td>
+          </tr>
+          <tr>
+            <th scope="row">User Name</th>
+            <td><span><%= currentUser.username %></span></td>
+          </tr>
+          <tr>
+            <th scope="row">Email</th>
+            <td><%= currentUser.email %></td>
+          </tr>
+          <% if (currentUser.isAdmin || currentUser.isTenderTeam) { %> 
+          <tr>
+            <th scope="row">Special access</th>
+            <td><% if( currentUser.isAdmin) {%><i class="bi bi-check-circle-fill text-success me-2"></i><% } else { %><i class="bi bi-x-circle-fill text-danger me-2"></i><% } %> <span class="font-monospace">Admin. priviledges</span><br>
+              <% if(currentUser.isTenderTeam) {%><i class="bi bi-check-circle-fill text-success me-2"></i><% } else { %><i class="bi bi-x-circle-fill text-danger me-2"></i><% } %> <span class="font-monospace"> Tender team member priviledges</span>
+              <% if(!currentUser.isAdmin && currentUser.isTenderTeam) { %>
+                <br>
+                <td><a href="">Request further special access</a></td>
+              <% } %> 
+            </td>
+          </tr>
+          <% } else { %>
+            <tr>
+              <th scope="row">Special access</th>
+              <td><a href="">Request special access</a></td>
+            </tr>
+          <% } %> 
+        </tbody>
+      </table>
+</div>
+    <%- include("../partials/commonBootstrap.ejs") %>
+</body>
+</html>

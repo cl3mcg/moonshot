@@ -8,25 +8,32 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav">
+            <!-- <div class="navbar-nav"> -->
+              <% if (!currentUser) { %>
+              <a class="nav-link position-absolute top-50 end-0 translate-middle-y me-4" href="/user/login">Login / Register</a>
+              <% } else { %>
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarAccountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Account
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="navbarAccountDropdown">
+                    <li><a class="dropdown-item" href="/user/<%= currentUser.id %> "><i class="bi bi-person me-2"></i>My account</a></li>
+                    <li><a class="dropdown-item" href="/user/logout"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                  </ul>
+                </li>
+              <% } %>
+            <!-- </div> -->
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Tenders
               </a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                <li><a class="dropdown-item" href="/preadvise/start">Pre-advise</a></li>
-                <li><a class="dropdown-item" href="/register/start">Registration</a></li>
+                <li><a class="dropdown-item" href="/preadvise/start"><i class="bi bi-megaphone me-2"></i>Pre-advise</a></li>
+                <li><a class="dropdown-item" href="/register/start"><i class="bi bi-globe me-2"></i>Registration</a></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="/dashboard/start">Dashboard</a></li>
+                <li><a class="dropdown-item" href="/dashboard/start"><i class="bi bi-clipboard-data me-2"></i>Dashboard</a></li>
               </ul>
             </li>
-          <!-- <a class="nav-link" href="/office/start">Offices</a> -->
-          </div>
-          <div class="navbar-nav ms-auto">
-            <% if (!currentUser) { %>
-            <a class="nav-link position-absolute top-50 end-0 translate-middle-y me-4" href="/user/login">Login / Register</a>
-            <% } else { %>
-            <a class="nav-link position-absolute top-50 end-0 translate-middle-y me-4" href="/user/logout">Logout</a>
-            <% } %>
           </div>
       </div>
   </div>
