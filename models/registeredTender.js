@@ -6,12 +6,9 @@ const registeredTenderSchema = new Schema({
         type: Date,
         required: true
     },
-    // author: {
-    //     type: Schema.Types.ObjectID,
-    //     ref: "user",
-    // },
     author: {
-        type: String,
+        type: Schema.Types.ObjectID,
+        ref: "user",
     },
     lastModifiedDate: Date,
     preadvise: {
