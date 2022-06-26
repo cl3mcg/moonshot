@@ -98,7 +98,7 @@ const isAdmin = function (req, res, next) {
   // console.log(`The req.user is: ${req.user}`);
   if (!req.user.isAdmin) {
       req.session.returnTo = req.originalUrl;
-      req.flash("warning", "You do not have adminsitrative privileges.")
+      req.flash("warning", "You do not have admin privileges.")
       return res.redirect("/user/login")
   }
   next()

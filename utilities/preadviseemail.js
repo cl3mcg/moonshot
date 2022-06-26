@@ -16,7 +16,6 @@ const preadviseTenderEmailConfirmation = async function (entryID, fileIdentifier
     let matchingPreadvise = await PreadvisedTender.findById(entryID).populate("author");
     let from = testSenderName;
     let selectedEmail = matchingPreadvise.author.email; // Enter the recipient email here
-    console.log(selectedEmail)
     let subject = "Your tender has been preadvised";
     // let attachement = null;
     let attachement = [{
