@@ -1,3 +1,4 @@
+// Declaration of variables
 const submitBtn = document.querySelector("#submitBtn")
 
 // ---- ---- Bootstrap form validation
@@ -36,3 +37,4 @@ const bootsrapValidation = function () {
       }
     
 submitBtn.addEventListener("click", bootsrapValidation())
+

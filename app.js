@@ -78,24 +78,25 @@ app.engine("ejs", ejsMate);
 
 // ----- Setup of the store variable used to store user's session in MongoDB
 // This is only activated when the code is pushed into production
-// let store
-// if (process.env.NODE_ENV === "production") {
-  const store = MongoStore.create({
-    mongoUrl: process.env.MONGODB_ADDON_URI,
-    touchAfter: 7 * 24 * 60 * 60,
-    crypto: {
-        secret: process.env.SESSION_SECRET
-    }
-});
-  // store = new MongoStore({
-  //   mongoUrl: process.env.MONGODB_ADDON_URI,
-  //   secret: process.env.SESSION_SECRET,
-  //   touchAfter: 24 * 3600
-  // })
-  // store.on('error', function (error) {
-  //   console.log(error);
-  // });
-// }
+let store
+if (process.env.NODE_ENV === "production") {
+  store = MongoStore.create({
+      mongoUrl: process.env.MONGODB_ADDON_URI,
+      touchAfter: 7 * 24 * 60 * 60,
+      crypto: {
+          secret: process.env.SESSION_SECRET
+      }
+  });
+  } else {
+  store = new MongoStore({
+    mongoUrl: "mongodb://localhost:27017/moonshot",
+    secret: process.env.SESSION_SECRET,
+    touchAfter: 24 * 3600
+  })
+  store.on('error', function (error) {
+    console.log(error);
+  });
+}
 
 // ----- Session & Flash middleware
 // There are 2 versions of sessionConfig, one for production, the other for development.
@@ -124,7 +125,7 @@ if (process.env.NODE_ENV === "production") {
     saveUninitialized: true,
     cookie: {
       // The "samesite" and "secure" attributes are removed for , the cookies cannot be read and all goes breaking
-      // sameSite: "lax",
+      sameSite: "lax",
       // secure: true,
       httpOnly: true,
       expires: Date.now() + 1000 * 60 * 60 * 24 * 7,

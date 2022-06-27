@@ -25,37 +25,184 @@
     <table class="table">
         <tbody>
           <tr>
-            <th scope="row">User ID</th>
-            <td><span class="font-monospace"><%= currentUser.id %></span></td>
+            <th scope="row" class="align-middle">User ID</th>
+            <td class="align-middle"><span class="font-monospace"><%= currentUser.id %></span></td>
+            <td class="align-middle"></td>
           </tr>
           <tr>
-            <th scope="row">User Name</th>
-            <td><span><%= currentUser.username %></span></td>
+            <th scope="row" class="align-middle">User Name</th>
+            <td class="align-middle"><span><%= currentUser.username %></span></td>
+            <td class="align-middle">
+            </td>
           </tr>
           <tr>
-            <th scope="row">Email</th>
-            <td><%= currentUser.email %></td>
+            <th scope="row" class="align-middle">Email</th>
+            <td class="align-middle"><%= currentUser.email %></td>
+            <td class="align-middle">
+              <button type="button" class="btn btn-link btn-sm" data-bs-toggle="modal" data-bs-target="#changeEmailModal">Modify</button>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row" class="align-middle">Password</th>
+            <td class="align-middle"><span class="monospace">••••••</span></td>
+            <td class="align-middle">
+              <button type="button" class="btn btn-link btn-sm" data-bs-toggle="modal" data-bs-target="#changePasswordModal">Modify</button>
+            </td>
           </tr>
           <% if (currentUser.isAdmin || currentUser.isTenderTeam) { %> 
           <tr>
-            <th scope="row">Special access</th>
-            <td><% if( currentUser.isAdmin) {%><i class="bi bi-check-circle-fill text-success me-2"></i><% } else { %><i class="bi bi-x-circle-fill text-danger me-2"></i><% } %> <span class="font-monospace">Admin. priviledges</span><br>
+            <th scope="row" class="align-middle">Special access</th>
+            <td class="align-middle">
+              <% if(currentUser.isAdmin) {%><i class="bi bi-check-circle-fill text-success me-2"></i><% } else { %><i class="bi bi-x-circle-fill text-danger me-2"></i><% } %> <span class="font-monospace">Admin. priviledges</span><br>
               <% if(currentUser.isTenderTeam) {%><i class="bi bi-check-circle-fill text-success me-2"></i><% } else { %><i class="bi bi-x-circle-fill text-danger me-2"></i><% } %> <span class="font-monospace"> Tender team member priviledges</span>
-              <% if(!currentUser.isAdmin && currentUser.isTenderTeam) { %>
-                <br>
-                <td><a href="">Request further special access</a></td>
+            </td>
+            <td class="align-middle">
+              <% if(!currentUser.isAdmin || !currentUser.isTenderTeam) { %>
+                <button type="button" class="btn btn-link btn-sm" data-bs-toggle="modal" data-bs-target="#requestModal">Request further special access</button>
               <% } %> 
             </td>
           </tr>
           <% } else { %>
             <tr>
-              <th scope="row">Special access</th>
-              <td><a href="">Request special access</a></td>
+              <th scope="row" class="align-middle">Special access</th>
+              <td class="align-middle">
+                Regular user account
+              </td>
+              <td class="align-middle"><button type="button" class="btn btn-link btn-sm" data-bs-toggle="modal" data-bs-target="#requestModal">Request a special access</button></td>
             </tr>
           <% } %> 
         </tbody>
       </table>
 </div>
+<!-- Special access request modal -->
+  <div class="modal fade" id="requestModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-fullscreen-md-down modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="requestModalLabel">Request special access</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div role="alert" aria-live="assertive" aria-atomic="true" class="toast fade show rounded-3 border border-5 border-primary border-top-0 border-end-0 border-bottom-0 w-100 mb-4" data-autohide="false" data-bs-autohide="false">
+            <div class="toast-header bg-primary bg-opacity-25">
+              <strong class="me-auto my-auto text-primary h6"><i class="bi bi-exclamation-triangle-fill me-2"></i>Information</strong>
+            </div>
+            <div class="toast-body">
+              <% if (currentUser.isAdmin && currentUser.isTenderTeam) {%>You already have full access to The Moonshot project. There's nothing more to do here...<% } else { %>
+              <strong>You are about to ask for a special access to The Moonshot project.</strong> This is applicable only if you are a tender team member or if you are an admin.<br>
+              Please provide further information that motivates your request.<br>
+              Once submitted, The Moonshot project admin will process it and come back to you.
+              <% } %>
+            </div>
+          </div>
+          <form action="/user/<%= currentUser.id %>/request" method="POST" id="requestForm" autocomplete="off">
+            <strong>Type of access</strong>
+            <div class="mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="userRequest" value="accessTenderTeam" id="accessTenderTeam" <% if (currentUser.isTenderTeam) {%>checked disabled<% }%>>
+                <label class="form-check-label" for="accessTenderTeam" <% if (currentUser.isTenderTeam) {%>data-bs-toggle="tooltip" data-bs-placement="right" title="Access already granted"<% }%>>
+                  Request tender team access<% if (currentUser.isTenderTeam) {%><i class="bi bi-unlock ms-2"></i><% }%>
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="userRequest" value="accessAdmin" id="accessAdmin" <% if (currentUser.isAdmin) {%>checked disabled<% }%>>
+                <label class="form-check-label" for="accessAdmin" <% if (currentUser.isAdmin) {%>data-bs-toggle="tooltip" data-bs-placement="right" title="Access already granted"<% }%>>
+                  Request admin access<% if (currentUser.isAdmin) {%><i class="bi bi-unlock ms-2"></i><% }%>
+                </label>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="feedbackComment" class="form-label"><strong>Your comments</strong></label>
+              <textarea class="form-control" id="feedbackComment" name="requestComment" rows="5" <% if (currentUser.isAdmin && currentUser.isTenderTeam) {%>disabled <% } else {%>required<% }%>></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary position-relative top-50 start-0" id="mod_returnBtn" data-bs-dismiss="modal"><i class="bi bi-arrow-left-circle me-2"></i>Cancel</button>
+          <button class="btn btn-success border-success" type="submit" form="requestForm" <% if (currentUser.isAdmin && currentUser.isTenderTeam) {%>disabled<% }%>><i class="bi bi-send-check me-2"></i>Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- Change password modal -->
+<div class="modal fade" id="changePasswordModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-fullscreen-md-down modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="requestModalLabel">Change my password</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="/user/<%= currentUser.id %>/changePassword" method="POST" id="changePasswordForm" autocomplete="off">
+          <div class="mb-3">
+            <div class="mb-3 row">
+              <label for="currentPassword" class="col-sm-4 col-form-label">Current password</label>
+              <div class="col-sm-8">
+                <input type="password" class="form-control" id="currentPassword" name="currentPassword">
+              </div>
+            </div>
+            <div class="mb-3 row">
+              <label for="newPassword1" class="col-sm-4 col-form-label">New password</label>
+              <div class="col-sm-8">
+                <input type="password" class="form-control" id="newPassword1" name="newPassword1">
+              </div>
+            </div>
+            <div class="mb-3 row">
+              <label for="newPassword2" class="col-sm-4 col-form-label">Repeat new password</label>
+              <div class="col-sm-8">
+                <input type="password" class="form-control" id="newPassword2" name="newPassword2">
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary position-relative top-50 start-0" id="mod_returnBtn" data-bs-dismiss="modal"><i class="bi bi-arrow-left-circle me-2"></i>Cancel</button>
+        <button class="btn btn-success border-success" type="submit" form="changePasswordForm" id="submitChangePasswordBtn" disabled><i class="bi bi-send-check me-2"></i>Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Change email modal -->
+<div class="modal fade" id="changeEmailModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-fullscreen-md-down modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="requestModalLabel">Change my email</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="/user/<%= currentUser.id %>/changeEmail" method="POST" id="changeEmailForm" autocomplete="off">
+          <div class="mb-3">
+            <div class="mb-3 row">
+              <label for="currentPassword" class="col-sm-4 col-form-label">Current email</label>
+              <div class="col-sm-8">
+                <input type="email" class="form-control" id="currentPassword" name="currentEmail" value="<%= currentUser.email %>" disabled>
+              </div>
+            </div>
+            <div class="mb-3 row">
+              <label for="newEmail1" class="col-sm-4 col-form-label">New email</label>
+              <div class="col-sm-8">
+                <input type="email" class="form-control" id="newEmail1" name="newEmail1">
+              </div>
+            </div>
+            <div class="mb-3 row">
+              <label for="newEmail2" class="col-sm-4 col-form-label">Repeat new email</label>
+              <div class="col-sm-8">
+                <input type="email" class="form-control" id="newEmail2" name="newEmail2">
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary position-relative top-50 start-0" id="mod_returnBtn" data-bs-dismiss="modal"><i class="bi bi-arrow-left-circle me-2"></i>Cancel</button>
+        <button class="btn btn-success border-success" type="submit" form="changeEmailForm" id="submitChangeEmailBtn" disabled><i class="bi bi-send-check me-2"></i>Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
     <%- include("../partials/commonBootstrap.ejs") %>
+    <script src="/js/user_show.js"></script>
 </body>
 </html>

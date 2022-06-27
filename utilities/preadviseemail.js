@@ -58,5 +58,48 @@ const preadviseTenderEmailConfirmation = async function (entryID, fileIdentifier
     }
 }
 
+const preadviseTenderEmailCancellation = async function (entryID) {
+  let matchingPreadvise = await PreadvisedTender.findById(entryID).populate("author");
+  let from = testSenderName;
+  let selectedEmail = matchingPreadvise.author.email; // Enter the recipient email here
+  let subject = "Your tender preadvise has been cancelled";
+  let attachement = null;
+  let emailBody = await ejs.renderFile("./emails/preadviseCancel.ejs", {
+    userName: matchingPreadvise.author.username, // Enter the user name here
+    companyName: matchingPreadvise.companyName, // Enter the company name here, it should be gathered from the form
+    preadviseId: matchingPreadvise.id, // Enter the preadvise ID here, it should be gathered after being saved in the database
+  });
+  const send = async function () {
+    let transporter = nodemailer.createTransport({
+      host: testHost,
+      port: 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: testSenderEmail, // generated ethereal user
+        pass: testSenderEmailPassword, // generated ethereal password
+      },
+    });
 
-module.exports = preadviseTenderEmailConfirmation;
+    let info = await transporter.sendMail({
+      from: from, // sender address
+      to: selectedEmail, // list of receivers
+      subject: subject, // Subject line
+      html: emailBody, // html body
+      attachments: attachement,
+    });
+  };
+
+//   Nodemailer launch function - Uncomment below to enable to email launch.
+  try {
+    await send();
+    console.log(`${colors.black.bgBrightGreen("* OK *")} An email with the cancellation notice related to the TENDER PRE-ADVISE of the company ${matchingPreadvise.companyName}, has been sent`);
+  } catch (error) {
+    console.log(error);
+    throw new ExpressError("Error sending email", 500);
+  }
+}
+
+module.exports = {
+  preadviseTenderEmailConfirmation,
+  preadviseTenderEmailCancellation
+}

@@ -54,6 +54,12 @@ router.get("/logout", userCtrl.logoutUser);
 
 router.get("/:id", isLoggedIn, userCtrl.renderUserPage)
 
+router.post("/:id/request", isLoggedIn, userCtrl.requestAccess)
+
+router.post("/:id/changePassword", isLoggedIn, userCtrl.changePassword)
+
+router.post("/:id/changeEmail", isLoggedIn, userCtrl.changeEmail)
+
 // router.get("/login", userCtrl.renderLoginPage);
 
 // router.post("/login", passport.authenticate('local', { failureFlash: true, failureRedirect: '/user/login' }), userCtrl.loginUser);

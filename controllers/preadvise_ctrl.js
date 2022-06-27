@@ -46,7 +46,13 @@ const generatePreadviseExcelReport = require("../utilities/generatepreadviseexce
 
 // ----- preadviseTenderEmailConfirmation function used to send emails related to preadvise tenders operations
 
-const preadviseTenderEmailConfirmation = require("../utilities/preadviseemail.js");
+const {
+    preadviseTenderEmailConfirmation,
+    preadviseTenderEmailCancellation
+  } = require("../utilities/preadviseemail.js");
+
+// const preadviseTenderEmailConfirmation = require("../utilities/preadviseemail.js");
+// const preadviseTenderEmailCancellation = require("../utilities/preadviseemail.js");
 
 // ----- Commonly used functions
 
@@ -478,6 +484,7 @@ module.exports.deletePreadvise = catchAsync(async function (req, res) {
     let matchingTenderName = matchingTender.companyName;
     console.log(`${colors.black.bgBrightCyan("* ATTEMPT *")} A TENDER PRE-ADVISE has been selected for deletion: ${matchingTenderName}`);
     console.log(matchingTender);
+    await preadviseTenderEmailCancellation(matchingId)
     await PreadvisedTender.findByIdAndDelete(matchingId);
     console.log(`${colors.black.bgBrightGreen("* OK *")} The TENDER PRE-ADVISE related to "${matchingTenderName}" has been deleted`);
     req.flash("success", "Preadvise tender has been deleted !");

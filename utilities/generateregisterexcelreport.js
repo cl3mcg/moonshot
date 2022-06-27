@@ -15,7 +15,8 @@ const {
     findResponsibleTenderOffice,
     currentDateAndTime,
     formatDate,
-    capitalize
+    capitalize,
+    daysDifference
   } = require("./commonfunctions.js");
 
 let generateRegisterExcelReport = async function (newFilename) {
@@ -132,7 +133,13 @@ let generateRegisterExcelReport = async function (newFilename) {
       {name: 'Amount of competitors', filterButton: true},
       {name: 'Amount of awardee(s)', filterButton: true},
       {name: 'Decision criteria', filterButton: true},
-      {name: 'Feedback available', filterButton: true}
+      {name: 'Feedback available', filterButton: true},
+      {name: 'Average time between reception & registration', filterButton: true},
+      {name: 'Average time between registration & Deadline Rd.1', filterButton: true},
+      {name: 'Is over ?', filterButton: true},
+      {name: 'Outcome Positive', filterButton: true},
+      {name: 'Outcome Negative', filterButton: true},
+      {name: 'Outcome Unknown', filterButton: true}
     ],
     rows: [],
   });
@@ -434,6 +441,43 @@ let generateRegisterExcelReport = async function (newFilename) {
     dataToPush.push(`${decisionCriteria[register.decisionCritera]}`)
     dataToPush.push(capitalize(register.feedbackAvailable))
 
+    let registrationReceptionDiff = daysDifference(register.receptionDate, register.recordDate)
+    dataToPush.push(registrationReceptionDiff)
+
+    let registrationDeadlineDiff = daysDifference(register.recordDate, register.deadlineRFQ)
+    dataToPush.push(registrationDeadlineDiff)
+
+    let isOver
+    if (register.outcome) {
+      isOver = "Yes"
+    } else {
+      isOver = "No"
+    }
+    dataToPush.push(isOver)
+
+    let oucomePositive
+    if (register.outcome === "positive") {
+      oucomePositive = "Yes"
+    } else {
+      oucomePositive = "No"
+    }
+    dataToPush.push(oucomePositive)
+
+    let oucomeNegative
+    if (register.outcome === "negative") {
+      oucomeNegative = "Yes"
+    } else {
+      oucomeNegative = "No"
+    }
+    dataToPush.push(oucomeNegative)
+
+    let oucomeUnknown
+    if (register.outcome === "unknown") {
+      oucomeUnknown = "Yes"
+    } else {
+      oucomeUnknown = "No"
+    }
+    dataToPush.push(oucomeUnknown)
 
     table.addRow(dataToPush)
     console.log(`Data for register ${register.companyName} added to table`)

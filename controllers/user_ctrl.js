@@ -14,6 +14,8 @@ const history = require("../public/ressources/history.json");
 const transportModes = require("../public/ressources/transportModes.json");
 const businessVerticals = require("../public/ressources/businessVerticals.json");
 const passport = require('passport');
+const priviledgeEmailRequest = require("../utilities/priviledgerequest.js");
+const welcomeEmailDistribution = require("../utilities/welcomeemail.js");
 
 // ----- catchAsync middleware used to handle Async functions errors
 
@@ -37,6 +39,9 @@ const {
 // ----- Controllers for MOONSHOT USER MANAGEMENT
 
 module.exports.renderLoginPage = function (req, res) {
+    if (req.user) {
+        return res.redirect(`/user/${req.user.id}`)
+    }
     res.render("user/user_login.ejs");
 };
 
@@ -61,6 +66,7 @@ try {
                 return next(err);
             }
         });
+    await welcomeEmailDistribution(registeredUser.id)
     req.flash("success", "Welcome to The Moonshot project !")
     res.redirect("/start")
 }
@@ -79,9 +85,100 @@ module.exports.logoutUser = function (req, res) {
 module.exports.renderUserPage = catchAsync(async function (req, res) {
     const userId = req.params.id
     const matchingUser = await User.findById(userId)
-    if (req.user.id !== matchingUser.id) {
+    if (req.user.id !== matchingUser.id && !matchingUser.isAdmin) {
         req.flash("error", "You can't access this page")
         res.redirect("/start")
     }
     res.render("user/user_show.ejs")
+})
+
+module.exports.requestAccess = catchAsync(async function (req, res) {
+    const userId = req.params.id
+    const matchingUser = await User.findById(userId)
+    if (!matchingUser){
+        req.flash("error", "The ID provided does not match")
+        res.redirect("/start")
+    }
+    if (req.user.id !== matchingUser.id || req.user.id !== userId) {
+        req.flash("error", "You can't access this page")
+        res.redirect(`/user/${userId}`)
+    }
+    let {userRequest, requestComment} = req.body
+    if (typeof userRequest != "object") {
+        userRequest = [userRequest]
+    }
+    let request = {
+        userRequest: userRequest,
+        requestComment: requestComment
+    }
+    priviledgeEmailRequest(matchingUser.id, request)
+    res.redirect(`/user/${userId}`)
+})
+
+module.exports.changePassword = catchAsync(async function (req, res) {
+    const userId = req.params.id
+    const matchingUser = await User.findById(userId)
+    const currentUserId = req.user.id
+    let {currentPassword, newPassword1, newPassword2} = req.body
+    if (!currentUserId) {
+        req.flash("error", "The ID provided does not match")
+        return res.redirect("/start")
+    }
+    if (userId !== currentUserId && !matchingUser.isAdmin) {
+        req.flash("error", "You can't change the password of another user !")
+        return res.redirect(`/user/${userId}`)
+    }
+    if (newPassword1 !== newPassword2) {
+        req.flash("error", "Passwords are not matching")
+        return res.redirect(`/user/${userId}`)
+    }
+    await matchingUser.changePassword(currentPassword, newPassword1, function(err) {
+        if(err) {
+            if(err.name === 'IncorrectPasswordError'){
+            req.flash("error", "The current password provided is incorrect")
+            return res.redirect(`/user/${userId}`)
+            }else {
+            req.flash("error", "There's been an error")
+            return res.redirect(`/user/${userId}`)
+            }
+       } else {
+            req.logout();
+            req.flash("success", "Password changed successfully, you can login again with your new password")
+            return res.redirect(`/user/login`)
+        }
+      })
+})
+
+module.exports.changeEmail = catchAsync(async function (req, res) {
+    const userId = req.params.id
+    const matchingUser = await User.findById(userId)
+    const currentUserId = req.user.id
+    let {newEmail1, newEmail2} = req.body
+    if (!currentUserId) {
+        req.flash("error", "The ID provided does not match")
+        return res.redirect("/start")
+    }
+    if (userId !== currentUserId && !matchingUser.isAdmin) {
+        req.flash("error", "You can't change the email of another user !")
+        return res.redirect(`/user/${userId}`)
+    }
+    if (newEmail1 !== newEmail2) {
+        req.flash("error", "Emails are not matching")
+        return res.redirect(`/user/${userId}`)
+    }
+
+    let updatedEntry = {
+        email: newEmail1
+    }
+    
+    try {
+        await User.findByIdAndUpdate(userId, updatedEntry)
+        req.flash("success", "The email address has been updated")
+        return res.redirect(`/user/${userId}`)
+    } catch (error) {
+        req.flash("error", "There's been an error, the email has not been updated")
+        console.log(error)
+        return res.redirect(`/user/${userId}`)
+    }
+
 })
