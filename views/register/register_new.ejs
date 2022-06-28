@@ -9,6 +9,7 @@
     <%- include("../partials/commonFonts.ejs") %>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.0/dist/index.umd.min.js"></script>
 </head>
 <body>
     <%- include("../partials/navbar.ejs") %>
@@ -288,7 +289,7 @@
                     </div>
                 </div>
             </div>
-            <div class="tile needs-validation">
+            <div class="tile needs-validation mb-5">
                 <div class="row justify-content-md-start mb-5">
                     <div class="col-12 mb-3">
                         <h2>Timeline</h2>
@@ -309,34 +310,38 @@
                     </div>
                     <div class="col-12 col-md-6" id="opt_deadlineRFI">
                         <label class="form-label" for="deadlineRFI">RFI submission deadline</label>
-                        <input class="form-control" type="date" id="deadlineRFI" name="deadlineRFI" required>
-                        <!-- <div class="form-text">When does the RFI need to be submitted at the latest</div> -->
+                        <input class="form-control bg-body" id="deadlineRFI" name="deadlineRFI" required/>
+                        <!-- <input class="form-control" type="date" id="deadlineRFI" name="deadlineRFI" required> -->
                         <div class="invalid-feedback">Please fill this field.</div>
                     </div>
                     <div class="col-12 my-3">
                         <h3>RFQ</h3>
                     </div>
                     <div class="col-12 col-md-6 mb-3">
-                        <label class="form-label" for="receptionDate">Recepton date</label>
-                        <input class="form-control" type="date" id="receptionDate" name="receptionDate" required>
+                        <label class="form-label" for="receptionDate">Reception date</label>
+                        <input class="form-control bg-body" id="receptionDate" name="receptionDate" required/>
+                        <!-- <input class="form-control" type="date" id="receptionDate" name="receptionDate" required> -->
                         <div class="form-text">When did you receive the tender?</div>
                         <div class="invalid-feedback">Please fill this field.</div>
                     </div>
                     <div class="col-12 col-md-6 mb-3">
                         <label class="form-label" for="deadlineRFQ">RFQ submission deadline</label>
-                        <input class="form-control" type="date" id="deadlineRFQ" name="deadlineRFQ" required>
+                        <input class="form-control bg-body" id="deadlineRFQ" name="deadlineRFQ" required/>
+                        <!-- <input class="form-control" type="date" id="deadlineRFQ" name="deadlineRFQ" required> -->
                         <div class="form-text">When does the RFQ need to be submitted at the latest</div>
                         <div class="invalid-feedback">Please fill this field.</div>
                     </div>
                     <div class="col-12 col-md-6 mb-3">
                         <label class="form-label" for="decisionDate">Date of decision</label>
-                        <input class="form-control" type="date" id="decisionDate" name="decisionDate" required>
+                        <input class="form-control bg-body" id="decisionDate" name="decisionDate" required/>
+                        <!-- <input class="form-control" type="date" id="decisionDate" name="decisionDate" required> -->
                         <div class="form-text">When is the bidding company expected to deliver awards to the participants?</div>
                         <div class="invalid-feedback">Please fill this field.</div>
                     </div>
                     <div class="col-12 col-md-6 mb-3">
                         <label class="form-label" for="startBusinessDate">Start of the business</label>
-                        <input class="form-control" type="date" id="startBusinessDate" name="startBusinessDate" required>
+                        <input class="form-control bg-body" id="startBusinessDate" name="startBusinessDate" required/>
+                        <!-- <input class="form-control" type="date" id="startBusinessDate" name="startBusinessDate" required> -->
                         <div class="form-text">When is the bidding company expected to start the business with the awarded participants?</div>
                         <div class="invalid-feedback">Please fill this field.</div>
                     </div>

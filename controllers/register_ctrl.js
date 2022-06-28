@@ -526,18 +526,18 @@ module.exports.renderHistoryPage = catchAsync(async function (req, res) {
          * @property {Function} cfg.parser: function to parse the items to expected type
          * @return {Array}
          */
-        return function sortby(array, cfg) {
-        if (!(array instanceof Array && array.length)) return [];
-        if (toString.call(cfg) !== "[object Object]") cfg = {};
-        if (typeof cfg.parser !== "function") cfg.parser = parse;
-        cfg.desc = !!cfg.desc ? -1 : 1;
-        return array.sort(function (a, b) {
+         return function sortby(array, cfg) {
+            if (!(array instanceof Array && array.length)) return [];
+            if (toString.call(cfg) !== "[object Object]") cfg = {};
+            if (typeof cfg.parser !== "function") cfg.parser = parse;
+            cfg.desc = !!cfg.desc ? -1 : 1;
+            return array.sort(function (a, b) {
             a = getItem.call(cfg, a);
             b = getItem.call(cfg, b);
             return cfg.desc * (a < b ? -1 : +(a > b));
-        });
+            });
         };
-    });
+        })();
 
     const allRegisteredTenders = sortBy(await RegisteredTender.find({author : req.user}), {
         prop: "deadlineRFQ",
@@ -567,6 +567,7 @@ module.exports.renderHistoryPage = catchAsync(async function (req, res) {
     const registered_inAP = [];
     const registered_inEU = [];
 
+
     for (let register of allRegisteredTenders) {
         for (let country of countriesData) {
         if (country.cca2 === register.countryLocation) {
@@ -588,19 +589,26 @@ module.exports.renderHistoryPage = catchAsync(async function (req, res) {
         }
         }
     }
+    
+    
+    let hasHistory = false
+    if(allRegisteredTenders && allRegisteredTenders.length){
+        hasHistory = true
+    }
 
     // ----- For debugging purposes
-    // console.log(`"today" is registered as ${today}`)
-    // console.log(`"next30days" is registered as ${next30days}`)
-    // console.log(`"next90days" is registered as ${next90days}`)
-    // console.log(`"preadvised_inM" results are ${preadvised_inM}`)
-    // console.log(`"preadvised_inQ" results are ${preadvised_inQ}`)
-    // console.log(`"preadvised_inY" results are ${preadvised_inY}`)
-    // console.log(`"preadvised_inAM" results are ${preadvised_inAM}`)
-    // console.log(`"preadvised_inAP" results are ${preadvised_inAP}`)
-    // console.log(`"preadvised_inEU" results are ${preadvised_inEU}`)
+    console.log(`"allRegisteredTenders" is registered as ${allRegisteredTenders}`)
+    console.log(`"today" is registered as ${today}`)
+    console.log(`"next14days" is registered as ${next14days}`)
+    console.log(`"registered_past" results are ${registered_past}`)
+    console.log(`"registered_14d" results are ${registered_14d}`)
+    console.log(`"registered_after" results are ${registered_after}`)
+    console.log(`"registered_inAM" results are ${registered_inAM}`)
+    console.log(`"registered_inAP" results are ${registered_inAP}`)
+    console.log(`"registered_inEU" results are ${registered_inEU}`)
 
     res.render("register/register_history.ejs", {
+        hasHistory,
         countriesData,
         monthsData,
         today,

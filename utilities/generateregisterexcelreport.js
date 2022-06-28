@@ -1,5 +1,6 @@
 const fs = require("fs").promises;
 const Excel = require("exceljs");
+const XLSXChart = require("xlsx-chart");
 
 const PreadvisedTender = require("../models/preadvisedTender.js");
 const RegisteredTender = require("../models/registeredTender.js");
@@ -508,6 +509,7 @@ let generateRegisterExcelReport = async function (newFilename) {
     console.log("File not created");
     console.log(err.message);
   }
+
 }
 
 module.exports = generateRegisterExcelReport

@@ -112,6 +112,7 @@ module.exports.requestAccess = catchAsync(async function (req, res) {
         requestComment: requestComment
     }
     priviledgeEmailRequest(matchingUser.id, request)
+    req.flash("success", "You request has been sent to an admin.")
     res.redirect(`/user/${userId}`)
 })
 

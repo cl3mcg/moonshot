@@ -35,14 +35,14 @@
           <div class="step px-2" <% if (matchingTender.id) { %>data-bs-toggle="tooltip" data-bs-placement="top" title="Tender is pre-advised"<% } else {%>data-bs-toggle="tooltip" data-bs-placement="top" title="Tender is not pre-advised"<% } %>>
             <div role="tab">
               <span class="bs-stepper-circle <% if (matchingTender.id) { %>bg-success<% } else { %>bg-danger<% } %>">1</span>
-              <span class="bs-stepper-label">Preadvise</span>
+              <span class="bs-stepper-label">Pre-advise</span>
             </div>
           </div>
           <div class="line"></div>
           <div class="step px-2" <% if (matchingTender.register) { %>data-bs-toggle="tooltip" data-bs-placement="top" title="Tender is launched"<% } else { %>data-bs-toggle="tooltip" data-bs-placement="top" title="Tender is not launched yet"<% } %>>
             <div role="tab">
               <span class="bs-stepper-circle <% if (matchingTender.register) { %>bg-success<% } else { %>bg-light text-dark border border-secondary<% } %>">2</span>
-              <span class="bs-stepper-label">Registration</span>
+              <span class="bs-stepper-label">Registration & Launch</span>
             </div>
           </div>
         </div>
@@ -80,7 +80,7 @@
           </tr>
           <tr>
             <th scope="row">Expected receive date</th>
-            <td><%= matchingTender.expectedReceiveDate.getDate() %>-<%=monthsData[matchingTender.expectedReceiveDate.getMonth() + 1]%>-<%=matchingTender.expectedReceiveDate.getFullYear() %></td>
+            <td><% if(matchingTender.expectedReceiveDate.getDate() < 10) { %><%=`0${matchingTender.expectedReceiveDate.getDate()}`%><% } else { %><%= `${matchingTender.expectedReceiveDate.getDate()}` %><% } %>-<%= `${monthsData[matchingTender.expectedReceiveDate.getMonth() + 1]}-${matchingTender.expectedReceiveDate.getFullYear()}`%></td>
           </tr>
           <tr>
             <th scope="row">Key Tradelanes</th>

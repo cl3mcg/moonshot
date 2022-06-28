@@ -9,6 +9,7 @@
     <%- include("../partials/commonFonts.ejs") %>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.0/dist/index.umd.min.js"></script>
 </head>
 <body>
     <%- include("../partials/navbar.ejs") %>
@@ -22,7 +23,7 @@
         Please invest the following 2-5 minutes to announce your tender. <br>
         Thank you!</p>
     <div class="container mb-5 py-4 border rounded bg-white">
-        <form class="mb-5 needs-validation" id="preadviseForm" action="/preadvise/new" method="POST" novalidate>
+        <form class="mb-5 needs-validation" id="preadviseForm" action="/preadvise/new" method="POST" novalidate autocomplete="off">
             <div class="row justify-content-md-center">
                 <div class="col-12">
                     <h2>Location & handling of the tender preadvise</h2>
@@ -64,7 +65,8 @@
                             </div>        
                             <div>
                                 <label class="form-label" for="expectedReceiveDate">Expected receive date</label>
-                                <input class="form-control" type="date" id="expectedReceiveDate" name="expectedReceiveDate" required>
+                                <input class="form-control bg-body" id="expectedReceiveDate" name="expectedReceiveDate" required/>
+                                <!-- <input class="form-control" type="date" id="expectedReceiveDate" name="expectedReceiveDate" required> -->
                                 <div class="form-text">When do you expect to receive the tender?</div>
                                 <div class="invalid-feedback">Please fill this field.</div>
                             </div>

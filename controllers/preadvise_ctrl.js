@@ -400,6 +400,8 @@ module.exports.renderHistoryPage = catchAsync(async function (req, res) {
     const preadvised_inAP = [];
     const preadvised_inEU = [];
 
+    let history = await PreadvisedTender.find({author : req.user})
+
     for (let preadvise of allPreadvisedTenders) {
     for (let country of countriesData) {
         if (country.cca2 === preadvise.countryLocation) {
@@ -422,18 +424,24 @@ module.exports.renderHistoryPage = catchAsync(async function (req, res) {
     }
     }
 
+    let hasHistory = false
+    if(history && history.length){
+        hasHistory = true
+    }
+
     // ----- For debugging purposes
-    // console.log(`"today" is registered as ${today}`)
-    // console.log(`"next30days" is registered as ${next30days}`)
-    // console.log(`"next90days" is registered as ${next90days}`)
-    // console.log(`"preadvised_inM" results are ${preadvised_inM}`)
-    // console.log(`"preadvised_inQ" results are ${preadvised_inQ}`)
-    // console.log(`"preadvised_inY" results are ${preadvised_inY}`)
-    // console.log(`"preadvised_inAM" results are ${preadvised_inAM}`)
-    // console.log(`"preadvised_inAP" results are ${preadvised_inAP}`)
-    // console.log(`"preadvised_inEU" results are ${preadvised_inEU}`)
+    console.log(`"today" is registered as ${today}`)
+    console.log(`"next30days" is registered as ${next30days}`)
+    console.log(`"next90days" is registered as ${next90days}`)
+    console.log(`"preadvised_inM" results are ${preadvised_inM}`)
+    console.log(`"preadvised_inQ" results are ${preadvised_inQ}`)
+    console.log(`"preadvised_inY" results are ${preadvised_inY}`)
+    console.log(`"preadvised_inAM" results are ${preadvised_inAM}`)
+    console.log(`"preadvised_inAP" results are ${preadvised_inAP}`)
+    console.log(`"preadvised_inEU" results are ${preadvised_inEU}`)
 
     res.render("preadvise/preadvised_history.ejs", {
+        hasHistory,
         countriesData,
         monthsData,
         today,

@@ -1089,6 +1089,137 @@ let loadTileDisplay = function () {
 
 window.addEventListener("load", loadTileDisplay())
 
+// Date picker JS function
+// ------ Below is a function to calculate days and dates in the future
+const calculateDateAndTime = function (number, date) {
+    let now = new Date(Date.now());
+    if (!number || typeof number !== "number") {
+        return now
+    }
+    let someDate
+    if (!date){
+        someDate = new Date()
+    } else {
+        someDate = new Date(date)
+    }
+    let numberOfDaysToAdd = number;
+    return new Date(now.setDate(someDate.getDate() + numberOfDaysToAdd));
+  };
+
+let pickerDeadlineRFI = new easepick.create({
+    element: "#deadlineRFI",
+    css: [
+        "https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.0/dist/index.css"
+    ],
+    zIndex: 10,
+    format: "DD MMM YYYY",
+    grid: 2,
+    calendars: 2,
+    LockPlugin: {
+        minDate: calculateDateAndTime(),
+        maxDate: calculateDateAndTime(120)
+    },
+    plugins: [
+        "LockPlugin"
+    ]
+})
+
+let pickerReceptionDate = new easepick.create({
+    element: "#receptionDate",
+    css: [
+        "https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.0/dist/index.css"
+    ],
+    zIndex: 10,
+    format: "DD MMM YYYY",
+    grid: 2,
+    calendars: 2,
+    LockPlugin: {
+        minDate: calculateDateAndTime(-60),
+        maxDate: calculateDateAndTime(60)
+    },
+    plugins: [
+        "LockPlugin"
+    ]
+})
+
+let pickerDeadlineRFQ = new easepick.create({
+    element: "#deadlineRFQ",
+    css: [
+        "https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.0/dist/index.css"
+    ],
+    zIndex: 10,
+    format: "DD MMM YYYY",
+    grid: 2,
+    calendars: 2,
+    LockPlugin: {
+        minDate: calculateDateAndTime(),
+        maxDate: calculateDateAndTime(180)
+    },
+    plugins: [
+        "LockPlugin"
+    ]
+})
+
+let pickerDecisionDate = new easepick.create({
+    element: "#decisionDate",
+    css: [
+        "https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.0/dist/index.css"
+    ],
+    zIndex: 10,
+    format: "DD MMM YYYY",
+    grid: 2,
+    calendars: 2,
+    LockPlugin: {
+        minDate: calculateDateAndTime(),
+        maxDate: calculateDateAndTime(365)
+    },
+    plugins: [
+        "LockPlugin"
+    ]
+})
+
+let pickerStartBusinessDate = new easepick.create({
+    element: "#startBusinessDate",
+    css: [
+        "https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.0/dist/index.css"
+    ],
+    zIndex: 10,
+    format: "DD MMM YYYY",
+    grid: 2,
+    calendars: 2,
+    LockPlugin: {
+        minDate: calculateDateAndTime(),
+        maxDate: calculateDateAndTime(365)
+    },
+    plugins: [
+        "LockPlugin"
+    ]
+})
+
+  // ------ Below is a function to get the value of the Reception date after input
+//   receptionDate.addEventListener("input", function() {
+//     let receptionDateValue = getValue(receptionDate)
+//     if (getValue(deadlineRFQ)){
+//         deadlineRFQ.value = null
+//     }
+//     pickerDeadlineRFQ = new easepick.create({
+//         element: "#deadlineRFQ",
+//         css: [
+//             "https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.0/dist/index.css"
+//         ],
+//         zIndex: 10,
+//         format: "DD MMM YYYY",
+//         grid: 2,
+//         calendars: 2,
+//         LockPlugin: {
+//             minDate: calculateDateAndTime(1, receptionDateValue),
+//             maxDate: calculateDateAndTime(180, receptionDateValue)
+//         },
+//         plugins: [
+//             "LockPlugin"
+//         ]
+//     })
+//   })
 
 // ---- ---- Bootstrap form validation
 const bootsrapValidation = function () {

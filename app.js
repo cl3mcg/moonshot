@@ -60,11 +60,6 @@ const User = require("./models/user.js");
 // const specialHandling = require("./public/ressources/specialHandling.json");
 // const freightForwarders = require("./public/ressources/freightForwarders.json");
 
-// ----- Initialization functions
-
-const initEmailScheduler = require("./utilities/croninitdelayemail.js");
-initEmailScheduler();
-
 // ----- Middlewares
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
@@ -237,6 +232,11 @@ if (process.env.NODE_ENV !== "production") {
     console.log(err);
   });
 }
+
+// ----- Initialization functions
+
+const initEmailScheduler = require("./utilities/croninitdelayemail.js");
+initEmailScheduler();
 
 // ----- Commonly used functions
 

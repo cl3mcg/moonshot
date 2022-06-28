@@ -79,17 +79,39 @@ router.get("/reporting", isLoggedIn, isTenderTeam, function (req, res) {
 router.post("/issueReport/:type", isLoggedIn, isTenderTeam, async function (req, res) {
     const type = req.params.type;
     const userId = req.user._id;
+    let fileName
+    
     if (type === "preadvise") {
+      fileName = `excelReport_${Date.now()}`
+      let file = await generatePreadviseExcelReport(fileName);
+      req.flash("success", "The pre-advise tender Excel report has been generated.");
+      setTimeout(() => {
+        res.download(`./reports/reportsGenerated/${fileName}.xlsx`, `${fileName}.xlsx`);
+      }, 5000);
+
     }
     else if (type === "register") {
-      let fileName = `excelReport_${Date.now()}`
+      fileName = `excelReport_${Date.now()}`
       let file = await generateRegisterExcelReport(fileName);
       req.flash("success", "The registered tender Excel report has been generated.");
       setTimeout(() => {
         res.download(`./reports/reportsGenerated/${fileName}.xlsx`, `${fileName}.xlsx`);
       }, 5000);
     }
+
+    setTimeout(() => {
+      fs.unlink(`./reports/reportsGenerated/${fileName}.xlsx`, function (err) {
+        if (err) {
+            console.error(err)
+            return
+        }
+        })
+        console.log(`${colors.black.bgBrightGreen("* OK *")} The dashboard EXCEL report related to the ${type} has been deleted from the server`);
+    }, 30000);
+
   });
+
+  
 
 // ----- Export the router
 module.exports = router;

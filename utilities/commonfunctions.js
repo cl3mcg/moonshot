@@ -58,6 +58,17 @@ const findCountryName = function (cca2) {
     return `${day}-${month}-${year} (${weekDay}.)`;
   }
 
+// ------ Below is a function to calculate days and dates in the future
+const calculateDateAndTime = function (number) {
+  let now = new Date(Date.now());
+  if (!number || typeof number !== "number") {
+      return now
+  }
+  let someDate = new Date()
+  let numberOfDaysToAdd = number
+  return new Date(now.setDate(someDate.getDate() + numberOfDaysToAdd))
+};
+
   const capitalize = function (string) {
     return `${string.charAt(0).toUpperCase()}${string.slice(1)}`
   }
@@ -76,6 +87,7 @@ const daysDifference = function (date_1, date_2) {
     findResponsibleTenderOffice,
     currentDateAndTime,
     formatDate,
+    calculateDateAndTime,
     capitalize,
     daysDifference
   }

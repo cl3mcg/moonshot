@@ -9,6 +9,7 @@
     <%- include("../partials/commonFonts.ejs") %>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.0/dist/index.umd.min.js"></script>
 </head>
 <body>
     <%- include("../partials/navbar.ejs") %>
@@ -309,25 +310,29 @@
                     </div>
                     <div class="col-12 col-md-6 mb-3">
                         <label class="form-label" for="receptionDate">Recepton date</label>
-                        <input class="form-control" type="date" id="receptionDate" name="receptionDate" value="<%=`${matchingTender.receptionDate.getFullYear()}`%>-<% if((matchingTender.receptionDate.getMonth()+1) < 10) { %><%=`0${matchingTender.receptionDate.getMonth()+1}`%><% } else { %><%= `${matchingTender.receptionDate.getMonth()+1}` %><% } %>-<% if(matchingTender.receptionDate.getDate() < 10) { %><%=`0${matchingTender.receptionDate.getDate()}`%><% } else { %><%= `${matchingTender.receptionDate.getDate()}` %><% } %>" required>
+                        <input class="form-control bg-body" id="receptionDate" name="receptionDate" date="<%=`${new Date(matchingTender.receptionDate)}`%>" required/>
+                        <!-- <input class="form-control" type="date" id="receptionDate" name="receptionDate" value="<%=`${matchingTender.receptionDate.getFullYear()}`%>-<% if((matchingTender.receptionDate.getMonth()+1) < 10) { %><%=`0${matchingTender.receptionDate.getMonth()+1}`%><% } else { %><%= `${matchingTender.receptionDate.getMonth()+1}` %><% } %>-<% if(matchingTender.receptionDate.getDate() < 10) { %><%=`0${matchingTender.receptionDate.getDate()}`%><% } else { %><%= `${matchingTender.receptionDate.getDate()}` %><% } %>" required> -->
                         <div class="form-text">When did you receive the tender?</div>
                         <div class="invalid-feedback">Please fill this field.</div>
                     </div>
                     <div class="col-12 col-md-6 mb-3">
                         <label class="form-label" for="deadlineRFQ">RFQ submission deadline</label>
-                        <input class="form-control" type="date" id="deadlineRFQ" name="deadlineRFQ" value="<%=`${matchingTender.deadlineRFQ.getFullYear()}`%>-<% if((matchingTender.deadlineRFQ.getMonth()+1) < 10) { %><%=`0${matchingTender.deadlineRFQ.getMonth()+1}`%><% } else { %><%= `${matchingTender.deadlineRFQ.getMonth()+1}` %><% } %>-<% if(matchingTender.deadlineRFQ.getDate() < 10) { %><%=`0${matchingTender.deadlineRFQ.getDate()}`%><% } else { %><%= `${matchingTender.deadlineRFQ.getDate()}` %><% } %>" required>
+                        <input class="form-control bg-body" id="deadlineRFQ" name="deadlineRFQ" date="<%=`${new Date(matchingTender.deadlineRFQ)}`%>" required/>
+                        <!-- <input class="form-control" type="date" id="deadlineRFQ" name="deadlineRFQ" value="<%=`${matchingTender.deadlineRFQ.getFullYear()}`%>-<% if((matchingTender.deadlineRFQ.getMonth()+1) < 10) { %><%=`0${matchingTender.deadlineRFQ.getMonth()+1}`%><% } else { %><%= `${matchingTender.deadlineRFQ.getMonth()+1}` %><% } %>-<% if(matchingTender.deadlineRFQ.getDate() < 10) { %><%=`0${matchingTender.deadlineRFQ.getDate()}`%><% } else { %><%= `${matchingTender.deadlineRFQ.getDate()}` %><% } %>" required> -->
                         <div class="form-text">When does the RFQ need to be submitted at the latest</div>
                         <div class="invalid-feedback">Please fill this field.</div>
                     </div>
                     <div class="col-12 col-md-6 mb-3">
                         <label class="form-label" for="decisionDate">Date of decision</label>
-                        <input class="form-control" type="date" id="decisionDate" name="decisionDate" value="<%=`${matchingTender.decisionDate.getFullYear()}`%>-<% if((matchingTender.decisionDate.getMonth()+1) < 10) { %><%=`0${matchingTender.decisionDate.getMonth()+1}`%><% } else { %><%= `${matchingTender.decisionDate.getMonth()+1}` %><% } %>-<% if(matchingTender.decisionDate.getDate() < 10) { %><%=`0${matchingTender.decisionDate.getDate()}`%><% } else { %><%= `${matchingTender.decisionDate.getDate()}` %><% } %>" required>
+                        <input class="form-control bg-body" id="decisionDate" name="decisionDate" date="<%=`${new Date(matchingTender.decisionDate)}`%>" required/>
+                        <!-- <input class="form-control" type="date" id="decisionDate" name="decisionDate" value="<%=`${matchingTender.decisionDate.getFullYear()}`%>-<% if((matchingTender.decisionDate.getMonth()+1) < 10) { %><%=`0${matchingTender.decisionDate.getMonth()+1}`%><% } else { %><%= `${matchingTender.decisionDate.getMonth()+1}` %><% } %>-<% if(matchingTender.decisionDate.getDate() < 10) { %><%=`0${matchingTender.decisionDate.getDate()}`%><% } else { %><%= `${matchingTender.decisionDate.getDate()}` %><% } %>" required> -->
                         <div class="form-text">When is the bidding company expected to deliver awards to the participants?</div>
                         <div class="invalid-feedback">Please fill this field.</div>
                     </div>
                     <div class="col-12 col-md-6 mb-3">
                         <label class="form-label" for="startBusinessDate">Start of the business</label>
-                        <input class="form-control" type="date" id="startBusinessDate" name="startBusinessDate" value="<%=`${matchingTender.startBusinessDate.getFullYear()}`%>-<% if((matchingTender.startBusinessDate.getMonth()+1) < 10) { %><%=`0${matchingTender.startBusinessDate.getMonth()+1}`%><% } else { %><%= `${matchingTender.startBusinessDate.getMonth()+1}` %><% } %>-<% if(matchingTender.startBusinessDate.getDate() < 10) { %><%=`0${matchingTender.startBusinessDate.getDate()}`%><% } else { %><%= `${matchingTender.startBusinessDate.getDate()}` %><% } %>" required>
+                        <input class="form-control bg-body" id="startBusinessDate" name="startBusinessDate" date="<%=`${new Date(matchingTender.startBusinessDate)}`%>" required/>
+                        <!-- <input class="form-control" type="date" id="startBusinessDate" name="startBusinessDate" value="<%=`${matchingTender.startBusinessDate.getFullYear()}`%>-<% if((matchingTender.startBusinessDate.getMonth()+1) < 10) { %><%=`0${matchingTender.startBusinessDate.getMonth()+1}`%><% } else { %><%= `${matchingTender.startBusinessDate.getMonth()+1}` %><% } %>-<% if(matchingTender.startBusinessDate.getDate() < 10) { %><%=`0${matchingTender.startBusinessDate.getDate()}`%><% } else { %><%= `${matchingTender.startBusinessDate.getDate()}` %><% } %>" required> -->
                         <div class="form-text">When is the bidding company expected to start the business with the awarded participants?</div>
                         <div class="invalid-feedback">Please fill this field.</div>
                     </div>

@@ -491,6 +491,36 @@ window.addEventListener("load", function () {
     }
 })
 
+// Date picker JS function
+// ------ Below is a function to calculate days and dates in the future
+const calculateDateAndTime = function (number) {
+    let now = new Date(Date.now());
+    if (!number || typeof number !== "number") {
+        return now
+    }
+    let someDate = new Date()
+    let numberOfDaysToAdd = number
+    return new Date(now.setDate(someDate.getDate() + numberOfDaysToAdd))
+  };
+
+let picker = new easepick.create({
+    element: "#expectedReceiveDate",
+    css: [
+        "https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.0/dist/index.css"
+    ],
+    zIndex: 10,
+    format: "DD MMM YYYY",
+    grid: 2,
+    calendars: 2,
+    LockPlugin: {
+        minDate: calculateDateAndTime(),
+        maxDate: calculateDateAndTime(120),
+    },
+    plugins: [
+        "LockPlugin"
+    ]
+})
+
 // ---- ---- Bootstrap form validation
 const bootsrapValidation = function () {
 

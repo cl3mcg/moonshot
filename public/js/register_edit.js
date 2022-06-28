@@ -862,6 +862,21 @@ for (let checkbox of transportModesCheckboxes) {
     })
 }
 
+window.addEventListener("load", function () {
+    for (let checkbox of transportModesCheckboxes) {
+            let index = transportModesCheckboxes.indexOf(checkbox)
+            if (!checkbox.checked) {
+                ratesValidityInputs[index].setAttribute("disabled", "true")
+                ratesValidityInputs[index].value = ratesValidityInputs[index].children[0].value
+                opt_ratesValidityFields[index].classList.add("d-none")
+            } else {
+                ratesValidityInputs[index].setAttribute("required", "true")
+                ratesValidityInputs[index].removeAttribute("disabled")
+                opt_ratesValidityFields[index].classList.remove("d-none")
+            }
+    }
+})
+
 // ---- Controling the requiered attribute of the History boxes
 let historyBoxCheckedAmount = 0
 
@@ -1154,6 +1169,122 @@ let loadTileDisplay = function () {
 }
 
 window.addEventListener("load", loadTileDisplay())
+
+// Date picker JS function
+// ------ Below is a function to calculate days and dates in the future
+const calculateDateAndTime = function (number, date) {
+    let now = new Date(Date.now());
+    if (!number || typeof number !== "number") {
+        return now
+    }
+    let someDate
+    if (!date){
+        someDate = new Date()
+    } else {
+        someDate = new Date(date)
+    }
+    return new Date(now.setDate(someDate.getDate() + number));
+  };
+
+// ------ Below is a function to return the value of the Date attribute of the date fields as a ISO date element
+const intialDateValue = function (element) {
+    return new Date(element.getAttribute("date"))
+}
+
+let pickerDeadlineRFI = new easepick.create({
+    element: "#deadlineRFI",
+    css: [
+        "https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.0/dist/index.css"
+    ],
+    zIndex: 10,
+    format: "DD MMM YYYY",
+    date: intialDateValue(deadlineRFI),
+    grid: 2,
+    calendars: 2,
+    LockPlugin: {
+        minDate: calculateDateAndTime(-30, intialDateValue(deadlineRFI)),
+        maxDate: calculateDateAndTime(120)
+    },
+    plugins: [
+        "LockPlugin"
+    ]
+})
+
+let pickerReceptionDate = new easepick.create({
+    element: "#receptionDate",
+    css: [
+        "https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.0/dist/index.css"
+    ],
+    zIndex: 10,
+    format: "DD MMM YYYY",
+    date: intialDateValue(receptionDate),
+    grid: 2,
+    calendars: 2,
+    LockPlugin: {
+        minDate: calculateDateAndTime(-30, intialDateValue(receptionDate)),
+        maxDate: calculateDateAndTime(60)
+    },
+    plugins: [
+        "LockPlugin"
+    ]
+})
+
+let pickerDeadlineRFQ = new easepick.create({
+    element: "#deadlineRFQ",
+    css: [
+        "https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.0/dist/index.css"
+    ],
+    zIndex: 10,
+    format: "DD MMM YYYY",
+    date: intialDateValue(deadlineRFQ),
+    grid: 2,
+    calendars: 2,
+    LockPlugin: {
+        minDate: calculateDateAndTime(-30, intialDateValue(deadlineRFQ)),
+        maxDate: calculateDateAndTime(180)
+    },
+    plugins: [
+        "LockPlugin"
+    ]
+})
+
+let pickerDecisionDate = new easepick.create({
+    element: "#decisionDate",
+    css: [
+        "https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.0/dist/index.css"
+    ],
+    zIndex: 10,
+    format: "DD MMM YYYY",
+    date: intialDateValue(decisionDate),
+    grid: 2,
+    calendars: 2,
+    LockPlugin: {
+        minDate: calculateDateAndTime(-180),
+        maxDate: calculateDateAndTime(365)
+    },
+    plugins: [
+        "LockPlugin"
+    ]
+})
+
+let pickerStartBusinessDate = new easepick.create({
+    element: "#startBusinessDate",
+    css: [
+        "https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.0/dist/index.css"
+    ],
+    zIndex: 10,
+    format: "DD MMM YYYY",
+    date: intialDateValue(startBusinessDate),
+    grid: 2,
+    calendars: 2,
+    LockPlugin: {
+        minDate: calculateDateAndTime(-30, intialDateValue(startBusinessDate)),
+        maxDate: calculateDateAndTime(365)
+    },
+    plugins: [
+        "LockPlugin"
+    ]
+})
 
 // ---- ---- Bootstrap form validation
 const bootsrapValidation = function () {
