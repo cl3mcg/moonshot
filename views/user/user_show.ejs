@@ -70,7 +70,15 @@
               </td>
               <td class="align-middle"><button type="button" class="btn btn-link btn-sm" data-bs-toggle="modal" data-bs-target="#requestModal">Request a special access</button></td>
             </tr>
-          <% } %> 
+          <% } %>
+          <tr>
+            <th scope="row" class="align-middle">My history</th>
+            <td colspan="2" class="align-middle">
+              <a class="btn btn-link btn-sm p-0 me-3" href="/preadvise/<% currentUser.id %>/history">Pre-advised tender history</a>
+              -
+              <a class="btn btn-link btn-sm p-0 ms-3" href="/register/<% currentUser.id %>/history">Registered tender history</a>
+            </td>
+          </tr>
         </tbody>
       </table>
 </div>

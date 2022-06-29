@@ -1,3 +1,8 @@
+if (process.env.NODE_ENV !== "production") {
+    require("dotenv").config();
+  }
+
+
 // ----- App
 const express = require("express")
 const app = express()
@@ -30,15 +35,15 @@ app.engine("ejs", ejsMate)
 // ----- Database connection
 mongoose.connect("mongodb://localhost:27017/moonshot", {
     useNewUrlParser: true,
-    useUnifiedTopology: true
-})
-    .then(function () {
-        console.log(`${colors.brightYellow.bgBrightRed('*!* WARNING *!*')} ${colors.yellow('SEEDS')} MOONSHOT PROJECT - Database connection OK (Mongoose)`)
-})
-    .catch(function (err) {
-        console.log(`${colors.brightYellow.bgBrightRed('*!* WARNING *!*')} ${colors.yellow('SEEDS')} - Database connection ERROR (Mongoose)`)
-        console.log(err)
-})
+    useUnifiedTopology: true,
+  })
+  .then(function () {
+    console.log(`${colors.brightYellow.bgBrightRed('*!* WARNING *!*')} ${colors.yellow('SEEDS')} MOONSHOT PROJECT - Database connection OK (Mongoose)`)
+  })
+  .catch(function (err) {
+    console.log(`${colors.brightYellow.bgBrightRed('*!* WARNING *!*')} ${colors.yellow('SEEDS')} - Database connection ERROR (Mongoose)`)
+    console.log(err)
+  });
 
 // ----- Random generator
 

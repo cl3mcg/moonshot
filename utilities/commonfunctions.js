@@ -80,6 +80,15 @@ const daysDifference = function (date_1, date_2) {
   return TotalDays;
 }
 
+const deleteFile = async function (fullFilePath) {
+  await fs.unlink(`${fullFilePath}`, function (err) {
+    if (err) {
+        console.error(err)
+        return
+    }
+    })
+}
+
   module.exports = {
     findCountryName,
     findcca2,
@@ -89,5 +98,6 @@ const daysDifference = function (date_1, date_2) {
     formatDate,
     calculateDateAndTime,
     capitalize,
-    daysDifference
+    daysDifference,
+    deleteFile
   }

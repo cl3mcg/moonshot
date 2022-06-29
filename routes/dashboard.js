@@ -59,7 +59,8 @@ const {
   findResponsibleTenderOffice,
   currentDateAndTime,
   formatDate,
-  capitalize
+  capitalize,
+  deleteFile
 } = require("../utilities/commonfunctions.js");
 
 // ----- Routes MOONSHOT PREADVISED
@@ -86,7 +87,14 @@ router.post("/issueReport/:type", isLoggedIn, isTenderTeam, async function (req,
       let file = await generatePreadviseExcelReport(fileName);
       req.flash("success", "The pre-advise tender Excel report has been generated.");
       setTimeout(() => {
-        res.download(`./reports/reportsGenerated/${fileName}.xlsx`, `${fileName}.xlsx`);
+        res.download(`./reports/reportsGenerated/${fileName}.xlsx`, `${fileName}.xlsx`, function (err) {
+          if (err) {
+            console.log(err);
+            throw new ExpressError("File cannot be downloaded", 500)
+          } else {
+            deleteFile(`./reports/reportsGenerated/${fileName}.xlsx`)
+          }
+        });
       }, 5000);
 
     }
@@ -95,19 +103,33 @@ router.post("/issueReport/:type", isLoggedIn, isTenderTeam, async function (req,
       let file = await generateRegisterExcelReport(fileName);
       req.flash("success", "The registered tender Excel report has been generated.");
       setTimeout(() => {
-        res.download(`./reports/reportsGenerated/${fileName}.xlsx`, `${fileName}.xlsx`);
+        res.download(`./reports/reportsGenerated/${fileName}.xlsx`, `${fileName}.xlsx`, function (err) {
+          if (err) {
+            console.log(err);
+            throw new ExpressError("File cannot be downloaded", 500)
+          } else {
+            fs.unlink(`./reports/reportsGenerated/${fileName}.xlsx`, function (err) {
+              if (err) {
+                  console.error(err)
+                  return
+              } else {
+                console.log(`${colors.black.bgBrightGreen("* OK *")} The dashboard EXCEL report related to the ${type} has been deleted from the server`);
+              }
+            })
+          }
+        });
       }, 5000);
     }
 
-    setTimeout(() => {
-      fs.unlink(`./reports/reportsGenerated/${fileName}.xlsx`, function (err) {
-        if (err) {
-            console.error(err)
-            return
-        }
-        })
-        console.log(`${colors.black.bgBrightGreen("* OK *")} The dashboard EXCEL report related to the ${type} has been deleted from the server`);
-    }, 30000);
+    // setTimeout(() => {
+    //   fs.unlink(`./reports/reportsGenerated/${fileName}.xlsx`, function (err) {
+    //     if (err) {
+    //         console.error(err)
+    //         return
+    //     }
+    //     })
+    //     console.log(`${colors.black.bgBrightGreen("* OK *")} The dashboard EXCEL report related to the ${type} has been deleted from the server`);
+    // }, 30000);
 
   });
 

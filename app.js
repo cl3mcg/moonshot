@@ -148,7 +148,7 @@ const styleSrcUrls = [
   "https://twemoji.maxcdn.com/"
 ];
 const connectSrcUrls = [
-  "https://twemoji.maxcdn.com/"
+  "https://twemoji.maxcdn.com/",
   // "https://api.mapbox.com/",
 ];
 const fontSrcUrls = [
@@ -203,11 +203,16 @@ app.use(function (req, res, next) {
 // ----- catchAsync middleware used to handle Async functions errors
 const catchAsync = require("./utilities/catchasync.js");
 
+// ----- Middleware used
+const {
+  // ----- isLoggedIn middleware used to check if the user is properly logged in - Check the value of req.user stored in Express Session
+  isLoggedIn
+} = require("./utilities/middleware.js");
+
 // ----- Database connection
 
 if (process.env.NODE_ENV !== "production") {
-  mongoose
-  .connect("mongodb://localhost:27017/moonshot", {
+  mongoose.connect("mongodb://localhost:27017/moonshot", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -219,8 +224,7 @@ if (process.env.NODE_ENV !== "production") {
     console.log(err);
   });
 } else {
-  mongoose
-  .connect(process.env.MONGODB_ADDON_URI, {
+  mongoose.connect(process.env.MONGODB_ADDON_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -248,14 +252,17 @@ app.get("/", function (req, res) {
   res.render("index/homepage.ejs");
 });
 
+// Below is an unused route used for development only
 app.get("/moonshot", function (req, res) {
-  res.render("index/indexHome.ejs");
+  if (process.env.NODE_ENV !== "production") {
+    return res.render("index/indexHome.ejs");
+  }
+  res.redirect("/")
 });
 
-app.get("/start", function (req, res) {
+app.get("/start", isLoggedIn, function (req, res) {
   res.render("index/indexStart.ejs");
 });
-
 
 // ----- Routes MOONSHOT PREADVISED
 
