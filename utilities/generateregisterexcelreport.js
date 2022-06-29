@@ -1,6 +1,5 @@
 const fs = require("fs").promises;
 const Excel = require("exceljs");
-const XLSXChart = require("xlsx-chart");
 
 const PreadvisedTender = require("../models/preadvisedTender.js");
 const RegisteredTender = require("../models/registeredTender.js");
