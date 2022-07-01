@@ -350,8 +350,6 @@ module.exports.createRegister = catchAsync(async function (req, res) {
 
     let fileIdentifier = Date.now();
     await generateRegisterReport(newEntry.id, fileIdentifier);
-    setTimeout(() => {
-    }, 10000);
     await registerTenderEmailConfirmation(newEntry.id, fileIdentifier)
 
     fs.unlink(`./reports/reportsGenerated/${newEntry.companyName}_${fileIdentifier}.pdf`, function (err) {
