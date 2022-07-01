@@ -156,6 +156,8 @@ module.exports.createPreadvise = catchAsync(async function (req, res, next) {
 
   let fileIdentifier = Date.now();
   await generatePreadviseReport(newEntry.id, fileIdentifier);
+  setTimeout(() => {
+  }, 10000);
   await preadviseTenderEmailConfirmation(newEntry.id, fileIdentifier)
 
   fs.unlink(`./reports/reportsGenerated/${newEntry.companyName}_${fileIdentifier}.pdf`, function (err) {
