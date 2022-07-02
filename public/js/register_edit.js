@@ -841,7 +841,7 @@ window.addEventListener("load", function () {
     }
 })
 
-// controlling the availability of rates validity fields depending on the transport mode selected
+// cControlling the availability of rates validity fields depending on the transport mode selected
 
 for (let opt_ratesValidityField of opt_ratesValidityFields) {
     opt_ratesValidityField.classList.add("d-none")

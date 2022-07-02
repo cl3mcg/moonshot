@@ -808,6 +808,21 @@ for (let checkbox of transportModesCheckboxes) {
     })
 }
 
+window.addEventListener("load", function () {
+    for (let checkbox of transportModesCheckboxes) {
+            let index = transportModesCheckboxes.indexOf(checkbox)
+            if (!checkbox.checked) {
+                ratesValidityInputs[index].setAttribute("disabled", "true")
+                ratesValidityInputs[index].value = ratesValidityInputs[index].children[0].value
+                opt_ratesValidityFields[index].classList.add("d-none")
+            } else {
+                ratesValidityInputs[index].setAttribute("required", "true")
+                ratesValidityInputs[index].removeAttribute("disabled")
+                opt_ratesValidityFields[index].classList.remove("d-none")
+            }
+    }
+})
+
 // ---- Controling the requiered attribute of the History boxes
 let historyBoxCheckedAmount = 0
 

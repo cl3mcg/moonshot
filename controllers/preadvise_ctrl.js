@@ -48,7 +48,9 @@ const generatePreadviseExcelReport = require("../utilities/generatepreadviseexce
 
 const {
     preadviseTenderEmailConfirmation,
-    preadviseTenderEmailCancellation
+    preadviseTenderEmailCancellation,
+    preadviseTenderNotice,
+    preadviseCancelTenderNotice
   } = require("../utilities/preadviseemail.js");
 
 // const preadviseTenderEmailConfirmation = require("../utilities/preadviseemail.js");
@@ -157,6 +159,7 @@ module.exports.createPreadvise = catchAsync(async function (req, res, next) {
   let fileIdentifier = Date.now();
   await generatePreadviseReport(newEntry.id, fileIdentifier);
   await preadviseTenderEmailConfirmation(newEntry.id, fileIdentifier)
+  await preadviseTenderNotice(newEntry.id, fileIdentifier)
 
   fs.unlink(`./reports/reportsGenerated/${newEntry.companyName}_${fileIdentifier}.pdf`, function (err) {
     if (err) {
@@ -493,6 +496,7 @@ module.exports.deletePreadvise = catchAsync(async function (req, res) {
     console.log(`${colors.black.bgBrightCyan("* ATTEMPT *")} A TENDER PRE-ADVISE has been selected for deletion: ${matchingTenderName}`);
     console.log(matchingTender);
     await preadviseTenderEmailCancellation(matchingId)
+    await preadviseCancelTenderNotice(matchingId)
     await PreadvisedTender.findByIdAndDelete(matchingId);
     console.log(`${colors.black.bgBrightGreen("* OK *")} The TENDER PRE-ADVISE related to "${matchingTenderName}" has been deleted`);
     req.flash("success", "Preadvise tender has been deleted !");

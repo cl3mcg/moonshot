@@ -12,7 +12,7 @@
   </head>
   <body class="bg-light" style="outline: 0; width: 100%; min-width: 100%; height: 100%; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; font-family: 'Fira Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif; line-height: 24px; font-weight: normal; font-size: 16px; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; color: #000000; margin: 0; padding: 0; border-width: 0;" bgcolor="#f7fafc">
     <div class="preview" style="display: none; max-height: 0px; overflow: hidden;">
-      &#128721; Tender pre-advised cancelation ! Pre-advise ID: <%= preadviseId %> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+      &#128721; Tender cancelation ! Register ID: <%= registerId %> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
     </div>
     <table class="bg-light body" valign="top" role="presentation" border="0" cellpadding="0" cellspacing="0" style="outline: 0; width: 100%; min-width: 100%; height: 100%; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; font-family: 'Fira Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif; line-height: 24px; font-weight: normal; font-size: 16px; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; color: #000000; margin: 0; padding: 0; border-width: 0;" bgcolor="#f7fafc">
       <tbody>
@@ -45,7 +45,7 @@
                               <tbody>
                                 <tr>
                                   <td style="line-height: 24px; font-size: 16px; margin: 0;" align="left">
-                                    <h1 class="text-dark text-center fw-900" style="color: #1a202c; padding-top: 0; padding-bottom: 0; font-weight: 900 !important; vertical-align: baseline; font-size: 36px; line-height: 43.2px; margin: 0;" align="center">Tender pre-advise</h1>
+                                    <h1 class="text-dark text-center fw-900" style="color: #1a202c; padding-top: 0; padding-bottom: 0; font-weight: 900 !important; vertical-align: baseline; font-size: 36px; line-height: 43.2px; margin: 0;" align="center">Tender cancellation</h1>
                                   </td>
                                 </tr>
                               </tbody>
@@ -84,7 +84,7 @@
                                                       &#128721;
                                                     </td>
                                                     <td class="col-11 text-red-600" style="line-height: 24px; font-size: 16px; min-height: 1px; font-weight: normal; padding-right: 24px; width: 91.666667%; color: #b02a37; margin: 0;" align="left" valign="top">
-                                                      <strong>The tender pre-advised opportunity related to <em><% companyName %></em> has been cancelled.</strong>
+                                                      <strong>The tender registered opportunity related to <em><% companyName %></em> has been cancelled.</strong>
                                                     </td>
                                                   </tr>
                                                 </tbody>
@@ -132,8 +132,8 @@
                                                       &#128196;
                                                     </td>
                                                     <td class="col-11 text-blue-600" style="line-height: 24px; font-size: 16px; min-height: 1px; font-weight: normal; padding-right: 24px; width: 91.666667%; color: #0a58ca; margin: 0;" align="left" valign="top">
-                                                      <strong class="text-blue-600" style="color: #0a58ca;">Pre-advise ID:</strong><br>
-                                                      <span class="monospace" style="font-family: 'Fira Code', 'Fira Mono', Consolas, Courrier, 'Courrier New', Monaco, 'Liberation Mono', 'Ubuntu Mono', monospace;"><%= preadviseId %> </span>
+                                                      <strong class="text-blue-600" style="color: #0a58ca;">Preadvise ID:</strong><br>
+                                                      <span class="monospace" style="font-family: 'Fira Code', 'Fira Mono', Consolas, Courrier, 'Courrier New', Monaco, 'Liberation Mono', 'Ubuntu Mono', monospace;"><%= registerId %> </span>
                                                     </td>
                                                   </tr>
                                                 </tbody>
@@ -173,11 +173,11 @@
                                       <tbody>
                                         <tr>
                                           <td style="line-height: 24px; font-size: 16px; width: 100%; margin: 0; padding: 20px;" align="left">
-                                            <p class="text-gray-700" style="line-height: 24px; font-size: 16px; color: #4a5568; width: 100%; margin: 0;" align="left">Dear <%= userName %>,</p>
+                                            <p class="text-gray-700" style="line-height: 24px; font-size: 16px; color: #4a5568; width: 100%; margin: 0;" align="left">Dear Tender Team member,</p>
                                             <br>
                                             <p class="text-gray-700" style="line-height: 24px; font-size: 16px; color: #4a5568; width: 100%; margin: 0;" align="left">
-                                              Thank you for pre-advising the tender opportunity related to <%= companyName %>.<br>
-                                              The pre-advised opportunity has been cancelled and will not be considered by the tender team.<br>
+                                              Thank you for registering the tender opportunity related to <%= companyName %>.<br>
+                                              The registered opportunity has been cancelled and will not be considered by the tender team.<br>
                                               In the meantime, if you have other tender opportunities to share with the tender team, you are welcome to fill another form and provide related information.
                                             </p>
                                             <br>

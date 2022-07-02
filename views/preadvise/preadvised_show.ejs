@@ -104,7 +104,7 @@
       </table>
 </div>
 <!-- Modal -->
-<% if (matchingTender.author.equals(currentUser) || matchingTender.author.isAdmin || matchingTender.author.isTenderTeam) { %>
+<% if (matchingTender.author.equals(currentUser) || currentUser.isAdmin || currentUser.isTenderTeam) { %>
 <div class="modal fade" id="deleteConfirmModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-fullscreen-md-down modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
@@ -140,7 +140,7 @@
               <div class="rounded-3 border p-3">
                   <nav class="nav flex-column">
                       <h5 class="text-center">Modify & delete</h5>
-                      <a class="btn btn-light btn-sm border mb-2 w-100 <% if (!priviledge && editRestriction) { %>disabled<% } %>" href="/preadvise/edit/<%= matchingTender.id %>"><i class="bi bi-pencil-square me-1"></i>Edit</a>
+                      <a class="btn btn-outline-secondary btn-sm mb-2 w-100 <% if (!priviledge && editRestriction) { %>disabled<% } %>" href="/preadvise/edit/<%= matchingTender.id %>"><i class="bi bi-pencil-square me-1"></i>Edit</a>
                       <button class="btn btn-outline-danger btn-sm border-danger w-100" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" <% if (!priviledge && editRestriction) { %>disabled<% } %>><i class="bi bi-trash me-1"></i>Delete</button>
                   </nav>
                   <% if (!priviledge && editRestriction) { %>
@@ -179,7 +179,7 @@
                     <h5 class="text-center">Issue pdf report</h5>
                     <p>Send me a pdf report by email.</p>
                     <form action="/preadvise/report/<%= matchingTender.id %>" method="post">
-                      <button class="btn btn-light btn-sm border w-100"><i class="bi bi-envelope-fill me-1"></i>Get a report</button>
+                      <button class="btn btn-outline-secondary btn-sm w-100"><i class="bi bi-envelope-fill me-1"></i>Get a report</button>
                     </form>
                 </nav>
               </div>

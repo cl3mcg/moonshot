@@ -11,17 +11,6 @@
 </head>
 <body>
     <%- include("../partials/flash.ejs") %>
-    <!-- <nav class="navbar">
-        <div class="container-fluid">
-            <span class="navbar-brand"></span>
-            <form class="d-flex">
-            <a class="btn btn-outline-success" href="/user/login">Login / Register</a>
-            </form>
-        </div>
-    </nav> -->
-    <!-- <div class="stars"></div>
-    <div class="twinkling"></div>
-    <div class="clouds"></div> -->
     <div class="container-fluid position-absolute top-50 start-0 translate-middle-y">
         <div class="row">
             <div class="col-12 col-lg-8 order-1 order-lg-0">
@@ -44,13 +33,27 @@
             </div>
         </div>
     </div>
-    <footer class=" container position-absolute bottom-0 start-0 translate-x-middle ps-3 ms-5 mb-5">
-        <div class="text-light text-small font-monospace">
-            <p class="m-0"><i class="twa twa-2x twa-warning"></i></p>
-            Development release 0.0.1<br>
-            For test purposes only
-        </div>
-    </footer>
+    <div class="toast-container fixed-bottom sticky-bottom mb-5 ms-5 me-auto">
+        <div role="alert" aria-live="assertive" aria-atomic="true" class="toast fade show rounded-3 border border-5 border-primary border-top-0 border-end-0 border-bottom-0" data-autohide="false" data-bs-autohide="false">
+            <div class="toast-header bg-primary bg-opacity-10">
+              <strong class="me-auto my-auto text-primary h5"><i class="bi bi-shield-lock-fill me-2"></i>Cookies</strong>
+              <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                The Moonshot project only uses cookies for functional purposes.
+            </div>
+          </div>
+        <div role="alert" aria-live="assertive" aria-atomic="true" class="toast fade show rounded-3 border border-5 border-danger border-top-0 border-end-0 border-bottom-0" data-autohide="false" data-bs-autohide="false">
+            <div class="toast-header bg-danger bg-opacity-10">
+              <strong class="me-auto my-auto text-danger h5"><i class="twa twa-warning me-2"></i>Disclaimer</strong>
+              <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body monospace">
+                Development release 0.0.1<br>
+                For test purposes only
+            </div>
+          </div>
+    </div>
 </body>
 <%- include("../partials/commonBootstrap.ejs") %>
 </html>

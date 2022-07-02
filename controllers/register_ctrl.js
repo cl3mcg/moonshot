@@ -60,12 +60,15 @@ const generateRegisterExcelReport = require("../utilities/generateregisterexcelr
 
 // ----- registerTenderEmailConfirmation function used to send emails related to registered tenders operations
 
-const registerTenderEmailConfirmation = require("../utilities/registeremail.js");
+const {
+    registerTenderEmailConfirmation,
+    registerTenderEmailCancellation,
+    registerTenderNotice,
+    registerCancelTenderNotice
+} = require("../utilities/registeremail.js");
 
 // ----- Commonly used functions
-// const currentDateAndTime = function () {
-//     return new Date(Date.now());
-//   };
+
 const {
   findCountryName,
   findcca2,
@@ -351,6 +354,7 @@ module.exports.createRegister = catchAsync(async function (req, res) {
     let fileIdentifier = Date.now();
     await generateRegisterReport(newEntry.id, fileIdentifier);
     await registerTenderEmailConfirmation(newEntry.id, fileIdentifier)
+    await registerTenderNotice(newEntry.id, fileIdentifier)
 
     fs.unlink(`./reports/reportsGenerated/${newEntry.companyName}_${fileIdentifier}.pdf`, function (err) {
         if (err) {
@@ -991,6 +995,8 @@ module.exports.deleteRegister = catchAsync(async function (req, res) {
         let matchingTenderName = matchingTender.companyName;
         console.log(`${colors.black.bgBrightCyan("* ATTEMPT *")} A TENDER REGISTRATION has been selected for deletion: ${matchingTenderName}`);
         console.log(matchingTender);
+        await registerTenderEmailCancellation(matchingId);
+        await registerCancelTenderNotice(matchingId);
         await RegisteredTender.findByIdAndDelete(matchingId);
         console.log(
         `${colors.black.bgBrightGreen("* OK *")} The TENDER REGISTRATION related to "${matchingTenderName}" has been deleted`

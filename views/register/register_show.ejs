@@ -504,7 +504,7 @@
               <div class="rounded-3 border p-3">
                   <nav class="nav flex-column">
                       <h5 class="text-center">Modify & delete</h5>
-                      <a class="btn btn-light btn-block btn-sm border m-1 w-100 <% if (!priviledge && editRestriction) { %>disabled<% } %>" href="/register/edit/<%= matchingTender.id %>"><i class="bi bi-pencil-square me-1"></i>Edit</a>
+                      <a class="btn btn-outline-secondary btn-sm m-1 w-100 <% if (!priviledge && editRestriction) { %>disabled<% } %>" href="/register/edit/<%= matchingTender.id %>"><i class="bi bi-pencil-square me-1"></i>Edit</a>
                       <button class="btn btn-outline-danger btn-block btn-sm border-danger m-1 w-100 <% if (!priviledge && editRestriction) {%>disabled<% } %>" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal"><i class="bi bi-trash me-1"></i>Delete</button>
                   </nav>
                   <% if (!priviledge && editRestriction) { %>
@@ -543,7 +543,7 @@
                     <h5 class="text-center">Issue pdf report</h5>
                     <p>Send me a pdf report by email.</p>
                     <form action="/register/report/<%= matchingTender.id %>" method="POST">
-                      <button class="btn btn-light btn-sm border w-100"><i class="bi bi-envelope-fill me-1"></i>Get a report</button>
+                      <button class="btn btn-outline-secondary btn-sm w-100"><i class="bi bi-envelope-fill me-1"></i>Get a report</button>
                     </form>
                 </nav>
               </div>
