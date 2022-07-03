@@ -1,3 +1,4 @@
+const fs = require("fs").promises;
 const countriesData = require("../public/ressources/countries.json");
 const monthsData = require("../public/ressources/months.json");
 const daysData = require("../public/ressources/days.json");

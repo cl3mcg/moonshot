@@ -115,7 +115,6 @@ module.exports.createRegister = catchAsync(async function (req, res) {
     console.log(`${colors.black.bgBrightCyan("* ATTEMPT *")} A new TENDER REGISTRATION submit has been attempted`);
     console.log(req.body);
     console.log(req.files);
-
     let preadvise = null;
     if (req.body.isPreadvised === "yes") {
         let checkingPreadvise = await PreadvisedTender.findById(req.body.preadviseID);
@@ -125,8 +124,8 @@ module.exports.createRegister = catchAsync(async function (req, res) {
             launched: true,
             launchedTime: currentDateAndTime(),
             });
+        }
     }
-
     let companyName = req.body.companyName;
     let sugarID = req.body.sugarID;
     let businessVertical = req.body.businessVertical;
@@ -252,9 +251,7 @@ module.exports.createRegister = catchAsync(async function (req, res) {
     let additionalComment = req.body.additionalComment;
     let countryLocation = req.body.countryLocation;
     let documentUpload = [];
-
     let filesUploaded = req.files
-    console.log(`Files uploaded: ${filesUploaded}`);
     for (let file of filesUploaded) {
         documentUpload.push(file);
     }
@@ -270,7 +267,6 @@ module.exports.createRegister = catchAsync(async function (req, res) {
         })
         console.log(`${file.originalname} was deleted from the server`)
     }
-    
     let newEntry = new RegisteredTender({
         recordDate: currentDateAndTime(),
         author: req.user._id,
@@ -324,25 +320,14 @@ module.exports.createRegister = catchAsync(async function (req, res) {
         additionalComment: additionalComment,
         countryLocation: countryLocation,
     });
-
     await newEntry.save();
-
-    if (checkingPreadvise) {
-        await PreadvisedTender.findByIdAndUpdate(req.body.preadviseID, {
-        register: newEntry
-        });
-    }
-
     if (req.body.isPreadvised === "yes") {
-        preadviseID = req.body.preadviseID;
         try {
-        let updatedEntry = {
-            launched: true,
-            launchedTime: currentDateAndTime(),
-        };
-        await PreadvisedTender.findByIdAndUpdate(preadviseID, updatedEntry);
+            await PreadvisedTender.findByIdAndUpdate(req.body.preadviseID, {
+            register: newEntry
+            });
         } catch (err) {
-        return res.status(500).send(err);
+            return res.status(500).send(err);
         }
     }
 
@@ -350,20 +335,18 @@ module.exports.createRegister = catchAsync(async function (req, res) {
     console.log(`${colors.black.bgBrightGreen("* OK *")} A new TENDER has been registered in the database: ${companyName}`);
     req.flash("success", "Tender is successfully registered !");
     res.redirect("/register/start");
-
     let fileIdentifier = Date.now();
     await generateRegisterReport(newEntry.id, fileIdentifier);
     await registerTenderEmailConfirmation(newEntry.id, fileIdentifier)
     await registerTenderNotice(newEntry.id, fileIdentifier)
-
     fs.unlink(`./reports/reportsGenerated/${newEntry.companyName}_${fileIdentifier}.pdf`, function (err) {
         if (err) {
         console.error(err)
         return
         }
-})
+    })
     console.log(`${colors.black.bgBrightGreen("* OK *")} The PDF report related to the registration of ${companyName} has been deleted from the server`);
-}
+
 });
 
 module.exports.renderIndexPage = catchAsync(async function (req, res) {
