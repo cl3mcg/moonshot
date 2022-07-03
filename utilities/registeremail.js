@@ -26,6 +26,10 @@ const testSenderEmailPassword = process.env.EMAIL_SENDER_PASSWORD;
 
 const registerTenderEmailConfirmation = async function (entryID, fileIdentifier) {
     let matchingTender = await RegisteredTender.findById(entryID).populate("author");
+    let isPreadvised = false
+    if (matchingTender.preadvise) {
+      isPreadvised = true
+    }
     let from = testSenderName;
     let selectedEmail = matchingTender.author.email; // Enter the recipient email here
     let subject = "Your tender has been registered";
@@ -38,7 +42,7 @@ const registerTenderEmailConfirmation = async function (entryID, fileIdentifier)
       userName: matchingTender.author.username, // Enter the user name here
       companyName: matchingTender.companyName, // Enter the company name here, it should be gathered from the form
       registerId: matchingTender.id, // Enter the registered ID here, it should be gathered after being saved in the database
-      isPreadvised: matchingTender.isPreadvised,
+      isPreadvised: isPreadvised,
     });
   
     const send = async function () {
