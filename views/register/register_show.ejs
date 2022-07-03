@@ -525,7 +525,7 @@
                 <nav class="nav flex-column">
                     <h5 class="text-center">Outcome</h5>
                     <!-- <button class="btn btn-outline-success btn-block btn-sm m-1" <%if (!priviledge && !isDecisionDatePassed && !matchingTender.author.equals(currentUser)) {%>disabled<%}%> data-bs-toggle="modal" data-bs-target="#feedbackModal"><i class="bi bi-send-check me-1"></i>Provide the tender outcome</button> -->
-                    <a class="btn btn-outline-success btn-block btn-sm border-success m-1 w-100 <%if ((!priviledge && !isDecisionDatePassed) || !matchingTender.author.equals(currentUser)) {%>disabled<%}%>" href="/register/<%= matchingTender._id %>/outcome"><i class="bi bi-send-check me-1"></i>Provide the tender outcome</a>
+                    <a class="btn btn-outline-success btn-block btn-sm border-success m-1 w-100 <%if ((!priviledge && !isDecisionDatePassed) || (!priviledge && !matchingTender.author.equals(currentUser))) {%>disabled<%}%>" href="/register/<%= matchingTender._id %>/outcome"><i class="bi bi-send-check me-1"></i>Provide the tender outcome</a>
                 </nav>
                 <% if (!isDecisionDatePassed && !priviledge) { %>
                   <div role="alert" aria-live="assertive" aria-atomic="true" class="toast fade show rounded-3 border border-5 border-primary border-top-0 border-end-0 border-bottom-0 w-100 mt-2" data-autohide="false" data-bs-autohide="false">
