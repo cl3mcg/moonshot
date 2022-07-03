@@ -1,14 +1,13 @@
 html {
   height: 100%;
 }
+
 body {
   height: 100%;
   background: rgb(0, 0, 4);
-  background: radial-gradient(
-    ellipse at 80% 50%,
-    rgba(0, 4, 1, 1) 0%,
-    rgba(28, 63, 96, 1) 100%
-  );
+  background: radial-gradient(ellipse at 80% 50%,
+      rgba(0, 4, 1, 1) 0%,
+      rgba(28, 63, 96, 1) 100%);
 }
 
 /* .navbar {
@@ -25,6 +24,40 @@ p.text {
   color: #e5e8e8;
 }
 
-footer {
-  font-size: 0.8em;
+.logo {
+  width: 280px;
+  height: 280px;
+}
+
+/* Write a media query to decrease the size of the image on Mobile */
+@media screen and (max-width: 700px) {
+  h1.text {
+    font-size: 3.5em;
+  }
+
+  p.text {
+    font-size: 1.2em;
+  }
+
+  .logo {
+    width: 180px;
+    height: 180px;
+  }
+
+}
+
+@media screen and (max-width: 600px) {
+  h1.text {
+    font-size: 3.5em;
+  }
+
+  p.text {
+    font-size: 1.2em;
+  }
+
+  .logo {
+    width: 140px;
+    height: 140px;
+  }
+
 }
