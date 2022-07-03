@@ -303,32 +303,32 @@ const generateRegisterReport = async function (registeredId, fileIdentifier) {
     }
 
     const airFreightRatesValidityField = form.getField("airFreightRatesValidity")
-    if (matchingTender.airFreightRatesValidity) {
-        airFreightRatesValidityField.setText(`${matchingTender.airFreightRatesValidity}`)
+    if (matchingTender.ratesValidityAir) {
+        airFreightRatesValidityField.setText(`${matchingTender.ratesValidityAir}`)
         airFreightRatesValidityField.updateAppearances(customFont)
     } else {
         airFreightRatesValidityField.setText("---")
         airFreightRatesValidityField.updateAppearances(customFont)
     }
     const seaFreightFCLRatesValidityField = form.getField("seaFreightFCLRatesValidity")
-    if (matchingTender.seaFreightFCLRatesValidity) {
-        seaFreightFCLRatesValidityField.setText(`${matchingTender.seaFreightFCLRatesValidity}`)
+    if (matchingTender.ratesValidityFCL) {
+        seaFreightFCLRatesValidityField.setText(`${matchingTender.ratesValidityFCL}`)
         seaFreightFCLRatesValidityField.updateAppearances(customFont)
     } else {
         seaFreightFCLRatesValidityField.setText("---")
         seaFreightFCLRatesValidityField.updateAppearances(customFont)
     }
     const seaFreightLCLRatesValidityField = form.getField("seaFreightLCLRatesValidity")
-    if (matchingTender.seaFreightLCLRatesValidity) {
-        seaFreightLCLRatesValidityField.setText(`${matchingTender.seaFreightLCLRatesValidity}`)
+    if (matchingTender.ratesValidityLCL) {
+        seaFreightLCLRatesValidityField.setText(`${matchingTender.ratesValidityLCL}`)
         seaFreightLCLRatesValidityField.updateAppearances(customFont)
     } else {
         seaFreightLCLRatesValidityField.setText("---")
         seaFreightLCLRatesValidityField.updateAppearances(customFont)
     }
     const railFreightRatesValidityField = form.getField("railFreightRatesValidity")
-    if (matchingTender.railFreightRatesValidity) {
-        railFreightRatesValidityField.setText(`${matchingTender.railFreightRatesValidity}`)
+    if (matchingTender.ratesValidityRail) {
+        railFreightRatesValidityField.setText(`${matchingTender.ratesValidityRail}`)
         railFreightRatesValidityField.updateAppearances(customFont)
     } else {
         railFreightRatesValidityField.setText("---")
