@@ -64,7 +64,8 @@ const {
     registerTenderEmailConfirmation,
     registerTenderEmailCancellation,
     registerTenderNotice,
-    registerCancelTenderNotice
+    registerCancelTenderNotice,
+    registerReportEmail
 } = require("../utilities/registeremail.js");
 
 // ----- Commonly used functions
@@ -1027,7 +1028,7 @@ module.exports.postReport = catchAsync(async function (req, res) {
     let matchingTender = await RegisteredTender.findById(matchingId);
     let fileIdentifier = Date.now();
     await generateRegisterReport(matchingId, fileIdentifier);
-    await registerTenderEmailConfirmation(matchingId, fileIdentifier)
+    await registerReportEmail(req.user, matchingId, fileIdentifier)
 
     fs.unlink(`./reports/reportsGenerated/${matchingTender.companyName}_${fileIdentifier}.pdf`, function (err) {
     if (err) {

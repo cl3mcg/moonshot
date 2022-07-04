@@ -50,7 +50,8 @@ const {
     preadviseTenderEmailConfirmation,
     preadviseTenderEmailCancellation,
     preadviseTenderNotice,
-    preadviseCancelTenderNotice
+    preadviseCancelTenderNotice,
+    preadviseReportEmail
   } = require("../utilities/preadviseemail.js");
 
 // const preadviseTenderEmailConfirmation = require("../utilities/preadviseemail.js");
@@ -614,7 +615,7 @@ module.exports.postReport = catchAsync(async function (req, res) {
     let matchingTender = await PreadvisedTender.findById(matchingId);
     let fileIdentifier = Date.now();
     await generatePreadviseReport(matchingId, fileIdentifier);
-    await preadviseTenderEmailConfirmation(matchingId, fileIdentifier)
+    await preadviseReportEmail(req.user, matchingId, fileIdentifier)
 
     fs.unlink(`./reports/reportsGenerated/${matchingTender.companyName}_${fileIdentifier}.pdf`, function (err) {
     if (err) {

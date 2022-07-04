@@ -7,7 +7,6 @@ const RegisteredTender = require("../models/registeredTender.js");
 const tenderLaunchMethod = require("../public/ressources/tenderLaunchMethod.json")
 const decisionCriteria = require("../public/ressources/decisionCriteria.json")
 
-
 const {
     findCountryName,
     findcca2,

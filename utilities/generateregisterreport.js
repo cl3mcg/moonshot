@@ -12,6 +12,7 @@ const tenderLaunchMethodData = require("../public/ressources/tenderLaunchMethod.
 const competitorAmountData = require("../public/ressources/competitorAmount.json");
 const volumeSplitData = require("../public/ressources/volumeSplit.json");
 const decisionCriteriaData = require("../public/ressources/decisionCriteria.json");
+const reasonForTender = require("../public/ressources/reasonForTender.json");
 
 // ----- Commonly used functions
 
@@ -98,7 +99,7 @@ const generateRegisterReport = async function (registeredId, fileIdentifier) {
     businessVerticalField.setText(`${matchingTender.businessVertical}`)
     businessVerticalField.updateAppearances(customFont)
     const reasonForTenderField = form.getTextField("reasonForTender")
-    reasonForTenderField.setText(`${matchingTender.reasonForTender}`)
+    reasonForTenderField.setText(`${reasonForTender[matchingTender.reasonForTender]}`)
     reasonForTenderField.updateAppearances(customFont)
     const contactNameField = form.getTextField("contactName")
     contactNameField.setText(`${matchingTender.contactName}`)

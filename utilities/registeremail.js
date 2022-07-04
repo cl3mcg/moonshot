@@ -224,9 +224,56 @@ const registerCancelTenderNotice = async function (entryID) {
   }
 }
 
+const registerReportEmail = async function (user, entryID, fileIdentifier) {
+  let matchingTender = await RegisteredTender.findById(entryID);
+  let from = testSenderName;
+  let selectedEmail = user.email; // Enter the recipient email here
+  let subject = "Tender registration report available";
+  let attachement = [{
+    filename: `Registration Report - ${matchingTender.companyName} - ${fileIdentifier}.pdf`,
+    path: `./reports/reportsGenerated/${matchingTender.companyName}_${fileIdentifier}.pdf`
+  }]
+  let emailBody = await ejs.renderFile("./emails/reportAvailable.ejs", {
+    type: "register",
+    userName: user.username,
+    companyName: matchingTender.companyName, // Enter the company name here, it should be gathered from the form
+    Id: matchingTender.id, // Enter the preadvise ID here, it should be gathered after being saved in the database
+  });
+
+  const send = async function () {
+    let transporter = nodemailer.createTransport({
+      host: testHost,
+      port: 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: testSenderEmail, // generated ethereal user
+        pass: testSenderEmailPassword, // generated ethereal password
+      },
+    });
+
+    let info = await transporter.sendMail({
+      from: from, // sender address
+      to: selectedEmail, // list of receivers
+      subject: subject, // Subject line
+      html: emailBody, // html body
+      attachments: attachement,
+    });
+  };
+
+//   Nodemailer launch function - Uncomment below to enable to email launch.
+  try {
+    await send();
+    console.log(`${colors.black.bgBrightGreen("* OK *")} An email for the TENDER REGISTRATION REPORT, has been sent.`);
+  } catch (error) {
+    console.log(error);
+    throw new ExpressError("Error sending email", 500);
+  }
+}
+
 module.exports = {
   registerTenderEmailConfirmation,
   registerTenderEmailCancellation,
   registerTenderNotice,
-  registerCancelTenderNotice
+  registerCancelTenderNotice,
+  registerReportEmail
 }
