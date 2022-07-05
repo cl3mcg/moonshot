@@ -1,0 +1,166 @@
+// ----- Database models
+
+const PreadvisedTender = require("../models/preadvisedTender.js");
+const RegisteredTender = require("../models/registeredTender.js");
+
+// ----- Ressources required
+
+const ejs = require("ejs");
+const colors = require("colors");
+const fs = require("fs").promises;
+const { preadviseSchema } = require("../utilities/joischemas.js");
+const nodemailer = require("nodemailer");
+const countriesData = require("../public/ressources/countries.json");
+const monthsData = require("../public/ressources/months.json");
+const tradelanes = require("../public/ressources/tradelanes.json");
+const history = require("../public/ressources/history.json");
+const transportModes = require("../public/ressources/transportModes.json");
+const businessVerticals = require("../public/ressources/businessVerticals.json");
+const tenderLaunchMethod = require("../public/ressources/tenderLaunchMethod.json")
+const decisionCriteria = require("../public/ressources/decisionCriteria.json")
+
+// ----- Middleware used
+
+const {
+  // ----- isLoggedIn middleware used to check if the user is properly logged in - Check the value of req.user stored in Express Session
+  isLoggedIn,
+  isTenderTeam
+} = require("../utilities/middleware.js");
+
+// ----- catchAsync middleware used to handle Async functions errors
+
+const catchAsync = require("../utilities/catchasync.js");
+
+// ----- Extended error class
+
+const ExpressError = require("../utilities/expresserror.js");
+
+// const testSenderName = process.env.testSenderName
+// const testReceiverEmail = process.env.testReceiverEmail
+// const testSenderEmail = process.env.testSenderEmail
+// const testSenderEmailPassword = process.env.testSenderEmailPassword
+
+// ----- generatePreadviseReport function used to generate the preadvise reports in pdf and Excel
+
+const generatePreadviseReport = require("../utilities/generatepreadvisereport.js");
+const generatePreadviseExcelReport = require("../utilities/generatepreadviseexcelreport.js");
+
+// ----- generateRegisterExcelReport function used to generate the register Excel report
+
+const generateRegisterExcelReport = require("../utilities/generateregisterexcelreport.js");
+
+// ----- Commonly used functions
+
+const {
+  findCountryName,
+  findcca2,
+  findSubRegion,
+  findResponsibleTenderOffice,
+  currentDateAndTime,
+  formatDate,
+  capitalize,
+  deleteFile
+} = require("../utilities/commonfunctions.js");
+
+// ----- Controllers for MOONSHOT DASHBOARD
+
+module.exports.renderStartPage = function (req, res) {
+    res.render("dashboard/dashboard_start.ejs");
+};
+
+module.exports.renderVisualPage = function (req, res) {
+    res.render("dashboard/dashboard_visual.ejs");
+};
+
+module.exports.renderReportsPage = function (req, res) {
+    res.render("dashboard/dashboard_reporting.ejs");
+};
+
+module.exports.issueReport = async function (req, res) {
+    const type = req.params.type;
+    let fileName
+    
+    if (type === "preadvise") {
+      fileName = `excelReport_${Date.now()}`
+      let file = await generatePreadviseExcelReport(fileName);
+      req.flash("success", "The pre-advise tender Excel report has been generated.");
+      setTimeout(() => {
+        res.download(`./reports/reportsGenerated/${fileName}.xlsx`, `${fileName}.xlsx`, function (err) {
+          if (err) {
+            console.log(err);
+            throw new ExpressError("File cannot be downloaded", 500)
+          } else {
+            deleteFile(`./reports/reportsGenerated/${fileName}.xlsx`)
+          }
+        });
+      }, 5000);
+
+    }
+    else if (type === "register") {
+      fileName = `excelReport_${Date.now()}`
+      let file = await generateRegisterExcelReport(fileName);
+      req.flash("success", "The registered tender Excel report has been generated.");
+      setTimeout(() => {
+        res.download(`./reports/reportsGenerated/${fileName}.xlsx`, `${fileName}.xlsx`, function (err) {
+          if (err) {
+            console.log(err);
+            throw new ExpressError("File cannot be downloaded", 500)
+          } else {
+            fs.unlink(`./reports/reportsGenerated/${fileName}.xlsx`, function (err) {
+              if (err) {
+                  console.error(err)
+                  return
+              } else {
+                console.log(`${colors.black.bgBrightGreen("* OK *")} The dashboard EXCEL report related to the ${type} has been deleted from the server`);
+              }
+            })
+          }
+        });
+      }, 5000);
+    }
+};
+
+module.exports.test_initial = async function (req, res) {
+    let allPreadviseTenders = await PreadvisedTender.find().populate("register").populate("author");
+        // Write a function that list all allPreadviseTenders companyName in an array and send it back to the client
+        let allPreadviseTendersCompanyName = allPreadviseTenders.map(tender => tender.companyName);
+        res.json(allPreadviseTendersCompanyName);
+};
+
+// module.exports.test_numPreadvise = async function (req, res) {
+//     let allPreadviseTenders = await PreadvisedTender.find();
+//     // Write a function that would return the number of allPreadviseTenders clasified by month of recordDate
+//     let numPreadviseTendersByMonth = allPreadviseTenders.reduce((acc, tender) => {
+//         let month = tender.recordDate.getMonth();
+//         if (acc[month]) {
+//             acc[month]++;
+//         } else {
+//             acc[month] = 1;
+//         }
+//         return acc;
+//     }
+//     , {});
+//     res.json(numPreadviseTendersByMonth);
+// };
+
+module.exports.test_numPreadvise = async function (req, res) {
+    let allPreadviseTenders = await PreadvisedTender.find();
+    // Write a function that would return the number of allPreadviseTenders ranked by month and year of recordDate
+    let numPreadviseTendersByMonth = allPreadviseTenders.reduce((acc, tender) => {
+        let month = tender.recordDate.getMonth();
+        let year = tender.recordDate.getFullYear();
+        if (acc[year]) {
+            if (acc[year][month]) {
+                acc[year][month]++;
+            } else {
+                acc[year][month] = 1;
+            }
+        } else {
+            acc[year] = {};
+            acc[year][month] = 1;
+        }
+        return acc;
+    }
+    , {});
+    res.json(numPreadviseTendersByMonth);
+};
