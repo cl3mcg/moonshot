@@ -17,18 +17,39 @@
     <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="bi bi-gear me-1"></i>Options</button>
 </div>
 <div class="mt-2">
-    <h1 class="text-center">Visual dashboard</h1>
+    <h1 class="text-center mb-3">Visual dashboard</h1>
     <div class="container">
-        <div>
-            <button class="btn btn-outline-primary btn-sm" id="axiosBtn_initial">Initial test API call with AXIOS</button>
-        </div>
-        <div class="mt-3">
-            <button class="btn btn-outline-primary btn-sm" id="axiosBtn_preadvise">Preadvise test API call with AXIOS</button>
+        <div class="row">
+            <div class="col-12 col-lg-6 mt-3">
+                <h2 class="text-center fs-6 mb-2">Number of opportunities recorded</h2>
+                <div>
+                    <canvas id="chartOpportunitiesNum"></canvas>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6 mt-3">
+                <h2 class="text-center fs-6 mb-2">Number of launch per tender desk</h2>
+                <div>
+                    <canvas id="chartTenderDeskNum"></canvas>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6 mt-3">
+                <h2 class="text-center fs-6 mb-2">Number of launch per transport mode</h2>
+                <div>
+                    <canvas id="chartModeNum"></canvas>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6 mt-3">
+                <h2 class="text-center fs-6 mb-2">Opportunities Vol. evolution per transport mode</h2>
+                <div>
+                    <canvas id="chartModeVolumeEvol"></canvas>
+                </div>
+            </div>
         </div>
     </div>
 
 </div>
     <%- include("../partials/commonBootstrap.ejs") %>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="/js/dashboard_visual.js"></script>
 </body>
 </html>

@@ -63,7 +63,7 @@ const {
   deleteFile
 } = require("../utilities/commonfunctions.js");
 
-// ----- Controllers used for OFFICE ROUTES
+// ----- Controllers used for DASHBOARD ROUTES
 
 const dashboardCtrl = require("../controllers/dashboard_ctrl.js");
 
@@ -71,15 +71,11 @@ const dashboardCtrl = require("../controllers/dashboard_ctrl.js");
 
 router.get("/start", isLoggedIn, isTenderTeam, dashboardCtrl.renderStartPage);
 
-router.get("/visual", isLoggedIn, isTenderTeam, dashboardCtrl.renderVisualPage);
-
 router.get("/reporting", isLoggedIn, isTenderTeam, dashboardCtrl.renderReportsPage);
 
 router.post("/issueReport/:type", isLoggedIn, isTenderTeam, dashboardCtrl.issueReport);
 
-router.post("/test_initial", isLoggedIn, isTenderTeam, dashboardCtrl.test_initial);
-
-router.post("/test_numPreadvise", isLoggedIn, isTenderTeam, dashboardCtrl.test_numPreadvise);
+router.get("/visual", isLoggedIn, isTenderTeam, dashboardCtrl.renderVisualPage);
 
 // ----- Export the router
 module.exports = router;
