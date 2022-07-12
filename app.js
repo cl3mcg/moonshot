@@ -134,18 +134,17 @@ const styleSrcUrls = [
   "https://stackpath.bootstrapcdn.com/",
   "https://cdn.jsdelivr.net/",
   "https://cdnjs.cloudflare.com/",
-  "https://fonts.googleapis.com",
-  "https://twemoji.maxcdn.com/"
+  "https://twemoji.maxcdn.com/",
+  "https://fonts.bunny.net/"
 ];
 const connectSrcUrls = [
   "https://twemoji.maxcdn.com/",
   // "https://api.mapbox.com/",
 ];
 const fontSrcUrls = [
-  "https://fonts.googleapis.com",
-  "https://fonts.gstatic.com/",
   "https://cdn.jsdelivr.net/",
-  "https://twemoji.maxcdn.com/"
+  "https://twemoji.maxcdn.com/",
+  "https://fonts.bunny.net/"
 ];
 app.use(
   helmet.contentSecurityPolicy({
@@ -160,7 +159,7 @@ app.use(
               "'self'",
               "blob:",
               "data:",
-              "https://images.unsplash.com/",
+              // "https://images.unsplash.com/",
               "https://twemoji.maxcdn.com/"
             // "https://res.cloudinary.com/THECLOUDINARYACCOUNTNAME/",
           ],
