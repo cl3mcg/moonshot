@@ -206,6 +206,11 @@ let configChartModeNum = {
                 beginAtZero: true,
                 max: 16
             }
+        },
+        plugins:{
+            legend: {
+             display: false
+            }
         }
     }
 };
@@ -215,9 +220,54 @@ let chartChartModeNum = new Chart(
     configChartModeNum
 );
 
-// Declaration for the chart of the evolution of volumes per transport mode
+// Declaration for the chart of registered opportunities per country
 
-let dataChartModeVolumeEvol = {
+let dataChartCountryLaunch = {
+    labels: [],
+    datasets: [
+        {
+            label: 'Tender launched',
+            backgroundColor: 'rgba(28, 63, 96, 0.2)',
+            borderColor: 'rgba(28, 63, 96, 1)',
+            borderWidth: 1,
+            data: [],
+        },
+    ]
+    };
+
+let configChartCountryLaunch = {
+    type: 'bar',
+    data: dataChartCountryLaunch,
+    options: {
+        responsive: true,
+        indexAxis: 'y',
+        scales: {
+            x: {
+                grid: {
+                    display: false
+                },
+                max: 16
+            },
+            y: {
+                beginAtZero: true
+            }
+        },
+        plugins:{
+            legend: {
+                display: false
+            }
+        }
+    }
+};
+
+let chartCountryLaunch = new Chart(
+    document.getElementById('chartCountryLaunch'),
+    configChartCountryLaunch
+);
+
+// Declaration for the chart of the evolution of AIRFREIGHT volumes
+
+let dataChartAirfreightVolumeEvol = {
     labels: labelsMonths,
     datasets: [
         {
@@ -226,34 +276,13 @@ let dataChartModeVolumeEvol = {
             borderColor: 'rgba(60, 145, 230, 1)',
             tension: 0.05,
             data: [],
-        },
-        {
-            label: 'Seafreight FCL',
-            fill: false,
-            borderColor: 'rgba(28, 63, 96, 1)',
-            tension: 0.05,
-            data: [],
-        },
-        {
-            label: 'Seafreight LCL',
-            fill: false,
-            borderColor: 'rgba(28, 63, 96, 0.5)',
-            tension: 0.05,
-            data: [],
-        },
-        {
-            label: 'Railfreight FCL',
-            fill: false,
-            borderColor: 'rgba(142, 63, 148, 1)',
-            tension: 0.05,
-            data: [],
         }
     ]
     };
 
-let configChartModeVolumeEvol = {
+let configChartAirfreightVolumeEvol = {
     type: 'line',
-    data: dataChartModeVolumeEvol,
+    data: dataChartAirfreightVolumeEvol,
     options: {
         responsive: true,
         scales: {
@@ -265,13 +294,147 @@ let configChartModeVolumeEvol = {
             y: {
                 beginAtZero: true,
             }
+        },
+        plugins:{
+            legend: {
+             display: false
+            }
         }
     }
 };
 
-let chartModeVolumeEvol = new Chart(
-    document.getElementById('chartModeVolumeEvol'),
-    configChartModeVolumeEvol
+let chartAirfreightVolumeEvol = new Chart(
+    document.getElementById('chartModeVolumeEvolAirfreight'),
+    configChartAirfreightVolumeEvol
+);
+
+// Declaration for the chart of the evolution of SEAFREIGHT FCL volumes
+
+let dataChartSeafreightFCLVolumeEvol = {
+    labels: labelsMonths,
+    datasets: [
+        {
+            label: 'Seafreight FCL',
+            fill: false,
+            borderColor: 'rgba(60, 145, 230, 1)',
+            tension: 0.05,
+            data: [],
+        }
+    ]
+    };
+
+let configChartSeafreightFCLVolumeEvol = {
+    type: 'line',
+    data: dataChartSeafreightFCLVolumeEvol,
+    options: {
+        responsive: true,
+        scales: {
+            x: {
+                grid: {
+                    display: false
+                }
+            },
+            y: {
+                beginAtZero: true,
+            }
+        },
+        plugins:{
+            legend: {
+             display: false
+            }
+        }
+    }
+};
+
+let chartChartSeafreightFCLVolumeEvol = new Chart(
+    document.getElementById('chartModeVolumeEvolSeafreightFCL'),
+    configChartSeafreightFCLVolumeEvol
+);
+
+// Declaration for the chart of the evolution of SEAFREIGHT LCL volumes
+
+let dataChartSeafreightLCLVolumeEvol = {
+    labels: labelsMonths,
+    datasets: [
+        {
+            label: 'Seafreight LCL',
+            fill: false,
+            borderColor: 'rgba(60, 145, 230, 1)',
+            tension: 0.05,
+            data: [],
+        }
+    ]
+    };
+
+let configChartSeafreightLCLVolumeEvol = {
+    type: 'line',
+    data: dataChartSeafreightLCLVolumeEvol,
+    options: {
+        responsive: true,
+        scales: {
+            x: {
+                grid: {
+                    display: false
+                }
+            },
+            y: {
+                beginAtZero: true,
+            }
+        },
+        plugins:{
+            legend: {
+             display: false
+            }
+        }
+    }
+};
+
+let chartChartSeafreightLCLVolumeEvol = new Chart(
+    document.getElementById('chartModeVolumeEvolSeafreightLCL'),
+    configChartSeafreightLCLVolumeEvol
+);
+
+// Declaration for the chart of the evolution of RAILFREIGHT FCL volumes
+
+let dataChartRailfreightFCLVolumeEvol = {
+    labels: labelsMonths,
+    datasets: [
+        {
+            label: 'Railfreight FCL',
+            fill: false,
+            borderColor: 'rgba(60, 145, 230, 1)',
+            tension: 0.05,
+            data: [],
+        }
+    ]
+    };
+
+let configChartRailfreightFCLVolumeEvol = {
+    type: 'line',
+    data: dataChartRailfreightFCLVolumeEvol,
+    options: {
+        responsive: true,
+        scales: {
+            x: {
+                grid: {
+                    display: false
+                }
+            },
+            y: {
+                beginAtZero: true,
+            }
+        },
+        plugins:{
+            legend: {
+             display: false
+            }
+        }
+    }
+};
+
+let chartChartRailfreightFCLVolumeEvol = new Chart(
+    document.getElementById('chartModeVolumeEvolRailfreightFCL'),
+    configChartRailfreightFCLVolumeEvol
 );
 
 // Declaration for the chart initialization function onload
@@ -379,31 +542,49 @@ window.addEventListener('load', () => {
             let newData = []
             pushMonthlyData(results.airfreight[2022], newData);
             for(let i = 0; i < newData.length; i++) {	
-                addData(chartModeVolumeEvol, newData[i], 0);
+                addData(chartAirfreightVolumeEvol, newData[i], 0);
             }
         }
         if(results.seafreightFCL[2022]) {
             let newData = []
             pushMonthlyData(results.seafreightFCL[2022], newData);
             for(let i = 0; i < newData.length; i++) {	
-                addData(chartModeVolumeEvol, newData[i], 1);
+                addData(chartChartSeafreightFCLVolumeEvol, newData[i], 0);
             }
         }
         if(results.seafreightLCL[2022]) {
             let newData = []
             pushMonthlyData(results.seafreightLCL[2022], newData);
             for(let i = 0; i < newData.length; i++) {	
-                addData(chartModeVolumeEvol, newData[i], 2);
+                addData(chartChartSeafreightLCLVolumeEvol, newData[i], 0);
             }
         }
         if(results.railfreightFCL[2022]) {
             let newData = []
             pushMonthlyData(results.railfreightFCL[2022], newData);
             for(let i = 0; i < newData.length; i++) {	
-                addData(chartModeVolumeEvol, newData[i], 2);
+                addData(chartChartRailfreightFCLVolumeEvol, newData[i], 0);
             }
         }
     })
+    .catch(function (error) {
+        console.log(error);
+    })
+
+    // Axios function to get the number of tender registered per country
+    axios
+    .post("/api/numCountryOpportunity")
+    .then(function (response) {
+        let results = response.data;
+        for (let countryCode of results.countryCode) {
+            dataChartCountryLaunch.labels.push(countryCode)
+        }
+        for (let numOpportunity of results.numOpportunity) {
+            dataChartCountryLaunch.datasets[0].data.push(numOpportunity)
+        }
+        chartCountryLaunch.update();
+    })
+
     .catch(function (error) {
         console.log(error);
     })

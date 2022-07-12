@@ -377,3 +377,63 @@ module.exports.sendEvolVolume = async function (req, res) {
 res.json(response);
 };
 
+module.exports.sendNumCountryOpportunity = async function (req, res) {
+    let allRegisterTenders = await RegisteredTender.find();
+    let response = {
+        countryCode : [],
+        numOpportunity : []
+    }
+    // Write a function that populates the response object with the number of opportunities per countryCode. The response object is a list of pairs (countryCode, number of opportunities).
+    allRegisterTenders.forEach(tender => {
+        let countryCode = tender.countryLocation;
+        let index = response.countryCode.indexOf(countryCode);
+        if (index < 0) {
+            response.countryCode.push(countryCode);
+            response.numOpportunity.push(1);
+        } else {
+            response.numOpportunity[index] += 1;
+        }
+    }
+    , {});
+    // Rearrange the response object in order to have the numOpportunities in ascending order. The countryCode should also match the changes in the numOpportunity array.
+    // let temp = [];
+    // for (let i = 0; i < response.countryCode.length; i++) {
+    //     temp.push({
+    //         countryCode : response.countryCode[i],
+    //         numOpportunity : response.numOpportunity[i]
+    //     });
+    // }
+    // temp.sort((a, b) => {
+    //     return a.numOpportunity - b.numOpportunity;
+    // }
+    // , {});
+    // response.countryCode = [];
+    // response.numOpportunity = [];
+    // for (let i = 0; i < temp.length; i++) {
+    //     response.countryCode.push(temp[i].countryCode);
+    //     response.numOpportunity.push(temp[i].numOpportunity);
+    // }
+    
+    // Rearrange the response object in order to have the numOpportunities in descending order. The countryCode should also match the changes in the numOpportunity array.
+    let temp = [];
+    for (let i = 0; i < response.countryCode.length; i++) {
+        temp.push({
+            countryCode : response.countryCode[i],
+            numOpportunity : response.numOpportunity[i]
+        }); 
+    }
+    temp.sort((a, b) => {
+        return b.numOpportunity - a.numOpportunity;
+    }
+    , {});
+    response.countryCode = [];
+    response.numOpportunity = [];
+    for (let i = 0; i < temp.length; i++) {
+        response.countryCode.push(temp[i].countryCode);
+        response.numOpportunity.push(temp[i].numOpportunity);
+    }
+
+
+// Send back the response object
+res.json(response);
+}

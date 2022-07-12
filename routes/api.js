@@ -24,5 +24,7 @@ router.post("/numMode", isLoggedIn, isTenderTeam, apiCtrl.sendNumMode);
 
 router.post("/evolVolume", isLoggedIn, isTenderTeam, apiCtrl.sendEvolVolume);
 
+router.post("/numCountryOpportunity", isLoggedIn, isTenderTeam, apiCtrl.sendNumCountryOpportunity);
+
 // ----- Export the router
 module.exports = router;
