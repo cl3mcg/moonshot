@@ -41,24 +41,24 @@ const pushMonthlyData = function (object, destinationArray) {
 
 // Declaration of Monthly labels
 
-    let labelsMonths = [
-        `Jan-${thisYear}`,
-        `Feb-${thisYear}`,
-        `Mar-${thisYear}`,
-        `Apr-${thisYear}`,
-        `May-${thisYear}`,
-        `Jun-${thisYear}`,
-        `Jul-${thisYear}`,
-        `Aug-${thisYear}`,
-        `Sep-${thisYear}`,
-        `Oct-${thisYear}`,
-        `Nov-${thisYear}`,
-        `Dec-${thisYear}`
-    ];
+let labelsMonths = [
+    `Jan-${thisYear}`,
+    `Feb-${thisYear}`,
+    `Mar-${thisYear}`,
+    `Apr-${thisYear}`,
+    `May-${thisYear}`,
+    `Jun-${thisYear}`,
+    `Jul-${thisYear}`,
+    `Aug-${thisYear}`,
+    `Sep-${thisYear}`,
+    `Oct-${thisYear}`,
+    `Nov-${thisYear}`,
+    `Dec-${thisYear}`
+];
 
 // Declaration for the chart of the number of records by month based on the recordDate
 
-    let dataPreadviseNum = {
+let dataPreadviseNum = {
     labels: labelsMonths,
     datasets: [
         {
@@ -76,31 +76,31 @@ const pushMonthlyData = function (object, destinationArray) {
             data: [],
         }
     ]
-    };
+};
 
-    let configPreadviseNum = {
-        type: 'bar',
-        data: dataPreadviseNum,
-        options: {
-            responsive: true,
-            scales: {
-                x: {
-                    grid: {
-                        display: false
-                    }
-                },
-                y: {
-                    beginAtZero: true,
-                    max: 20
+let configPreadviseNum = {
+    type: 'bar',
+    data: dataPreadviseNum,
+    options: {
+        responsive: true,
+        scales: {
+            x: {
+                grid: {
+                    display: false
                 }
+            },
+            y: {
+                beginAtZero: true,
+                max: 20
             }
         }
-    };
+    }
+};
 
-    let chartPreadviseNum = new Chart(
-        document.getElementById('chartOpportunitiesNum'),
-        configPreadviseNum
-    );
+let chartOpportunitiesNum = new Chart(
+    document.getElementById('chartOpportunitiesNum'),
+    configPreadviseNum
+);
 
 // Declaration for the chart of the number of records per tender desk
 
@@ -129,7 +129,7 @@ let dataTenderDeskNum = {
             data: [],
         }
     ]
-    };
+};
 
 let configTenderDeskNum = {
     type: 'bar',
@@ -189,7 +189,7 @@ let dataChartModeNum = {
             data: [],
         }
     ]
-    };
+};
 
 let configChartModeNum = {
     type: 'bar',
@@ -207,9 +207,9 @@ let configChartModeNum = {
                 max: 16
             }
         },
-        plugins:{
+        plugins: {
             legend: {
-             display: false
+                display: false
             }
         }
     }
@@ -233,7 +233,7 @@ let dataChartCountryLaunch = {
             data: [],
         },
     ]
-    };
+};
 
 let configChartCountryLaunch = {
     type: 'bar',
@@ -252,7 +252,7 @@ let configChartCountryLaunch = {
                 beginAtZero: true
             }
         },
-        plugins:{
+        plugins: {
             legend: {
                 display: false
             }
@@ -278,7 +278,7 @@ let dataChartAirfreightVolumeEvol = {
             data: [],
         }
     ]
-    };
+};
 
 let configChartAirfreightVolumeEvol = {
     type: 'line',
@@ -295,9 +295,9 @@ let configChartAirfreightVolumeEvol = {
                 beginAtZero: true,
             }
         },
-        plugins:{
+        plugins: {
             legend: {
-             display: false
+                display: false
             }
         }
     }
@@ -321,7 +321,7 @@ let dataChartSeafreightFCLVolumeEvol = {
             data: [],
         }
     ]
-    };
+};
 
 let configChartSeafreightFCLVolumeEvol = {
     type: 'line',
@@ -338,9 +338,9 @@ let configChartSeafreightFCLVolumeEvol = {
                 beginAtZero: true,
             }
         },
-        plugins:{
+        plugins: {
             legend: {
-             display: false
+                display: false
             }
         }
     }
@@ -364,7 +364,7 @@ let dataChartSeafreightLCLVolumeEvol = {
             data: [],
         }
     ]
-    };
+};
 
 let configChartSeafreightLCLVolumeEvol = {
     type: 'line',
@@ -381,9 +381,9 @@ let configChartSeafreightLCLVolumeEvol = {
                 beginAtZero: true,
             }
         },
-        plugins:{
+        plugins: {
             legend: {
-             display: false
+                display: false
             }
         }
     }
@@ -407,7 +407,7 @@ let dataChartRailfreightFCLVolumeEvol = {
             data: [],
         }
     ]
-    };
+};
 
 let configChartRailfreightFCLVolumeEvol = {
     type: 'line',
@@ -424,9 +424,9 @@ let configChartRailfreightFCLVolumeEvol = {
                 beginAtZero: true,
             }
         },
-        plugins:{
+        plugins: {
             legend: {
-             display: false
+                display: false
             }
         }
     }
@@ -440,153 +440,150 @@ let chartChartRailfreightFCLVolumeEvol = new Chart(
 // Declaration for the chart initialization function onload
 
 window.addEventListener('load', () => {
-// Axios function to get the number of preadvise and registration records per month
+    // Axios function to fetch the data from the server and update the charts
     axios
-    .post("/api/numRecords")
-    .then(function (response) {
-        let results = response.data;
-        if(results.preadvise[2022]) {
-            let newData = []
-            pushMonthlyData(results.preadvise[2022], newData);
-            for(let i = 0; i < newData.length; i++) {	
-                addData(chartPreadviseNum, newData[i], 0);
+        .post("/api/numRecords")
+        .then(function (response) {
+            let results = response.data;
+            console.log(results);
+            // Logic allowing to populate data to chartOpportunitiesNum for preadvised tenders
+            if (results.preadvise[2022]) {
+                let newData = []
+                pushMonthlyData(results.preadvise[2022], newData);
+                for (let i = 0; i < newData.length; i++) {
+                    addData(chartOpportunitiesNum, newData[i], 0);
+                }
             }
-        }
-        if(results.register[2022]) {
-            let newData = []
-            pushMonthlyData(results.register[2022], newData);
-            for(let i = 0; i < newData.length; i++) {	
-                addData(chartPreadviseNum, newData[i], 1);
+            // Logic allowing to populate data to chartOpportunitiesNum for registered tenders
+            if (results.register[2022]) {
+                let newData = []
+                pushMonthlyData(results.register[2022], newData);
+                for (let i = 0; i < newData.length; i++) {
+                    addData(chartOpportunitiesNum, newData[i], 1);
+                }
             }
-        }
-    })
-    .catch(function (error) {
-        console.log(error);
-    })
+            // Logic allowing to populate the value of noPreadviseValue for the number of tenders that were not preadvised prior to launch
+            if (results.noPreadvise[2022]) {
+                if (results.noPreadvise[2022] < 10) {
+                    document.querySelector("#noPreadviseValue").innerText = `0${results.noPreadvise[2022]}`
+                } else {
+                    document.querySelector("#noPreadviseValue").innerText = results.noPreadvise[2022]
+                }
+            } else {
+                document.querySelector("#noPreadviseValue").innerText = "00";
+            }
+            // Logic allowing to populate the value of preadviseLeadTimeValue for the average days between a preadvise an a tender launch
+            if (results.preadviseLeadTimeValue[2022]) {
+                if (results.preadviseLeadTimeValue[2022] < 10) {
+                    document.querySelector("#preadviseLeadTimeValue").innerText = `0${results.preadviseLeadTimeValue[2022]}`
+                } else {
+                    document.querySelector("#preadviseLeadTimeValue").innerText = Math.ceil(results.preadviseLeadTimeValue[2022])
+                }
+            }
+            // Logic allowing to populate the value of tenderPreparationTimeValue for the average days between a registration and the RFQ deadline
+            if (results.averageTenderPrepTime[2022]) {
+                if (results.averageTenderPrepTime[2022] < 10) {
+                    document.querySelector("#tenderPreparationTimeValue").innerText = `0${Math.ceil(results.averageTenderPrepTime[2022])}`;
+                } else {
+                    document.querySelector("#tenderPreparationTimeValue").innerText = Math.ceil(results.averageTenderPrepTime[2022]);
+                }
+            } else {
+                document.querySelector("#tenderPreparationTimeValue").innerText = "";
+                document.querySelector("#tenderPreparationTimeValue").parentElement.innerText = "No data";
+            }
+            // Logic allowing to populate data to chartTenderDeskNum for amount of tenders per desk
+            if (results.tenderDesk.AM[2022]) {
+                let newData = []
+                pushMonthlyData(results.tenderDesk.AM[2022], newData);
+                for (let i = 0; i < newData.length; i++) {
+                    addData(chartTenderDeskNum, newData[i], 0);
+                }
+            }
+            if (results.tenderDesk.AP[2022]) {
+                let newData = []
+                pushMonthlyData(results.tenderDesk.AP[2022], newData);
+                for (let i = 0; i < newData.length; i++) {
+                    addData(chartTenderDeskNum, newData[i], 1);
+                }
+            }
+            if (results.tenderDesk.EU[2022]) {
+                let newData = []
+                pushMonthlyData(results.tenderDesk.EU[2022], newData);
+                for (let i = 0; i < newData.length; i++) {
+                    addData(chartTenderDeskNum, newData[i], 2);
+                }
+            }
+            // Logic behind the evolution of the volumes for the charts chartAirfreightVolumeEvol, chartChartSeafreightFCLVolumeEvol, chartChartSeafreightLCLVolumeEvol and chartChartRailfreightFCLVolumeEvol.
+            if (results.evolVolume.airfreight[2022]) {
+                let newData = []
+                pushMonthlyData(results.evolVolume.airfreight[2022], newData);
+                for (let i = 0; i < newData.length; i++) {
+                    addData(chartAirfreightVolumeEvol, newData[i], 0);
+                }
+            }
+            if (results.evolVolume.seafreightFCL[2022]) {
+                let newData = []
+                pushMonthlyData(results.evolVolume.seafreightFCL[2022], newData);
+                for (let i = 0; i < newData.length; i++) {
+                    addData(chartChartSeafreightFCLVolumeEvol, newData[i], 0);
+                }
+            }
+            if (results.evolVolume.seafreightLCL[2022]) {
+                let newData = []
+                pushMonthlyData(results.evolVolume.seafreightLCL[2022], newData);
+                for (let i = 0; i < newData.length; i++) {
+                    addData(chartChartSeafreightLCLVolumeEvol, newData[i], 0);
+                }
+            }
+            if (results.evolVolume.railfreightFCL[2022]) {
+                let newData = []
+                pushMonthlyData(results.evolVolume.railfreightFCL[2022], newData);
+                for (let i = 0; i < newData.length; i++) {
+                    addData(chartChartRailfreightFCLVolumeEvol, newData[i], 0);
+                }
+            }
+            // Logic used to update the charts data of the registration of opportunities per transportation mode.
+            if (results.numMode.airfreight[2022]) {
+                let newData = []
+                pushMonthlyData(results.numMode.airfreight[2022], newData);
+                for (let i = 0; i < newData.length; i++) {
+                    addData(chartChartModeNum, newData[i], 0);
+                }
+            }
+            if (results.numMode.seafreightFCL[2022]) {
+                let newData = []
+                pushMonthlyData(results.numMode.seafreightFCL[2022], newData);
+                for (let i = 0; i < newData.length; i++) {
+                    addData(chartChartModeNum, newData[i], 1);
+                }
+            }
+            if (results.numMode.seafreightLCL[2022]) {
+                let newData = []
+                pushMonthlyData(results.numMode.seafreightLCL[2022], newData);
+                for (let i = 0; i < newData.length; i++) {
+                    addData(chartChartModeNum, newData[i], 2);
+                }
+            }
+            if (results.numMode.railfreightFCL[2022]) {
+                let newData = []
+                pushMonthlyData(results.numMode.railfreightFCL[2022], newData);
+                for (let i = 0; i < newData.length; i++) {
+                    addData(chartChartModeNum, newData[i], 2);
+                }
+            }
 
-// Axios function to get the number of tender launch per month
-    axios
-    .post("/api/numTenderDesk")
-    .then(function (response) {
-        let results = response.data;
-        if(results.AM[2022]) {
-            let newData = []
-            pushMonthlyData(results.AM[2022], newData);
-            for(let i = 0; i < newData.length; i++) {	
-                addData(chartTenderDeskNum, newData[i], 0);
+            // Logic behind the update of the chart data for the number of opportunities registered by country.
+            for (let countryCode of results.countryData.countryCode) {
+                dataChartCountryLaunch.labels.push(countryCode)
             }
-        }
-        if(results.AP[2022]) {
-            let newData = []
-            pushMonthlyData(results.AP[2022], newData);
-            for(let i = 0; i < newData.length; i++) {	
-                addData(chartTenderDeskNum, newData[i], 1);
+            for (let numOpportunity of results.countryData.numOpportunity) {
+                dataChartCountryLaunch.datasets[0].data.push(numOpportunity)
             }
-        }
-        if(results.EU[2022]) {
-            let newData = []
-            pushMonthlyData(results.EU[2022], newData);
-            for(let i = 0; i < newData.length; i++) {	
-                addData(chartTenderDeskNum, newData[i], 2);
-            }
-        }
-    })
-    .catch(function (error) {
-        console.log(error);
-    })
+            chartCountryLaunch.update();
 
-// Axios function to get the number of tender launch per transportation mode per month
-    axios
-    .post("/api/numMode")
-    .then(function (response) {
-        let results = response.data;
-        if(results.airfreight[2022]) {
-            let newData = []
-            pushMonthlyData(results.airfreight[2022], newData);
-            for(let i = 0; i < newData.length; i++) {	
-                addData(chartChartModeNum, newData[i], 0);
-            }
-        }
-        if(results.seafreightFCL[2022]) {
-            let newData = []
-            pushMonthlyData(results.seafreightFCL[2022], newData);
-            for(let i = 0; i < newData.length; i++) {	
-                addData(chartChartModeNum, newData[i], 1);
-            }
-        }
-        if(results.seafreightLCL[2022]) {
-            let newData = []
-            pushMonthlyData(results.seafreightLCL[2022], newData);
-            for(let i = 0; i < newData.length; i++) {	
-                addData(chartChartModeNum, newData[i], 2);
-            }
-        }
-        if(results.railfreightFCL[2022]) {
-            let newData = []
-            pushMonthlyData(results.railfreightFCL[2022], newData);
-            for(let i = 0; i < newData.length; i++) {	
-                addData(chartChartModeNum, newData[i], 2);
-            }
-        }
-    })
-    .catch(function (error) {
-        console.log(error);
-    })
-
-    // Axios function to get the evolution of volumes per transportation mode per month
-    axios
-    .post("/api/evolVolume")
-    .then(function (response) {
-        let results = response.data;
-        if(results.airfreight[2022]) {
-            let newData = []
-            pushMonthlyData(results.airfreight[2022], newData);
-            for(let i = 0; i < newData.length; i++) {	
-                addData(chartAirfreightVolumeEvol, newData[i], 0);
-            }
-        }
-        if(results.seafreightFCL[2022]) {
-            let newData = []
-            pushMonthlyData(results.seafreightFCL[2022], newData);
-            for(let i = 0; i < newData.length; i++) {	
-                addData(chartChartSeafreightFCLVolumeEvol, newData[i], 0);
-            }
-        }
-        if(results.seafreightLCL[2022]) {
-            let newData = []
-            pushMonthlyData(results.seafreightLCL[2022], newData);
-            for(let i = 0; i < newData.length; i++) {	
-                addData(chartChartSeafreightLCLVolumeEvol, newData[i], 0);
-            }
-        }
-        if(results.railfreightFCL[2022]) {
-            let newData = []
-            pushMonthlyData(results.railfreightFCL[2022], newData);
-            for(let i = 0; i < newData.length; i++) {	
-                addData(chartChartRailfreightFCLVolumeEvol, newData[i], 0);
-            }
-        }
-    })
-    .catch(function (error) {
-        console.log(error);
-    })
-
-    // Axios function to get the number of tender registered per country
-    axios
-    .post("/api/numCountryOpportunity")
-    .then(function (response) {
-        let results = response.data;
-        for (let countryCode of results.countryCode) {
-            dataChartCountryLaunch.labels.push(countryCode)
-        }
-        for (let numOpportunity of results.numOpportunity) {
-            dataChartCountryLaunch.datasets[0].data.push(numOpportunity)
-        }
-        chartCountryLaunch.update();
-    })
-
-    .catch(function (error) {
-        console.log(error);
-    })
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
 
 });
