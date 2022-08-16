@@ -14,8 +14,8 @@
   "license": "ISC",
   "dependencies": {
     "@pdf-lib/fontkit": "^1.1.1",
-    "aws-sdk": "^2.1150.0",
-    "axios": "^0.24.0",
+    "aws-sdk": "^2.1195.0",
+    "axios": "^0.27.2",
     "colors": "^1.4.0",
     "connect-flash": "^0.1.1",
     "connect-mongo": "^4.6.0",
@@ -25,8 +25,8 @@
     "exceljs": "^4.3.0",
     "express": "^4.17.2",
     "express-mongo-sanitize": "^2.2.0",
-    "express-session": "^1.17.2",
-    "helmet": "^5.1.0",
+    "express-session": "^1.17.3",
+    "helmet": "^5.1.1",
     "html-pdf": "^3.0.1",
     "joi": "^17.6.0",
     "method-override": "^3.0.0",
@@ -34,12 +34,12 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "node-schedule": "^2.1.0",
-    "nodemailer": "^6.7.2",
-    "nodemon": "^2.0.18",
-    "passport": "^0.5.2",
+    "nodemailer": "^6.7.8",
+    "nodemon": "^2.0.19",
+    "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^7.0.0",
     "pdf-lib": "^1.17.1",
-    "sanitize-html": "^2.7.0"
+    "sanitize-html": "^2.7.1"
   }
 }
