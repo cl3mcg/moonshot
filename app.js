@@ -23,7 +23,7 @@ const StandardFonts = require("pdf-lib").StandardFonts;
 const fontkit = require("@pdf-lib/fontkit")
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
-const multer  = require('multer')
+const multer = require('multer')
 const upload = multer({ dest: 'uploads/' })
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
@@ -66,13 +66,13 @@ app.engine("ejs", ejsMate);
 let store
 if (process.env.NODE_ENV === "production") {
   store = MongoStore.create({
-      mongoUrl: process.env.MONGODB_ADDON_URI,
-      touchAfter: 7 * 24 * 60 * 60,
-      crypto: {
-          secret: process.env.SESSION_SECRET
-      }
+    mongoUrl: process.env.MONGODB_ADDON_URI,
+    touchAfter: 7 * 24 * 60 * 60,
+    crypto: {
+      secret: process.env.SESSION_SECRET
+    }
   });
-  } else {
+} else {
   store = new MongoStore({
     mongoUrl: "mongodb://localhost:27017/moonshot",
     secret: process.env.SESSION_SECRET,
@@ -148,26 +148,26 @@ const fontSrcUrls = [
 ];
 app.use(
   helmet.contentSecurityPolicy({
-      directives: {
-          defaultSrc: [],
-          connectSrc: ["'self'", ...connectSrcUrls],
-          scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
-          styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
-          workerSrc: ["'self'", "blob:"],
-          objectSrc: [],
-          imgSrc: [
-              "'self'",
-              "blob:",
-              "data:",
-              // "https://images.unsplash.com/",
-              "https://twemoji.maxcdn.com/"
-            // "https://res.cloudinary.com/THECLOUDINARYACCOUNTNAME/",
-          ],
-          fontSrc: ["'self'", ...fontSrcUrls],
-          // The following line is added to avoid having a Content Security Policy error on Mozilla's Firefox
-          // More information on this GitHub page: https://github.com/directus/directus/discussions/10928?sort=old
-          'script-src-attr': null
-      },
+    directives: {
+      defaultSrc: [],
+      connectSrc: ["'self'", ...connectSrcUrls],
+      scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+      styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+      workerSrc: ["'self'", "blob:"],
+      objectSrc: [],
+      imgSrc: [
+        "'self'",
+        "blob:",
+        "data:",
+        // "https://images.unsplash.com/",
+        "https://twemoji.maxcdn.com/"
+        // "https://res.cloudinary.com/THECLOUDINARYACCOUNTNAME/",
+      ],
+      fontSrc: ["'self'", ...fontSrcUrls],
+      // The following line is added to avoid having a Content Security Policy error on Mozilla's Firefox
+      // More information on this GitHub page: https://github.com/directus/directus/discussions/10928?sort=old
+      'script-src-attr': null
+    },
   })
 );
 
@@ -202,25 +202,25 @@ if (process.env.NODE_ENV !== "production") {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(function () {
-    console.log(`${colors.black.bgBrightGreen("* OK *")} MOONSHOT PROJECT (Dev.) - Database connection OK (Mongoose)`);
-  })
-  .catch(function (err) {
-    console.log(`${colors.brightYellow.bgBrightRed("*!* WARNING *!*")} MOONSHOT PROJECT (Dev.) - Database connection ERROR (Mongoose)`);
-    console.log(err);
-  });
+    .then(function () {
+      console.log(`${colors.black.bgBrightGreen("* OK *")} MOONSHOT PROJECT (Dev.) - Database connection OK (Mongoose)`);
+    })
+    .catch(function (err) {
+      console.log(`${colors.brightYellow.bgBrightRed("*!* WARNING *!*")} MOONSHOT PROJECT (Dev.) - Database connection ERROR (Mongoose)`);
+      console.log(err);
+    });
 } else {
   mongoose.connect(process.env.MONGODB_ADDON_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(function () {
-    console.log(`${colors.black.bgBrightGreen("* OK *")} MOONSHOT PROJECT (Prod.) - Database connection OK (Mongoose)`);
-  })
-  .catch(function (err) {
-    console.log(`${colors.brightYellow.bgBrightRed("*!* WARNING *!*")} MOONSHOT PROJECT (Prod.) - Database connection ERROR (Mongoose)`);
-    console.log(err);
-  });
+    .then(function () {
+      console.log(`${colors.black.bgBrightGreen("* OK *")} MOONSHOT PROJECT (Prod.) - Database connection OK (Mongoose)`);
+    })
+    .catch(function (err) {
+      console.log(`${colors.brightYellow.bgBrightRed("*!* WARNING *!*")} MOONSHOT PROJECT (Prod.) - Database connection ERROR (Mongoose)`);
+      console.log(err);
+    });
 }
 
 // ----- Initialization functions

@@ -32,7 +32,7 @@ const catchAsync = require("../utilities/catchasync.js");
 // ----- Middleware used
 
 const {
-      // ----- isLoggedIn middleware used to check if the user is properly logged in - Check the value of req.user stored in Express Session
+    // ----- isLoggedIn middleware used to check if the user is properly logged in - Check the value of req.user stored in Express Session
     isLoggedIn,
     // ----- validatePreadvise middleware used with JOI to validate new preavised tenders according to JOI schema
     validatePreadvise
@@ -52,7 +52,7 @@ const {
     preadviseTenderNotice,
     preadviseCancelTenderNotice,
     preadviseReportEmail
-  } = require("../utilities/preadviseemail.js");
+} = require("../utilities/preadviseemail.js");
 
 // const preadviseTenderEmailConfirmation = require("../utilities/preadviseemail.js");
 // const preadviseTenderEmailCancellation = require("../utilities/preadviseemail.js");
@@ -60,13 +60,13 @@ const {
 // ----- Commonly used functions
 
 const {
-  findCountryName,
-  findcca2,
-  findSubRegion,
-  findResponsibleTenderOffice,
-  currentDateAndTime,
-  formatDate,
-  capitalize
+    findCountryName,
+    findcca2,
+    findSubRegion,
+    findResponsibleTenderOffice,
+    currentDateAndTime,
+    formatDate,
+    capitalize
 } = require("../utilities/commonfunctions.js");
 
 // ----- Controllers for MOONSHOT PREADVISED TENDERS
@@ -80,95 +80,95 @@ module.exports.renderNewPage = function (req, res) {
 }
 
 module.exports.createPreadvise = catchAsync(async function (req, res, next) {
-    console.log(`${colors.black.bgBrightCyan("* ATTEMPT *")} A new TENDER PRE-ADVISE submit has been attempted with the following data:`);
-    console.log(req.body);
+    console.log(`${colors.black.bgBrightCyan("* ATTEMPT *")} A new TENDER PRE-ADVISE submit has been attempted with the following company name: ${req.body.companyName}`);
+    // console.log(req.body);
     let companyName = req.body.companyName;
     let sugarID = req.body.sugarID;
     let expectedReceiveDate = req.body.expectedReceiveDate;
     let transportMode = req.body.transportMode;
     if (typeof transportMode != "object") {
-    transportMode = [transportMode];
+        transportMode = [transportMode];
     }
     let airFreightVolume;
     if (!req.body.airFreightVol) {
-    airFreightVolume = 0;
+        airFreightVolume = 0;
     } else {
-    airFreightVolume = req.body.airFreightVol;
+        airFreightVolume = req.body.airFreightVol;
     }
     let seaFreightFCLVolume;
     if (!req.body.seaFreightFCLVol) {
-    seaFreightFCLVolume = 0;
+        seaFreightFCLVolume = 0;
     } else {
-    seaFreightFCLVolume = req.body.seaFreightFCLVol;
+        seaFreightFCLVolume = req.body.seaFreightFCLVol;
     }
     let seaFreightLCLVolume;
     if (!req.body.seaFreightLCLVol) {
-    seaFreightLCLVolume = 0;
+        seaFreightLCLVolume = 0;
     } else {
-    seaFreightLCLVolume = req.body.seaFreightLCLVol;
+        seaFreightLCLVolume = req.body.seaFreightLCLVol;
     }
     let railFreightVolume;
     if (!req.body.railFreightVol) {
-    railFreightVolume = 0;
+        railFreightVolume = 0;
     } else {
-    railFreightVolume = req.body.railFreightVol;
+        railFreightVolume = req.body.railFreightVol;
     }
     let keyTradelanes = req.body.keyTradelanes;
     if (typeof keyTradelanes != "object") {
-    keyTradelanes = [keyTradelanes];
+        keyTradelanes = [keyTradelanes];
     }
     let history = req.body.history;
     let existingCustomerSegment;
     if (!req.body.existingCustomerSegment) {
-    existingCustomerSegment = null;
+        existingCustomerSegment = null;
     } else {
-    existingCustomerSegment = req.body.existingCustomerSegment;
+        existingCustomerSegment = req.body.existingCustomerSegment;
     }
     let additionalComment;
     if (!req.body.additionalComment) {
-    additionalComment = null;
+        additionalComment = null;
     } else {
-    additionalComment = req.body.additionalComment;
+        additionalComment = req.body.additionalComment;
     }
     let countryLocation = req.body.countryLocation;
 
     let newEntry = new PreadvisedTender({
-    recordDate: currentDateAndTime(),
-    author: req.user._id,
-    lastModifiedDate: null,
-    launched: false,
-    launchedTime: null,
-    companyName: companyName,
-    sugarID: sugarID,
-    expectedReceiveDate: expectedReceiveDate,
-    transportMode: transportMode,
-    airFreightVolume: airFreightVolume,
-    seaFreightFCLVolume: seaFreightFCLVolume,
-    seaFreightLCLVolume: seaFreightLCLVolume,
-    railFreightVolume: railFreightVolume,
-    keyTradelanes: keyTradelanes,
-    history: history,
-    existingCustomerSegment: existingCustomerSegment,
-    additionalComment: additionalComment,
-    countryLocation: countryLocation,
+        recordDate: currentDateAndTime(),
+        author: req.user._id,
+        lastModifiedDate: null,
+        launched: false,
+        launchedTime: null,
+        companyName: companyName,
+        sugarID: sugarID,
+        expectedReceiveDate: expectedReceiveDate,
+        transportMode: transportMode,
+        airFreightVolume: airFreightVolume,
+        seaFreightFCLVolume: seaFreightFCLVolume,
+        seaFreightLCLVolume: seaFreightLCLVolume,
+        railFreightVolume: railFreightVolume,
+        keyTradelanes: keyTradelanes,
+        history: history,
+        existingCustomerSegment: existingCustomerSegment,
+        additionalComment: additionalComment,
+        countryLocation: countryLocation,
     });
     await newEntry.save();
     console.log(`${colors.black.bgBrightGreen("* OK *")} A new TENDER PRE-ADVISE has been registered in the database: ${companyName}`);
     req.flash("success", "Preadvise tender is successfully saved !");
     res.redirect(`/preadvise/${newEntry.id}`);
 
-  let fileIdentifier = Date.now();
-  await generatePreadviseReport(newEntry.id, fileIdentifier);
-  await preadviseTenderEmailConfirmation(newEntry.id, fileIdentifier)
-  await preadviseTenderNotice(newEntry.id, fileIdentifier)
+    let fileIdentifier = Date.now();
+    await generatePreadviseReport(newEntry.id, fileIdentifier);
+    await preadviseTenderEmailConfirmation(newEntry.id, fileIdentifier)
+    await preadviseTenderNotice(newEntry.id, fileIdentifier)
 
-  fs.unlink(`./reports/reportsGenerated/${newEntry.companyName}_${fileIdentifier}.pdf`, function (err) {
-    if (err) {
-      console.error(err)
-      return
-    }
-  })
-  console.log(`${colors.black.bgBrightGreen("* OK *")} The PDF report related to the preadvise of ${companyName} has been deleted from the server`);
+    fs.unlink(`./reports/reportsGenerated/${newEntry.companyName}_${fileIdentifier}.pdf`, function (err) {
+        if (err) {
+            console.error(err)
+            return
+        }
+    })
+    console.log(`${colors.black.bgBrightGreen("* OK *")} The PDF report related to the preadvise of ${companyName} has been deleted from the server`);
 
 })
 
@@ -177,15 +177,15 @@ module.exports.renderIndexPage = catchAsync(async function (req, res) {
     const today = new Date(d.getFullYear(), d.getMonth(), d.getDate());
     const d30 = new Date(d.setDate(d.getDate() + 30));
     const next30days = new Date(
-    d30.getFullYear(),
-    d30.getMonth(),
-    d30.getDate()
+        d30.getFullYear(),
+        d30.getMonth(),
+        d30.getDate()
     );
     const d90 = new Date(d30.setDate(d30.getDate() + 60));
     const next90days = new Date(
-    d90.getFullYear(),
-    d90.getMonth(),
-    d90.getDate()
+        d90.getFullYear(),
+        d90.getMonth(),
+        d90.getDate()
     );
 
     // const preadvised_past = await PreadvisedTender.find({"expectedReceiveDate": {$lt: today}})
@@ -197,88 +197,88 @@ module.exports.renderIndexPage = catchAsync(async function (req, res) {
     // ----- Function below is used to sort an array containing objects according to a defined attribute.
     // ----- Function below has been copied from https://stackoverflow.com/questions/10123953/how-to-sort-an-object-array-by-date-property
     var sortBy = (function () {
-    var toString = Object.prototype.toString,
-        // default parser function
-        parse = function (x) {
-        return x;
-        },
-        // gets the item to be sorted
-        getItem = function (x) {
-        var isObject = x != null && typeof x === "object";
-        var isProp = isObject && this.prop in x;
-        return this.parser(isProp ? x[this.prop] : x);
-        };
+        var toString = Object.prototype.toString,
+            // default parser function
+            parse = function (x) {
+                return x;
+            },
+            // gets the item to be sorted
+            getItem = function (x) {
+                var isObject = x != null && typeof x === "object";
+                var isProp = isObject && this.prop in x;
+                return this.parser(isProp ? x[this.prop] : x);
+            };
 
-    /**
-     * Sorts an array of elements.
-     *
-     * @param {Array} array: the collection to sort
-     * @param {Object} cfg: the configuration options
-     * @property {String}   cfg.prop: property name (if it is an Array of objects)
-     * @property {Boolean}  cfg.desc: determines whether the sort is descending
-     * @property {Function} cfg.parser: function to parse the items to expected type
-     * @return {Array}
-     */
-    return function sortby(array, cfg) {
-        if (!(array instanceof Array && array.length)) return [];
-        if (toString.call(cfg) !== "[object Object]") cfg = {};
-        if (typeof cfg.parser !== "function") cfg.parser = parse;
-        cfg.desc = !!cfg.desc ? -1 : 1;
-        return array.sort(function (a, b) {
-        a = getItem.call(cfg, a);
-        b = getItem.call(cfg, b);
-        return cfg.desc * (a < b ? -1 : +(a > b));
-        });
-    };
+        /**
+         * Sorts an array of elements.
+         *
+         * @param {Array} array: the collection to sort
+         * @param {Object} cfg: the configuration options
+         * @property {String}   cfg.prop: property name (if it is an Array of objects)
+         * @property {Boolean}  cfg.desc: determines whether the sort is descending
+         * @property {Function} cfg.parser: function to parse the items to expected type
+         * @return {Array}
+         */
+        return function sortby(array, cfg) {
+            if (!(array instanceof Array && array.length)) return [];
+            if (toString.call(cfg) !== "[object Object]") cfg = {};
+            if (typeof cfg.parser !== "function") cfg.parser = parse;
+            cfg.desc = !!cfg.desc ? -1 : 1;
+            return array.sort(function (a, b) {
+                a = getItem.call(cfg, a);
+                b = getItem.call(cfg, b);
+                return cfg.desc * (a < b ? -1 : +(a > b));
+            });
+        };
     })();
 
     const allPreadvisedTenders = sortBy(await PreadvisedTender.find({}), {
-    prop: "expectedReceiveDate",
+        prop: "expectedReceiveDate",
     });
     const preadvised_past = sortBy(
-    await PreadvisedTender.find({ expectedReceiveDate: { $lt: today } }),
-    { prop: "expectedReceiveDate" }
+        await PreadvisedTender.find({ expectedReceiveDate: { $lt: today } }),
+        { prop: "expectedReceiveDate" }
     );
     const preadvised_inM = sortBy(
-    await PreadvisedTender.find({
-        expectedReceiveDate: { $gte: today, $lte: next30days },
-    }),
-    { prop: "expectedReceiveDate" }
+        await PreadvisedTender.find({
+            expectedReceiveDate: { $gte: today, $lte: next30days },
+        }),
+        { prop: "expectedReceiveDate" }
     );
     const preadvised_inQ = sortBy(
-    await PreadvisedTender.find({
-        expectedReceiveDate: { $gt: next30days, $lte: next90days },
-    }),
-    { prop: "expectedReceiveDate" }
+        await PreadvisedTender.find({
+            expectedReceiveDate: { $gt: next30days, $lte: next90days },
+        }),
+        { prop: "expectedReceiveDate" }
     );
     const preadvised_inY = sortBy(
-    await PreadvisedTender.find({ expectedReceiveDate: { $gt: next90days } }),
-    { prop: "expectedReceiveDate" }
+        await PreadvisedTender.find({ expectedReceiveDate: { $gt: next90days } }),
+        { prop: "expectedReceiveDate" }
     );
     const preadvised_inAM = [];
     const preadvised_inAP = [];
     const preadvised_inEU = [];
 
     for (let preadvise of allPreadvisedTenders) {
-    for (let country of countriesData) {
-        if (country.cca2 === preadvise.countryLocation) {
-        if (
-            country.region === "Europe" ||
-            country.region === "Africa" ||
-            country.subregion === "Central Asia" ||
-            country.subregion === "Western Asia"
-        ) {
-            preadvised_inEU.push(preadvise);
-        } else if (
-            country.region === "Asia" ||
-            country.region === "Oceania"
-        ) {
-            preadvised_inAP.push(preadvise);
-        } else if (country.region === "Americas") {
-            preadvised_inAM.push(preadvise);
-        } else preadvised_inEU.push(preadvise);
+        for (let country of countriesData) {
+            if (country.cca2 === preadvise.countryLocation) {
+                if (
+                    country.region === "Europe" ||
+                    country.region === "Africa" ||
+                    country.subregion === "Central Asia" ||
+                    country.subregion === "Western Asia"
+                ) {
+                    preadvised_inEU.push(preadvise);
+                } else if (
+                    country.region === "Asia" ||
+                    country.region === "Oceania"
+                ) {
+                    preadvised_inAP.push(preadvise);
+                } else if (country.region === "Americas") {
+                    preadvised_inAM.push(preadvise);
+                } else preadvised_inEU.push(preadvise);
+            }
         }
-    }
     }
 
     // ----- For debugging purposes
@@ -314,15 +314,15 @@ module.exports.renderHistoryPage = catchAsync(async function (req, res) {
     const today = new Date(d.getFullYear(), d.getMonth(), d.getDate());
     const d30 = new Date(d.setDate(d.getDate() + 30));
     const next30days = new Date(
-    d30.getFullYear(),
-    d30.getMonth(),
-    d30.getDate()
+        d30.getFullYear(),
+        d30.getMonth(),
+        d30.getDate()
     );
     const d90 = new Date(d30.setDate(d30.getDate() + 60));
     const next90days = new Date(
-    d90.getFullYear(),
-    d90.getMonth(),
-    d90.getDate()
+        d90.getFullYear(),
+        d90.getMonth(),
+        d90.getDate()
     );
 
     // const preadvised_past = await PreadvisedTender.find({"expectedReceiveDate": {$lt: today}})
@@ -334,115 +334,115 @@ module.exports.renderHistoryPage = catchAsync(async function (req, res) {
     // ----- Function below is used to sort an array containing objects according to a defined attribute.
     // ----- Function below has been copied from https://stackoverflow.com/questions/10123953/how-to-sort-an-object-array-by-date-property
     var sortBy = (function () {
-    var toString = Object.prototype.toString,
-        // default parser function
-        parse = function (x) {
-        return x;
-        },
-        // gets the item to be sorted
-        getItem = function (x) {
-        var isObject = x != null && typeof x === "object";
-        var isProp = isObject && this.prop in x;
-        return this.parser(isProp ? x[this.prop] : x);
-        };
+        var toString = Object.prototype.toString,
+            // default parser function
+            parse = function (x) {
+                return x;
+            },
+            // gets the item to be sorted
+            getItem = function (x) {
+                var isObject = x != null && typeof x === "object";
+                var isProp = isObject && this.prop in x;
+                return this.parser(isProp ? x[this.prop] : x);
+            };
 
-    /**
-     * Sorts an array of elements.
-     *
-     * @param {Array} array: the collection to sort
-     * @param {Object} cfg: the configuration options
-     * @property {String}   cfg.prop: property name (if it is an Array of objects)
-     * @property {Boolean}  cfg.desc: determines whether the sort is descending
-     * @property {Function} cfg.parser: function to parse the items to expected type
-     * @return {Array}
-     */
-    return function sortby(array, cfg) {
-        if (!(array instanceof Array && array.length)) return [];
-        if (toString.call(cfg) !== "[object Object]") cfg = {};
-        if (typeof cfg.parser !== "function") cfg.parser = parse;
-        cfg.desc = !!cfg.desc ? -1 : 1;
-        return array.sort(function (a, b) {
-        a = getItem.call(cfg, a);
-        b = getItem.call(cfg, b);
-        return cfg.desc * (a < b ? -1 : +(a > b));
-        });
-    };
+        /**
+         * Sorts an array of elements.
+         *
+         * @param {Array} array: the collection to sort
+         * @param {Object} cfg: the configuration options
+         * @property {String}   cfg.prop: property name (if it is an Array of objects)
+         * @property {Boolean}  cfg.desc: determines whether the sort is descending
+         * @property {Function} cfg.parser: function to parse the items to expected type
+         * @return {Array}
+         */
+        return function sortby(array, cfg) {
+            if (!(array instanceof Array && array.length)) return [];
+            if (toString.call(cfg) !== "[object Object]") cfg = {};
+            if (typeof cfg.parser !== "function") cfg.parser = parse;
+            cfg.desc = !!cfg.desc ? -1 : 1;
+            return array.sort(function (a, b) {
+                a = getItem.call(cfg, a);
+                b = getItem.call(cfg, b);
+                return cfg.desc * (a < b ? -1 : +(a > b));
+            });
+        };
     })();
 
-    const allPreadvisedTenders = sortBy(await PreadvisedTender.find({author : req.user}), {
-    prop: "expectedReceiveDate",
+    const allPreadvisedTenders = sortBy(await PreadvisedTender.find({ author: req.user }), {
+        prop: "expectedReceiveDate",
     });
     const preadvised_past = sortBy(
-    await PreadvisedTender.find({ 
-        expectedReceiveDate: { $lt: today },
-        author : req.user
-    }),
-    { prop: "expectedReceiveDate" }
+        await PreadvisedTender.find({
+            expectedReceiveDate: { $lt: today },
+            author: req.user
+        }),
+        { prop: "expectedReceiveDate" }
     );
     const preadvised_inM = sortBy(
-    await PreadvisedTender.find({
-        expectedReceiveDate: { $gte: today, $lte: next30days },
-        author : req.user
-    }),
-    { prop: "expectedReceiveDate" }
+        await PreadvisedTender.find({
+            expectedReceiveDate: { $gte: today, $lte: next30days },
+            author: req.user
+        }),
+        { prop: "expectedReceiveDate" }
     );
     const preadvised_inQ = sortBy(
-    await PreadvisedTender.find({
-        expectedReceiveDate: { $gt: next30days, $lte: next90days },
-        author : req.user
-    }),
-    { prop: "expectedReceiveDate" }
+        await PreadvisedTender.find({
+            expectedReceiveDate: { $gt: next30days, $lte: next90days },
+            author: req.user
+        }),
+        { prop: "expectedReceiveDate" }
     );
     const preadvised_inY = sortBy(
-    await PreadvisedTender.find({
-        expectedReceiveDate: { $gt: next90days },
-        author : req.user
-    }),
-    { prop: "expectedReceiveDate" }
+        await PreadvisedTender.find({
+            expectedReceiveDate: { $gt: next90days },
+            author: req.user
+        }),
+        { prop: "expectedReceiveDate" }
     );
     const preadvised_inAM = [];
     const preadvised_inAP = [];
     const preadvised_inEU = [];
 
-    let history = await PreadvisedTender.find({author : req.user})
+    let history = await PreadvisedTender.find({ author: req.user })
 
     for (let preadvise of allPreadvisedTenders) {
-    for (let country of countriesData) {
-        if (country.cca2 === preadvise.countryLocation) {
-        if (
-            country.region === "Europe" ||
-            country.region === "Africa" ||
-            country.subregion === "Central Asia" ||
-            country.subregion === "Western Asia"
-        ) {
-            preadvised_inEU.push(preadvise);
-        } else if (
-            country.region === "Asia" ||
-            country.region === "Oceania"
-        ) {
-            preadvised_inAP.push(preadvise);
-        } else if (country.region === "Americas") {
-            preadvised_inAM.push(preadvise);
-        } else preadvised_inEU.push(preadvise);
+        for (let country of countriesData) {
+            if (country.cca2 === preadvise.countryLocation) {
+                if (
+                    country.region === "Europe" ||
+                    country.region === "Africa" ||
+                    country.subregion === "Central Asia" ||
+                    country.subregion === "Western Asia"
+                ) {
+                    preadvised_inEU.push(preadvise);
+                } else if (
+                    country.region === "Asia" ||
+                    country.region === "Oceania"
+                ) {
+                    preadvised_inAP.push(preadvise);
+                } else if (country.region === "Americas") {
+                    preadvised_inAM.push(preadvise);
+                } else preadvised_inEU.push(preadvise);
+            }
         }
-    }
     }
 
     let hasHistory = false
-    if(history && history.length){
+    if (history && history.length) {
         hasHistory = true
     }
 
     // ----- For debugging purposes
-    console.log(`"today" is registered as ${today}`)
-    console.log(`"next30days" is registered as ${next30days}`)
-    console.log(`"next90days" is registered as ${next90days}`)
-    console.log(`"preadvised_inM" results are ${preadvised_inM}`)
-    console.log(`"preadvised_inQ" results are ${preadvised_inQ}`)
-    console.log(`"preadvised_inY" results are ${preadvised_inY}`)
-    console.log(`"preadvised_inAM" results are ${preadvised_inAM}`)
-    console.log(`"preadvised_inAP" results are ${preadvised_inAP}`)
-    console.log(`"preadvised_inEU" results are ${preadvised_inEU}`)
+    // console.log(`"today" is registered as ${today}`)
+    // console.log(`"next30days" is registered as ${next30days}`)
+    // console.log(`"next90days" is registered as ${next90days}`)
+    // console.log(`"preadvised_inM" results are ${preadvised_inM}`)
+    // console.log(`"preadvised_inQ" results are ${preadvised_inQ}`)
+    // console.log(`"preadvised_inY" results are ${preadvised_inY}`)
+    // console.log(`"preadvised_inAM" results are ${preadvised_inAM}`)
+    // console.log(`"preadvised_inAP" results are ${preadvised_inAP}`)
+    // console.log(`"preadvised_inEU" results are ${preadvised_inEU}`)
 
     res.render("preadvise/preadvised_history.ejs", {
         hasHistory,
@@ -495,7 +495,7 @@ module.exports.deletePreadvise = catchAsync(async function (req, res) {
     let matchingTender = await PreadvisedTender.findById(matchingId);
     let matchingTenderName = matchingTender.companyName;
     console.log(`${colors.black.bgBrightCyan("* ATTEMPT *")} A TENDER PRE-ADVISE has been selected for deletion: ${matchingTenderName}`);
-    console.log(matchingTender);
+    // console.log(matchingTender);
     await preadviseTenderEmailCancellation(matchingId)
     await preadviseCancelTenderNotice(matchingId)
     await PreadvisedTender.findByIdAndDelete(matchingId);
@@ -542,68 +542,68 @@ module.exports.patchPreadvise = catchAsync(async function (req, res) {
     let newExpectedReceiveDate = req.body.expectedReceiveDate;
     let newTransportMode = req.body.transportMode;
     if (typeof newTransportMode != "object") {
-    newTransportMode = [newTransportMode];
+        newTransportMode = [newTransportMode];
     }
     let newAirFreightVolume;
     if (!req.body.airFreightVol) {
-    newAirFreightVolume = 0;
+        newAirFreightVolume = 0;
     } else {
-    newAirFreightVolume = req.body.airFreightVol;
+        newAirFreightVolume = req.body.airFreightVol;
     }
     let newSeaFreightFCLVolume;
     if (!req.body.seaFreightFCLVol) {
-    newSeaFreightFCLVolume = 0;
+        newSeaFreightFCLVolume = 0;
     } else {
-    newSeaFreightFCLVolume = req.body.seaFreightFCLVol;
+        newSeaFreightFCLVolume = req.body.seaFreightFCLVol;
     }
     let newSeaFreightLCLVolume;
     if (!req.body.seaFreightLCLVol) {
-    newSeaFreightLCLVolume = 0;
+        newSeaFreightLCLVolume = 0;
     } else {
-    newSeaFreightLCLVolume = req.body.seaFreightLCLVol;
+        newSeaFreightLCLVolume = req.body.seaFreightLCLVol;
     }
     let newRailFreightVolume;
     if (!req.body.railFreightVol) {
-    newRailFreightVolume = 0;
+        newRailFreightVolume = 0;
     } else {
-    newRailFreightVolume = req.body.railFreightVol;
+        newRailFreightVolume = req.body.railFreightVol;
     }
     let newKeyTradelanes = req.body.keyTradelanes;
     if (typeof newKeyTradelanes != "object") {
-    newKeyTradelanes = [newKeyTradelanes];
+        newKeyTradelanes = [newKeyTradelanes];
     }
     let newHistory = req.body.history;
     let newExistingCustomerSegment;
     if (!req.body.existingCustomerSegment) {
-    newExistingCustomerSegment = null;
+        newExistingCustomerSegment = null;
     } else {
-    newExistingCustomerSegment = req.body.existingCustomerSegment;
+        newExistingCustomerSegment = req.body.existingCustomerSegment;
     }
     let newAdditionalComment;
     if (!req.body.additionalComment) {
-    newAdditionalComment = null;
+        newAdditionalComment = null;
     } else {
-    newAdditionalComment = req.body.additionalComment;
+        newAdditionalComment = req.body.additionalComment;
     }
     let newCountryLocation = req.body.countryLocation;
 
     await PreadvisedTender.findByIdAndUpdate(matchingId, {
-    lastModifiedDate: currentDateAndTime(),
-    launched: false,
-    launchedTime: null,
-    companyName: newCompanyName,
-    sugarID: newSugarID,
-    expectedReceiveDate: newExpectedReceiveDate,
-    transportMode: newTransportMode,
-    airFreightVolume: newAirFreightVolume,
-    seaFreightFCLVolume: newSeaFreightFCLVolume,
-    seaFreightLCLVolume: newSeaFreightLCLVolume,
-    railFreightVolume: newRailFreightVolume,
-    keyTradelanes: newKeyTradelanes,
-    history: newHistory,
-    existingCustomerSegment: newExistingCustomerSegment,
-    additionalComment: newAdditionalComment,
-    countryLocation: newCountryLocation,
+        lastModifiedDate: currentDateAndTime(),
+        launched: false,
+        launchedTime: null,
+        companyName: newCompanyName,
+        sugarID: newSugarID,
+        expectedReceiveDate: newExpectedReceiveDate,
+        transportMode: newTransportMode,
+        airFreightVolume: newAirFreightVolume,
+        seaFreightFCLVolume: newSeaFreightFCLVolume,
+        seaFreightLCLVolume: newSeaFreightLCLVolume,
+        railFreightVolume: newRailFreightVolume,
+        keyTradelanes: newKeyTradelanes,
+        history: newHistory,
+        existingCustomerSegment: newExistingCustomerSegment,
+        additionalComment: newAdditionalComment,
+        countryLocation: newCountryLocation,
     });
     console.log(`${colors.black.bgBrightGreen("* OK *")} The TENDER PRE-ADVISE related to "${newCompanyName}" has been updated`);
     req.flash("success", "Preadvise tender is successfully modified !");
@@ -618,10 +618,10 @@ module.exports.postReport = catchAsync(async function (req, res) {
     await preadviseReportEmail(req.user, matchingId, fileIdentifier)
 
     fs.unlink(`./reports/reportsGenerated/${matchingTender.companyName}_${fileIdentifier}.pdf`, function (err) {
-    if (err) {
-        console.error(err)
-        return
-    }
+        if (err) {
+            console.error(err)
+            return
+        }
     })
     console.log(`${colors.black.bgBrightGreen("* OK *")} The PDF report related to the preadvise of ${matchingTender.companyName} has been deleted from the server`);
 

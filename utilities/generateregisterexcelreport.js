@@ -8,20 +8,20 @@ const tenderLaunchMethod = require("../public/ressources/tenderLaunchMethod.json
 const decisionCriteria = require("../public/ressources/decisionCriteria.json")
 
 const {
-    findCountryName,
-    findcca2,
-    findSubRegion,
-    findResponsibleTenderOffice,
-    currentDateAndTime,
-    formatDate,
-    capitalize,
-    daysDifference
-  } = require("./commonfunctions.js");
+  findCountryName,
+  findcca2,
+  findSubRegion,
+  findResponsibleTenderOffice,
+  currentDateAndTime,
+  formatDate,
+  capitalize,
+  daysDifference
+} = require("./commonfunctions.js");
 
 let generateRegisterExcelReport = async function (newFilename) {
   let allRegister = await RegisteredTender.find({}).populate("preadvise");
   const fileName = `${newFilename}.xlsx`;
-  console.log(fileName);
+  // console.log(fileName);
   const wb = new Excel.Workbook();
   await wb.xlsx.readFile("./reports/templates/reportTemplate_register.xlsx")
   const ws = wb.getWorksheet('Data')
@@ -35,110 +35,110 @@ let generateRegisterExcelReport = async function (newFilename) {
       showRowStripes: true,
     },
     columns: [
-      {name: 'Register ID', filterButton: true},
-      {name: 'Record date', filterButton: true},
-      {name: 'Last modified date', filterButton: true},
-      {name: 'Is preadvised', filterButton: true},
-      {name: 'Preadvised ID', filterButton: true},
-      {name: 'Preadvise record date', filterButton: true},
-      {name: 'Country location', filterButton: true},
-      {name: 'Tender office', filterButton: true},
-      {name: 'World area', filterButton: true},
-      {name: 'Company name', filterButton: true},
-      {name: 'Sugar ID', filterButton: true},
-      {name: 'Business vertical', filterButton: true},
-      {name: 'Contact name', filterButton: true},
-      {name: 'Contact Job Title', filterButton: true},
-      {name: 'Contact email', filterButton: true},
-      {name: 'Contact is decision maker', filterButton: true},
-      {name: 'Has Airfreight', filterButton: true},
-      {name: 'Airfreight volumes', filterButton: true},
-      {name: 'Airfreight rates validity requested', filterButton: true},
-      {name: 'Has Seafreight FCL', filterButton: true},
-      {name: 'Seafreight FCL volumes', filterButton: true},
-      {name: 'Seafreight FCL rates validity requested', filterButton: true},
-      {name: 'Has Seafreight LCL', filterButton: true},
-      {name: 'Seafreight LCL volumes', filterButton: true},
-      {name: 'Seafreight LCL rates validity requested', filterButton: true},
-      {name: 'Has Railfreight FCL', filterButton: true},
-      {name: 'Railfreight FCL volumes', filterButton: true},
-      {name: 'Railfreight FCL rates validity requested', filterButton: true},
-      {name: 'Has DG goods', filterButton: true},
-      {name: 'Has pharma goods', filterButton: true},
-      {name: 'Has cold chain', filterButton: true},
-      {name: 'Has time critical', filterButton: true},
-      {name: 'Has linked RFI', filterButton: true},
-      {name: 'RFI deadline', filterButton: true},
-      {name: 'Tender reception date', filterButton: true},
-      {name: 'Tender deadline', filterButton: true},
-      {name: 'Tender decision date', filterButton: true},
-      {name: 'Start of business date', filterButton: true},
-      {name: 'Africa ➔ Africa', filterButton: true},
-      {name: 'Africa ➔ Americas', filterButton: true},
-      {name: 'Africa ➔ Asia', filterButton: true},
-      {name: 'Africa ➔ Europe', filterButton: true},
-      {name: 'Africa ➔ Oceania', filterButton: true},
-      {name: 'Americas ➔ Africa', filterButton: true},
-      {name: 'Americas ➔ Americas', filterButton: true},
-      {name: 'Americas ➔ Asia', filterButton: true},
-      {name: 'Americas ➔ Europe', filterButton: true},
-      {name: 'Americas ➔ Oceania', filterButton: true},
-      {name: 'Asia ➔ Africa', filterButton: true},
-      {name: 'Asia ➔ Americas', filterButton: true},
-      {name: 'Asia ➔ Asia', filterButton: true},
-      {name: 'Asia ➔ Europe', filterButton: true},
-      {name: 'Asia ➔ Oceania', filterButton: true},
-      {name: 'Europe ➔ Africa', filterButton: true},
-      {name: 'Europe ➔ Americas', filterButton: true},
-      {name: 'Europe ➔ Asia', filterButton: true},
-      {name: 'Europe ➔ Europe', filterButton: true},
-      {name: 'Europe ➔ Oceania', filterButton: true},
-      {name: 'Oceania ➔ Africa', filterButton: true},
-      {name: 'Oceania ➔ Americas', filterButton: true},
-      {name: 'Oceania ➔ Asia', filterButton: true},
-      {name: 'Oceania ➔ Europe', filterButton: true},
-      {name: 'Oceania ➔ Oceania', filterButton: true},
-      {name: 'Amount of lanes', filterButton: true},
-      {name: 'Has Door-to-Door lanes', filterButton: true},
-      {name: 'Has Door-to-Port lanes', filterButton: true},
-      {name: 'Has Port-to-Port lanes', filterButton: true},
-      {name: 'Has Port-to-Door lanes', filterButton: true},
-      {name: 'Contract period', filterButton: true},
-      {name: 'Payment terms', filterButton: true},
-      {name: 'Restrictions - All lanes must be quoted', filterButton: true},
-      {name: 'Restrictions - All lanes per country must be quoted', filterButton: true},
-      {name: 'Restrictions - All lanes per region must be quoted', filterButton: true},
-      {name: 'Restrictions - All lanes per transport mode must be quoted', filterButton: true},
-      {name: 'Restrictions - Cherry picking allowed', filterButton: true},
-      {name: 'Requirements - No specific requirement', filterButton: true},
-      {name: 'Requirements - Track & Trace', filterButton: true},
-      {name: 'Requirements - Documents management', filterButton: true},
-      {name: 'Requirements - Basic reporting', filterButton: true},
-      {name: 'Requirements - Lead time reports', filterButton: true},
-      {name: 'Requirements - EDI connection', filterButton: true},
-      {name: 'Requirements - Order management', filterButton: true},
-      {name: 'Requirements - Control tower', filterButton: true},
-      {name: 'Amount of rounds', filterButton: true},
-      {name: 'Tender launch method', filterButton: true},
-      {name: 'No history', filterButton: true},
-      {name: 'Rhenus Air & Ocean history', filterButton: true},
-      {name: 'Rhenus Road history', filterButton: true},
-      {name: 'Rhenus Contract Logistics history', filterButton: true},
-      {name: 'Rhenus Port Logistics history', filterButton: true},
-      {name: 'Customer segment', filterButton: true},
-      {name: 'Customer visit frequency', filterButton: true},
-      {name: 'Customer visit history', filterButton: true},
-      {name: 'Current service provider', filterButton: true},
-      {name: 'Amount of competitors', filterButton: true},
-      {name: 'Amount of awardee(s)', filterButton: true},
-      {name: 'Decision criteria', filterButton: true},
-      {name: 'Feedback available', filterButton: true},
-      {name: 'Average time between reception & registration', filterButton: true},
-      {name: 'Average time between registration & Deadline Rd.1', filterButton: true},
-      {name: 'Is over ?', filterButton: true},
-      {name: 'Outcome Positive', filterButton: true},
-      {name: 'Outcome Negative', filterButton: true},
-      {name: 'Outcome Unknown', filterButton: true}
+      { name: 'Register ID', filterButton: true },
+      { name: 'Record date', filterButton: true },
+      { name: 'Last modified date', filterButton: true },
+      { name: 'Is preadvised', filterButton: true },
+      { name: 'Preadvised ID', filterButton: true },
+      { name: 'Preadvise record date', filterButton: true },
+      { name: 'Country location', filterButton: true },
+      { name: 'Tender office', filterButton: true },
+      { name: 'World area', filterButton: true },
+      { name: 'Company name', filterButton: true },
+      { name: 'Sugar ID', filterButton: true },
+      { name: 'Business vertical', filterButton: true },
+      { name: 'Contact name', filterButton: true },
+      { name: 'Contact Job Title', filterButton: true },
+      { name: 'Contact email', filterButton: true },
+      { name: 'Contact is decision maker', filterButton: true },
+      { name: 'Has Airfreight', filterButton: true },
+      { name: 'Airfreight volumes', filterButton: true },
+      { name: 'Airfreight rates validity requested', filterButton: true },
+      { name: 'Has Seafreight FCL', filterButton: true },
+      { name: 'Seafreight FCL volumes', filterButton: true },
+      { name: 'Seafreight FCL rates validity requested', filterButton: true },
+      { name: 'Has Seafreight LCL', filterButton: true },
+      { name: 'Seafreight LCL volumes', filterButton: true },
+      { name: 'Seafreight LCL rates validity requested', filterButton: true },
+      { name: 'Has Railfreight FCL', filterButton: true },
+      { name: 'Railfreight FCL volumes', filterButton: true },
+      { name: 'Railfreight FCL rates validity requested', filterButton: true },
+      { name: 'Has DG goods', filterButton: true },
+      { name: 'Has pharma goods', filterButton: true },
+      { name: 'Has cold chain', filterButton: true },
+      { name: 'Has time critical', filterButton: true },
+      { name: 'Has linked RFI', filterButton: true },
+      { name: 'RFI deadline', filterButton: true },
+      { name: 'Tender reception date', filterButton: true },
+      { name: 'Tender deadline', filterButton: true },
+      { name: 'Tender decision date', filterButton: true },
+      { name: 'Start of business date', filterButton: true },
+      { name: 'Africa ➔ Africa', filterButton: true },
+      { name: 'Africa ➔ Americas', filterButton: true },
+      { name: 'Africa ➔ Asia', filterButton: true },
+      { name: 'Africa ➔ Europe', filterButton: true },
+      { name: 'Africa ➔ Oceania', filterButton: true },
+      { name: 'Americas ➔ Africa', filterButton: true },
+      { name: 'Americas ➔ Americas', filterButton: true },
+      { name: 'Americas ➔ Asia', filterButton: true },
+      { name: 'Americas ➔ Europe', filterButton: true },
+      { name: 'Americas ➔ Oceania', filterButton: true },
+      { name: 'Asia ➔ Africa', filterButton: true },
+      { name: 'Asia ➔ Americas', filterButton: true },
+      { name: 'Asia ➔ Asia', filterButton: true },
+      { name: 'Asia ➔ Europe', filterButton: true },
+      { name: 'Asia ➔ Oceania', filterButton: true },
+      { name: 'Europe ➔ Africa', filterButton: true },
+      { name: 'Europe ➔ Americas', filterButton: true },
+      { name: 'Europe ➔ Asia', filterButton: true },
+      { name: 'Europe ➔ Europe', filterButton: true },
+      { name: 'Europe ➔ Oceania', filterButton: true },
+      { name: 'Oceania ➔ Africa', filterButton: true },
+      { name: 'Oceania ➔ Americas', filterButton: true },
+      { name: 'Oceania ➔ Asia', filterButton: true },
+      { name: 'Oceania ➔ Europe', filterButton: true },
+      { name: 'Oceania ➔ Oceania', filterButton: true },
+      { name: 'Amount of lanes', filterButton: true },
+      { name: 'Has Door-to-Door lanes', filterButton: true },
+      { name: 'Has Door-to-Port lanes', filterButton: true },
+      { name: 'Has Port-to-Port lanes', filterButton: true },
+      { name: 'Has Port-to-Door lanes', filterButton: true },
+      { name: 'Contract period', filterButton: true },
+      { name: 'Payment terms', filterButton: true },
+      { name: 'Restrictions - All lanes must be quoted', filterButton: true },
+      { name: 'Restrictions - All lanes per country must be quoted', filterButton: true },
+      { name: 'Restrictions - All lanes per region must be quoted', filterButton: true },
+      { name: 'Restrictions - All lanes per transport mode must be quoted', filterButton: true },
+      { name: 'Restrictions - Cherry picking allowed', filterButton: true },
+      { name: 'Requirements - No specific requirement', filterButton: true },
+      { name: 'Requirements - Track & Trace', filterButton: true },
+      { name: 'Requirements - Documents management', filterButton: true },
+      { name: 'Requirements - Basic reporting', filterButton: true },
+      { name: 'Requirements - Lead time reports', filterButton: true },
+      { name: 'Requirements - EDI connection', filterButton: true },
+      { name: 'Requirements - Order management', filterButton: true },
+      { name: 'Requirements - Control tower', filterButton: true },
+      { name: 'Amount of rounds', filterButton: true },
+      { name: 'Tender launch method', filterButton: true },
+      { name: 'No history', filterButton: true },
+      { name: 'Rhenus Air & Ocean history', filterButton: true },
+      { name: 'Rhenus Road history', filterButton: true },
+      { name: 'Rhenus Contract Logistics history', filterButton: true },
+      { name: 'Rhenus Port Logistics history', filterButton: true },
+      { name: 'Customer segment', filterButton: true },
+      { name: 'Customer visit frequency', filterButton: true },
+      { name: 'Customer visit history', filterButton: true },
+      { name: 'Current service provider', filterButton: true },
+      { name: 'Amount of competitors', filterButton: true },
+      { name: 'Amount of awardee(s)', filterButton: true },
+      { name: 'Decision criteria', filterButton: true },
+      { name: 'Feedback available', filterButton: true },
+      { name: 'Average time between reception & registration', filterButton: true },
+      { name: 'Average time between registration & Deadline Rd.1', filterButton: true },
+      { name: 'Is over ?', filterButton: true },
+      { name: 'Outcome Positive', filterButton: true },
+      { name: 'Outcome Negative', filterButton: true },
+      { name: 'Outcome Unknown', filterButton: true }
     ],
     rows: [],
   });
@@ -243,32 +243,32 @@ let generateRegisterExcelReport = async function (newFilename) {
     dataToPush.push(register.decisionDate)
     dataToPush.push(register.startBusinessDate)
 
-    if(register.keyTradelanes.includes("africaToAfrica")){dataToPush.push("Yes")} else {dataToPush.push("No")}
-    if(register.keyTradelanes.includes("africaToAmericas")){dataToPush.push("Yes")} else {dataToPush.push("No")}
-    if(register.keyTradelanes.includes("africaToAsia")){dataToPush.push("Yes")} else {dataToPush.push("No")}
-    if(register.keyTradelanes.includes("africaToEurope")){dataToPush.push("Yes")} else {dataToPush.push("No")}
-    if(register.keyTradelanes.includes("africaToOceania")){dataToPush.push("Yes")} else {dataToPush.push("No")}
-    if(register.keyTradelanes.includes("americasToAfrica")){dataToPush.push("Yes")} else {dataToPush.push("No")}
-    if(register.keyTradelanes.includes("americasToAmericas")){dataToPush.push("Yes")} else {dataToPush.push("No")}
-    if(register.keyTradelanes.includes("americasToAsia")){dataToPush.push("Yes")} else {dataToPush.push("No")}
-    if(register.keyTradelanes.includes("americasToEurope")){dataToPush.push("Yes")} else {dataToPush.push("No")}
-    if(register.keyTradelanes.includes("americasToOceania")){dataToPush.push("Yes")} else {dataToPush.push("No")}
-    if(register.keyTradelanes.includes("asiaToAfrica")){dataToPush.push("Yes")} else {dataToPush.push("No")}
-    if(register.keyTradelanes.includes("asiaToAmericas")){dataToPush.push("Yes")} else {dataToPush.push("No")}
-    if(register.keyTradelanes.includes("asiaToAsia")){dataToPush.push("Yes")} else {dataToPush.push("No")}
-    if(register.keyTradelanes.includes("asiaToEurope")){dataToPush.push("Yes")} else {dataToPush.push("No")}
-    if(register.keyTradelanes.includes("asiaToOceania")){dataToPush.push("Yes")} else {dataToPush.push("No")}
-    if(register.keyTradelanes.includes("europeToAfrica")){dataToPush.push("Yes")} else {dataToPush.push("No")}
-    if(register.keyTradelanes.includes("europeToAmericas")){dataToPush.push("Yes")} else {dataToPush.push("No")}
-    if(register.keyTradelanes.includes("europeToAsia")){dataToPush.push("Yes")} else {dataToPush.push("No")}
-    if(register.keyTradelanes.includes("europeToEurope")){dataToPush.push("Yes")} else {dataToPush.push("No")}
-    if(register.keyTradelanes.includes("europeToOceania")){dataToPush.push("Yes")} else {dataToPush.push("No")}
-    if(register.keyTradelanes.includes("oceaniaToAfrica")){dataToPush.push("Yes")} else {dataToPush.push("No")}
-    if(register.keyTradelanes.includes("oceaniaToAmericas")){dataToPush.push("Yes")} else {dataToPush.push("No")}
-    if(register.keyTradelanes.includes("oceaniaToAsia")){dataToPush.push("Yes")} else {dataToPush.push("No")}
-    if(register.keyTradelanes.includes("oceaniaToEurope")){dataToPush.push("Yes")} else {dataToPush.push("No")}
-    if(register.keyTradelanes.includes("oceaniaToOceania")){dataToPush.push("Yes")} else {dataToPush.push("No")}
-    
+    if (register.keyTradelanes.includes("africaToAfrica")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
+    if (register.keyTradelanes.includes("africaToAmericas")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
+    if (register.keyTradelanes.includes("africaToAsia")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
+    if (register.keyTradelanes.includes("africaToEurope")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
+    if (register.keyTradelanes.includes("africaToOceania")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
+    if (register.keyTradelanes.includes("americasToAfrica")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
+    if (register.keyTradelanes.includes("americasToAmericas")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
+    if (register.keyTradelanes.includes("americasToAsia")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
+    if (register.keyTradelanes.includes("americasToEurope")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
+    if (register.keyTradelanes.includes("americasToOceania")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
+    if (register.keyTradelanes.includes("asiaToAfrica")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
+    if (register.keyTradelanes.includes("asiaToAmericas")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
+    if (register.keyTradelanes.includes("asiaToAsia")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
+    if (register.keyTradelanes.includes("asiaToEurope")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
+    if (register.keyTradelanes.includes("asiaToOceania")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
+    if (register.keyTradelanes.includes("europeToAfrica")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
+    if (register.keyTradelanes.includes("europeToAmericas")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
+    if (register.keyTradelanes.includes("europeToAsia")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
+    if (register.keyTradelanes.includes("europeToEurope")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
+    if (register.keyTradelanes.includes("europeToOceania")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
+    if (register.keyTradelanes.includes("oceaniaToAfrica")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
+    if (register.keyTradelanes.includes("oceaniaToAmericas")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
+    if (register.keyTradelanes.includes("oceaniaToAsia")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
+    if (register.keyTradelanes.includes("oceaniaToEurope")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
+    if (register.keyTradelanes.includes("oceaniaToOceania")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
+
     dataToPush.push(register.lanesAmount)
 
     if (register.transportationScope.includes("dtod")) {
@@ -365,13 +365,13 @@ let generateRegisterExcelReport = async function (newFilename) {
     dataToPush.push(register.roundsAmount)
     dataToPush.push(`${tenderLaunchMethod[register.tenderLaunchMethod]}`)
 
-    if(!register.history || register.history.includes("historyNone")){dataToPush.push("Yes")} else {dataToPush.push("No")}
-    if(register.history && register.history.includes("historyAirOcean")){dataToPush.push("Yes")} else {dataToPush.push("No")}
-    if(register.history && register.history.includes("historyRoadFreight")){dataToPush.push("Yes")} else {dataToPush.push("No")}
-    if(register.history && register.history.includes("historyContractLog")){dataToPush.push("Yes")} else {dataToPush.push("No")}
-    if(register.history && register.history.includes("historyPortLog")){dataToPush.push("Yes")} else {dataToPush.push("No")}
+    if (!register.history || register.history.includes("historyNone")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
+    if (register.history && register.history.includes("historyAirOcean")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
+    if (register.history && register.history.includes("historyRoadFreight")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
+    if (register.history && register.history.includes("historyContractLog")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
+    if (register.history && register.history.includes("historyPortLog")) { dataToPush.push("Yes") } else { dataToPush.push("No") }
 
-    if(!register.existingCustomerSegment){dataToPush.push("No")} else {dataToPush.push(register.existingCustomerSegment)}
+    if (!register.existingCustomerSegment) { dataToPush.push("No") } else { dataToPush.push(register.existingCustomerSegment) }
 
     dataToPush.push(capitalize(register.visitFrequency))
 

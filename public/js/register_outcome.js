@@ -96,7 +96,7 @@ const mod_unk_additionalComment = document.querySelector("#mod_unknown_additiona
 
 // Useful functions
 // Function that takes a string or a number and returns a string with the number formatted with commas
-const formatNumber = function(number) {
+const formatNumber = function (number) {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 }
 
@@ -109,7 +109,7 @@ const valueOf = function (inputField) {
 }
 
 // Function to provide the value of the "Total win" or "Partial win" radio buttons
-const pos_outcomeTenderValue = function() {
+const pos_outcomeTenderValue = function () {
     if (positivePartialOutcomeRadio.checked) {
         return "Partial win"
     } else if (positiveFullOutcomeRadio.checked) {
@@ -121,7 +121,7 @@ const pos_outcomeTenderValue = function() {
 
 // Function used to display confetti animation when user clicks on positive outcome
 positiveOutcomePill.addEventListener("click", function () {
-    party.confetti(this,{
+    party.confetti(this, {
         count: 80,
         spread: 50,
         size: 1.3,
@@ -132,52 +132,52 @@ positiveOutcomePill.addEventListener("click", function () {
 const displayVolSplit = function () {
     let awardVolSplitDisplay = []
     let awardSplitMethodsInputs = [
-    pos_awardVolumeSplitRegion,
-    pos_awardVolumeSplitCountry,
-    pos_awardVolumeSplitTransportMode,
-    pos_awardVolumeSplitFlowDirection,
-    pos_awardVolumeCompanyEntity,
-    pos_awardVolumeOthers
+        pos_awardVolumeSplitRegion,
+        pos_awardVolumeSplitCountry,
+        pos_awardVolumeSplitTransportMode,
+        pos_awardVolumeSplitFlowDirection,
+        pos_awardVolumeCompanyEntity,
+        pos_awardVolumeOthers
     ]
     for (let input of awardSplitMethodsInputs) {
-        if (input.checked){
+        if (input.checked) {
             awardVolSplitDisplay.push(input.nextElementSibling.innerText)
         }
     }
-    console.log(awardVolSplitDisplay)
+    // console.log(awardVolSplitDisplay)
     return awardVolSplitDisplay.join(", ")
 }
 
 // Function to set the progress bar filled with the poderation value
-const setProgressBar = function(ponderationBar, ponderationInput) {
+const setProgressBar = function (ponderationBar, ponderationInput) {
     ponderationBar.removeAttribute("style")
-    ponderationBar.setAttribute("style", `width: ${valueOf(ponderationInput)*10}%`)
+    ponderationBar.setAttribute("style", `width: ${valueOf(ponderationInput) * 10}%`)
     ponderationBar.firstElementChild.innerText = `${valueOf(ponderationInput)}/10`
 }
 
 // Function used on page load
-document.addEventListener("DOMContentLoaded", function() {
-// Function used to hide the various outcome tiles on page load
+document.addEventListener("DOMContentLoaded", function () {
+    // Function used to hide the various outcome tiles on page load
     formTile.classList.add("visually-hidden")
 
     let pills = document.querySelectorAll(".navPill")
 
-    if(formTile.classList.contains("visually-hidden")) {
-        for(let pill of pills){
-            pill.addEventListener("click", function() {
+    if (formTile.classList.contains("visually-hidden")) {
+        for (let pill of pills) {
+            pill.addEventListener("click", function () {
                 let formTile = document.querySelector(".tab-content")
                 formTile.classList.remove("visually-hidden")
             })
         }
     }
-// Function used setup the negative outcome grading on page load
+    // Function used setup the negative outcome grading on page load
     for (let rangeInput of allRangeInputs) {
-            if (rangeInput.value < 10) {
-                rangeInput.previousElementSibling.innerText = `0${rangeInput.value}/10`
-            } else {
-                rangeInput.previousElementSibling.innerText = `${rangeInput.value}/10`
-            }
+        if (rangeInput.value < 10) {
+            rangeInput.previousElementSibling.innerText = `0${rangeInput.value}/10`
+        } else {
+            rangeInput.previousElementSibling.innerText = `${rangeInput.value}/10`
         }
+    }
 
 })
 
@@ -201,8 +201,8 @@ for (let box of volSplitBoxes) {
             volSplitBoxCheckedAmount -= 1
         }
         for (let box of volSplitBoxes) {
-            if (volSplitBoxCheckedAmount > 0) {box.removeAttribute("required")}
-            else {box.setAttribute("required", true)}
+            if (volSplitBoxCheckedAmount > 0) { box.removeAttribute("required") }
+            else { box.setAttribute("required", true) }
         }
     })
 }
@@ -215,24 +215,24 @@ const checkVolAwardFields = function () {
         pos_outcomeExpectedSeafreightLCLVol,
         pos_outcomeExpectedRailfreightFCLVol
     ]
-    
+
     let volAwardFieldsAmount = 0
-    
+
     for (let field of volAwardFields) {
-            if (field.value !== "") {
-                volAwardFieldsAmount += 1
-            }
-            for (let field of volAwardFields) {
-                if (volAwardFieldsAmount > 0) {field.removeAttribute("required")}
-                else {field.setAttribute("required", true)}
-            }
+        if (field.value !== "") {
+            volAwardFieldsAmount += 1
         }
+        for (let field of volAwardFields) {
+            if (volAwardFieldsAmount > 0) { field.removeAttribute("required") }
+            else { field.setAttribute("required", true) }
+        }
+    }
 }
 
 
 // Function used to disble the "Service Provider Awarded" input in the "Unknown" checkbox is checked
-outcomeNewProviderUnknownCheckBox.addEventListener("input", function() {
-    if(outcomeNewProviderUnknownCheckBox.checked) {
+outcomeNewProviderUnknownCheckBox.addEventListener("input", function () {
+    if (outcomeNewProviderUnknownCheckBox.checked) {
         document.querySelector("#outcomeNewProvider").setAttribute("disabled", true)
     } else {
         document.querySelector("#outcomeNewProvider").removeAttribute("disabled")
@@ -240,7 +240,7 @@ outcomeNewProviderUnknownCheckBox.addEventListener("input", function() {
 })
 // Function used to adjust the negative outlook grading
 for (let rangeInput of allRangeInputs) {
-    rangeInput.addEventListener("input", function() {
+    rangeInput.addEventListener("input", function () {
         if (rangeInput.value < 10) {
             rangeInput.previousElementSibling.innerText = `0${rangeInput.value}/10`
         } else {
@@ -255,13 +255,13 @@ const launchModal = function (confirmBtn) {
         confirmBtn.setAttribute("data-bs-toggle", "modal")
         switch (confirmBtn.id) {
             case "positiveConfirmBtn":
-                confirmBtn.setAttribute("data-bs-target","#positiveOutcomeConfirmModal")
+                confirmBtn.setAttribute("data-bs-target", "#positiveOutcomeConfirmModal")
                 break;
             case "negativeConfirmBtn":
-                confirmBtn.setAttribute("data-bs-target","#negativeOutcomeConfirmModal")
+                confirmBtn.setAttribute("data-bs-target", "#negativeOutcomeConfirmModal")
                 break;
             case "unknwownConfirmBtn":
-                confirmBtn.setAttribute("data-bs-target","#unknownOutcomeConfirmModal")
+                confirmBtn.setAttribute("data-bs-target", "#unknownOutcomeConfirmModal")
                 break;
         }
     }
@@ -276,7 +276,7 @@ const launchModal = function (confirmBtn) {
 
 //Function used to check the form validation
 const formValidation = function (confirmBtn) {
-    let form = confirmBtn.parentElement.previousElementSibling 
+    let form = confirmBtn.parentElement.previousElementSibling
     form.classList.add('was-validated')
     if (form.checkValidity()) {
         confirmBtn.classList.remove("btn-primary")
@@ -285,42 +285,42 @@ const formValidation = function (confirmBtn) {
             confirmBtn.classList.remove("btn-success")
             confirmBtn.classList.add("btn-primary")
         }, 250);
-        console.log("The form is validated.")
+        // console.log("The form is validated.")
         launchModal(confirmBtn)
     } else {
-        console.log("The form is not validated.")
+        // console.log("The form is not validated.")
         confirmBtn.classList.remove("btn-primary")
         confirmBtn.classList.add("btn-danger", "animate__animated", "animate__shakeX", "animate__faster")
         setTimeout(() => {
             confirmBtn.classList.remove("btn-danger", "animate__animated", "animate__shakeX", "animate__faster")
-            confirmBtn.classList.add("btn-primary") 
+            confirmBtn.classList.add("btn-primary")
         }, 250);
     }
 }
 
 // Function used to trigger the positive outcome modal
-positiveConfirmBtn.addEventListener("click", function() {
+positiveConfirmBtn.addEventListener("click", function () {
     checkVolAwardFields()
     formValidation(this)
     mod_pos_awardResult.innerText = pos_outcomeTenderValue()
     mod_pos_volumeSplit.innerText = displayVolSplit()
     // Format the date valueOf(pos_awardReceiveDate) under the format dd-MMM-yyyy
     let date = new Date(valueOf(pos_awardReceiveDate))
-    let dateFormatted = `${date.getDate()}-${date.toLocaleString("en-US", {month: "short"})}-${date.getFullYear()}`
+    let dateFormatted = `${date.getDate()}-${date.toLocaleString("en-US", { month: "short" })}-${date.getFullYear()}`
     mod_pos_expectedReceiveDate.innerText = dateFormatted
     // Format the date valueOf(pos_expectedBusinessStartDate) under the format dd-MMM-yyyy
     let date2 = new Date(valueOf(pos_expectedBusinessStartDate))
-    let dateFormatted2 = `${date2.getDate()}-${date2.toLocaleString("en-US", {month: "short"})}-${date2.getFullYear()}`
+    let dateFormatted2 = `${date2.getDate()}-${date2.toLocaleString("en-US", { month: "short" })}-${date2.getFullYear()}`
     mod_pos_expectedBusinessStart.innerText = dateFormatted2
     mod_pos_expectedTurnover.innerText = valueOf(pos_outcomeExpectedTurnover)
-    if(!valueOf(pos_outcomeExpectedAirfreightVol)) {mod_pos_expectedAirfreightVol.innerText = "None"} else {mod_pos_expectedAirfreightVol.innerText = `${formatNumber(valueOf(pos_outcomeExpectedAirfreightVol))} Tons`}
-    if(!valueOf(pos_outcomeExpectedSeafreightFCLVol)) {mod_pos_expectedSeafreightFCLVol.innerText = "None"} else {mod_pos_expectedSeafreightFCLVol.innerText = `${formatNumber(valueOf(pos_outcomeExpectedSeafreightFCLVol))} TEUs`}
-    if(!valueOf(pos_outcomeExpectedSeafreightLCLVol)) {mod_pos_expectedSeafreightLCLVol.innerText = "None"} else {mod_pos_expectedSeafreightLCLVol.innerText = `${formatNumber(valueOf(pos_outcomeExpectedSeafreightLCLVol))} CBMs`}
-    if(!valueOf(pos_outcomeExpectedRailfreightFCLVol)) {mod_pos_expectedRailfreightFCLVol.innerText = "None"} else {mod_pos_expectedRailfreightFCLVol.innerText = `${formatNumber(valueOf(pos_outcomeExpectedRailfreightFCLVol))} TEUs`}
+    if (!valueOf(pos_outcomeExpectedAirfreightVol)) { mod_pos_expectedAirfreightVol.innerText = "None" } else { mod_pos_expectedAirfreightVol.innerText = `${formatNumber(valueOf(pos_outcomeExpectedAirfreightVol))} Tons` }
+    if (!valueOf(pos_outcomeExpectedSeafreightFCLVol)) { mod_pos_expectedSeafreightFCLVol.innerText = "None" } else { mod_pos_expectedSeafreightFCLVol.innerText = `${formatNumber(valueOf(pos_outcomeExpectedSeafreightFCLVol))} TEUs` }
+    if (!valueOf(pos_outcomeExpectedSeafreightLCLVol)) { mod_pos_expectedSeafreightLCLVol.innerText = "None" } else { mod_pos_expectedSeafreightLCLVol.innerText = `${formatNumber(valueOf(pos_outcomeExpectedSeafreightLCLVol))} CBMs` }
+    if (!valueOf(pos_outcomeExpectedRailfreightFCLVol)) { mod_pos_expectedRailfreightFCLVol.innerText = "None" } else { mod_pos_expectedRailfreightFCLVol.innerText = `${formatNumber(valueOf(pos_outcomeExpectedRailfreightFCLVol))} TEUs` }
     mod_pos_additionalComments.innerText = valueOf(pos_outcomeAdditionalComment)
 })
 // Function used to trigger the negative outcome modal
-negativeConfirmBtn.addEventListener("click", function() {
+negativeConfirmBtn.addEventListener("click", function () {
     formValidation(this)
     switch (document.querySelector('input[name="outcomeChangeProvider"]:checked').value) {
         case "yes":
@@ -351,11 +351,11 @@ negativeConfirmBtn.addEventListener("click", function() {
     setProgressBar(mod_neg_ITSolutionsPonderationBar, neg_outcomeITSolutionsPonderation)
     setProgressBar(mod_neg_overallConceptPonderationBar, neg_outcomeOverallConceptPonderation)
     setProgressBar(mod_neg_overallConceptPonderationBar, neg_outcomeOverallConceptPonderation)
-    if (neg_outcomeNewProviderUnknown.checked) {mod_neg_outcomeNewProvider.innerText = "Unknown"} else {mod_neg_outcomeNewProvider.innerText = valueOf(neg_outcomeNewProvider)}
+    if (neg_outcomeNewProviderUnknown.checked) { mod_neg_outcomeNewProvider.innerText = "Unknown" } else { mod_neg_outcomeNewProvider.innerText = valueOf(neg_outcomeNewProvider) }
     mod_neg_additionalComments.innerText = valueOf(neg_outcomeAdditionalComment)
 })
 // Function used to trigger the unknown outcome modal
-unknwownConfirmBtn.addEventListener("click", function() {
+unknwownConfirmBtn.addEventListener("click", function () {
     formValidation(this)
     mod_unk_additionalComment.innerText = valueOf(unk_outcomeAdditionalComment)
 })

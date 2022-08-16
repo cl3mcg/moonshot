@@ -79,11 +79,11 @@ module.exports.registerUser = catchAsync(async function (req, res) {
 module.exports.logoutUser = function (req, res) {
     req.logout(
         function () {
-            req.flash("success", "You have been logged out !")
+            req.flash("success", "You have been logged out !");
             res.redirect("/");
         }
     );
-}
+};
 
 module.exports.renderUserPage = catchAsync(async function (req, res) {
     const userId = req.params.id

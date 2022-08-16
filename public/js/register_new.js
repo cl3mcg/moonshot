@@ -313,7 +313,7 @@ const allRequirements = [
 
 // ---- ---- Declaration of reusable functions
 // ---- Function to get the filds .value or the checkbox .checked
-const getValue = function(element){
+const getValue = function (element) {
     if (element.type === "checkbox" || element.type === "radio") {
         return element.checked
     } else if (element.type === "select-one") {
@@ -333,10 +333,11 @@ const getNumericValue = function (element) {
 
 // ---- Function to get the numeric value of an entered volume
 const getVolume = function (volField, unit) {
-   if (volField.value) {
-       return `${getNumericValue(volField)} ${unit}`
+    if (volField.value) {
+        return `${getNumericValue(volField)} ${unit}`
     } else {
-        return "-"}
+        return "-"
+    }
 }
 
 
@@ -344,12 +345,12 @@ const getVolume = function (volField, unit) {
 const launchModal = function () {
     const addingModalTriggers = function () {
         confirmBtn.setAttribute("data-bs-toggle", "modal")
-        confirmBtn.setAttribute("data-bs-target","#staticBackdrop")
+        confirmBtn.setAttribute("data-bs-target", "#staticBackdrop")
     }
 
     const addingModalFields = function () {
         mod_isPreadvised.innerText = getValue(isPreadvised)
-        if (getValue(isPreadvised) === "Yes"){mod_preadviseID.innerText = preadviseID.value}
+        if (getValue(isPreadvised) === "Yes") { mod_preadviseID.innerText = preadviseID.value }
         mod_reasonForTender.innerText = getValue(reasonForTender)
         mod_companyName.innerText = getValue(companyName)
         mod_businessVertical.innerText = getValue(businessVertical)
@@ -363,88 +364,88 @@ const launchModal = function () {
         mod_receptionDate.innerText = getValue(receptionDate)
         mod_deadlineRFQ.innerText = getValue(deadlineRFQ)
         mod_linkedRFI.innerText = getValue(linkedRFI)
-        if (getValue(linkedRFI) === "Yes"){mod_deadlineRFI.innerText = `${getValue(deadlineRFI)}`} else {mod_deadlineRFI.innertext = "-"}
+        if (getValue(linkedRFI) === "Yes") { mod_deadlineRFI.innerText = `${getValue(deadlineRFI)}` } else { mod_deadlineRFI.innertext = "-" }
         mod_decisionDate.innerText = getValue(decisionDate)
         mod_decisionCritera.innerText = `Based on: ${getValue(decisionCritera)}`
-        if (getValue(feedbackAvailable) === "Yes"){mod_feedbackAvailable.innerText = "Feedback provided"}else{mod_feedbackAvailable.innerText = "Feedback not provided"}
+        if (getValue(feedbackAvailable) === "Yes") { mod_feedbackAvailable.innerText = "Feedback provided" } else { mod_feedbackAvailable.innerText = "Feedback not provided" }
         mod_startBusinessDate.innerText = getValue(startBusinessDate)
         mod_currentServiceProvider.innerText = getValue(currentServiceProvider)
         mod_competitorAmount.innerText = getValue(competitorAmount)
         mod_volumeSplit.innerText = `${getValue(volumeSplit)} awarded`
         mod_commodity.innerText = getValue(commodity)
-        if(getValue(dtod)){mod_dtod.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_dtod.innerText = "-"}
-        if(getValue(dtop)){mod_dtop.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_dtop.innerText = "-"}
-        if(getValue(ptod)){mod_ptod.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_ptod.innerText = "-"}
-        if(getValue(ptop)){mod_ptop.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_ptop.innerText = "-"}
-        if(getValue(noRestriction)){mod_noRestriction.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_noRestriction.innerText = "-"}
-        if(getValue(allLanesQuoted)){mod_allLanesQuoted.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_allLanesQuoted.innerText = "-"}
-        if(getValue(countryLanesQuoted)){mod_countryLanesQuoted.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_countryLanesQuoted.innerText = "-"}
-        if(getValue(regionLanesQuoted)){mod_regionLanesQuoted.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_regionLanesQuoted.innerText = "-"}
-        if(getValue(trspModeLanesQuoted)){mod_trspModeLanesQuoted.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_trspModeLanesQuoted.innerText = "-"}
-        if(getValue(noRequirement)){mod_noRequirement.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_noRequirement.innerText = "-"}
-        if(getValue(trackTrace)){mod_trackTrace.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_trackTrace.innerText = "-"}
-        if(getValue(docsMgmt)){mod_docsMgmt.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_docsMgmt.innerText = "-"}
-        if(getValue(basicReports)){mod_basicReports.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_basicReports.innerText = "-"}
-        if(getValue(leadTimeReports)){mod_leadTimeReports.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_leadTimeReports.innerText = "-"}
-        if(getValue(ediConnection)){mod_ediConnection.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_ediConnection.innerText = "-"}
-        if(getValue(orderManagement)){mod_orderManagement.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_orderManagement.innerText = "-"}
-        if(getValue(controlTower)){mod_controlTower.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_controlTower.innerText = "-"}
-        if(getValue(hasAirFreight)){mod_hasAirFreight.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_hasAirFreight.innerText = "-"}
-        if(getValue(hasSeaFreightFCL)){mod_hasSeaFreightFCL.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_hasSeaFreightFCL.innerText = "-"}
-        if(getValue(hasSeaFreightLCL)){mod_hasSeaFreightLCL.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_hasSeaFreightLCL.innerText = "-"}
-        if(getValue(hasRailFreight)){mod_hasRailFreight.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_hasRailFreight.innerText = "-"}
+        if (getValue(dtod)) { mod_dtod.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_dtod.innerText = "-" }
+        if (getValue(dtop)) { mod_dtop.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_dtop.innerText = "-" }
+        if (getValue(ptod)) { mod_ptod.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_ptod.innerText = "-" }
+        if (getValue(ptop)) { mod_ptop.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_ptop.innerText = "-" }
+        if (getValue(noRestriction)) { mod_noRestriction.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_noRestriction.innerText = "-" }
+        if (getValue(allLanesQuoted)) { mod_allLanesQuoted.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_allLanesQuoted.innerText = "-" }
+        if (getValue(countryLanesQuoted)) { mod_countryLanesQuoted.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_countryLanesQuoted.innerText = "-" }
+        if (getValue(regionLanesQuoted)) { mod_regionLanesQuoted.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_regionLanesQuoted.innerText = "-" }
+        if (getValue(trspModeLanesQuoted)) { mod_trspModeLanesQuoted.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_trspModeLanesQuoted.innerText = "-" }
+        if (getValue(noRequirement)) { mod_noRequirement.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_noRequirement.innerText = "-" }
+        if (getValue(trackTrace)) { mod_trackTrace.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_trackTrace.innerText = "-" }
+        if (getValue(docsMgmt)) { mod_docsMgmt.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_docsMgmt.innerText = "-" }
+        if (getValue(basicReports)) { mod_basicReports.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_basicReports.innerText = "-" }
+        if (getValue(leadTimeReports)) { mod_leadTimeReports.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_leadTimeReports.innerText = "-" }
+        if (getValue(ediConnection)) { mod_ediConnection.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_ediConnection.innerText = "-" }
+        if (getValue(orderManagement)) { mod_orderManagement.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_orderManagement.innerText = "-" }
+        if (getValue(controlTower)) { mod_controlTower.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_controlTower.innerText = "-" }
+        if (getValue(hasAirFreight)) { mod_hasAirFreight.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_hasAirFreight.innerText = "-" }
+        if (getValue(hasSeaFreightFCL)) { mod_hasSeaFreightFCL.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_hasSeaFreightFCL.innerText = "-" }
+        if (getValue(hasSeaFreightLCL)) { mod_hasSeaFreightLCL.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_hasSeaFreightLCL.innerText = "-" }
+        if (getValue(hasRailFreight)) { mod_hasRailFreight.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_hasRailFreight.innerText = "-" }
         mod_airFreightVol.innerText = getVolume(airFreightVol, "Tons")
         mod_seaFreightFCLVol.innerText = getVolume(seaFreightFCLVol, "TEUs")
         mod_seaFreightLCLVol.innerText = getVolume(seaFreightLCLVol, "CBMs")
         mod_railFreightVol.innerText = getVolume(railFreightVol, "TEUs")
-        if(getValue(ratesValidityAir) !== "Choose..."){mod_ratesValidityAir.innerText = getValue(ratesValidityAir)} else {mod_ratesValidityAir.innerText = "-"}
-        if(getValue(ratesValidityFCL) !== "Choose..."){mod_ratesValidityFCL.innerText = getValue(ratesValidityFCL)} else {mod_ratesValidityFCL.innerText = "-"}
-        if(getValue(ratesValidityLCL) !== "Choose..."){mod_ratesValidityLCL.innerText = getValue(ratesValidityLCL)} else {mod_ratesValidityLCL.innerText = "-"}
-        if(getValue(ratesValidityRail) !== "Choose..."){mod_ratesValidityRail.innerText = getValue(ratesValidityRail)} else {mod_ratesValidityRail.innerText = "-"}
-        if(getValue(africaToAfrica)){mod_africaToAfrica.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_africaToAfrica.innerText = "-"}
-        if(getValue(africaToAmericas)){mod_africaToAmericas.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_africaToAmericas.innerText = "-"}
-        if(getValue(africaToAsia)){mod_africaToAsia.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_africaToAsia.innerText = "-"}
-        if(getValue(africaToEurope)){mod_africaToEurope.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_africaToEurope.innerText = "-"}
-        if(getValue(africaToOceania)){mod_africaToOceania.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_africaToOceania.innerText = "-"}
-        if(getValue(americasToAfrica)){mod_americasToAfrica.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_americasToAfrica.innerText = "-"}
-        if(getValue(americasToAmericas)){mod_americasToAmericas.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_americasToAmericas.innerText = "-"}
-        if(getValue(americasToAsia)){mod_americasToAsia.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_americasToAsia.innerText = "-"}
-        if(getValue(americasToEurope)){mod_americasToEurope.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_americasToEurope.innerText = "-"}
-        if(getValue(americasToOceania)){mod_americasToOceania.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_americasToOceania.innerText = "-"}
-        if(getValue(asiaToAfrica)){mod_asiaToAfrica.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_asiaToAfrica.innerText = "-"}
-        if(getValue(asiaToAmericas)){mod_asiaToAmericas.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_asiaToAmericas.innerText = "-"}
-        if(getValue(asiaToAsia)){mod_asiaToAsia.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_asiaToAsia.innerText = "-"}
-        if(getValue(asiaToEurope)){mod_asiaToEurope.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_asiaToEurope.innerText = "-"}
-        if(getValue(asiaToOceania)){mod_asiaToOceania.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_asiaToOceania.innerText = "-"}   
-        if(getValue(europeToAfrica)){mod_europeToAfrica.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_europeToAfrica.innerText = "-"}   
-        if(getValue(europeToAmericas)){mod_europeToAmericas.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_europeToAmericas.innerText = "-"}   
-        if(getValue(europeToAsia)){mod_europeToAsia.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_europeToAsia.innerText = "-"}   
-        if(getValue(europeToEurope)){mod_europeToEurope.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_europeToEurope.innerText = "-"}   
-        if(getValue(europeToOceania)){mod_europeToOceania.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_europeToOceania.innerText = "-"}   
-        if(getValue(oceaniaToAfrica)){mod_oceaniaToAfrica.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_oceaniaToAfrica.innerText = "-"}   
-        if(getValue(oceaniaToAmericas)){mod_oceaniaToAmericas.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_oceaniaToAmericas.innerText = "-"}   
-        if(getValue(oceaniaToAsia)){mod_oceaniaToAsia.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_oceaniaToAsia.innerText = "-"}
-        if(getValue(oceaniaToEurope)){mod_oceaniaToEurope.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_oceaniaToEurope.innerText = "-"}
-        if(getValue(oceaniaToOceania)){mod_oceaniaToOceania.innerHTML = "<i class='twa twa-check-mark-button'></i>"} else {mod_oceaniaToOceania.innerText = "-"}
-        if(getValue(segmentA)) {mod_existingCustomerSegment.innerText = "A-customer"} else if (getValue(segmentB)) {mod_existingCustomerSegment.innerText = "B-customer"} else if (getValue(segmentC)) {mod_existingCustomerSegment.innerText = "C-customer"} else {mod_existingCustomerSegment.innerText = "-"}
-        if(getValue(additionalComment)) {mod_additionalComment.innerText = getValue(additionalComment)} else {mod_additionalComment.innerText = "-"}
-        if(getValue(potential)) {mod_potential.innerText = getValue(potential)} else {mod_potential.innerText = "-"}
+        if (getValue(ratesValidityAir) !== "Choose...") { mod_ratesValidityAir.innerText = getValue(ratesValidityAir) } else { mod_ratesValidityAir.innerText = "-" }
+        if (getValue(ratesValidityFCL) !== "Choose...") { mod_ratesValidityFCL.innerText = getValue(ratesValidityFCL) } else { mod_ratesValidityFCL.innerText = "-" }
+        if (getValue(ratesValidityLCL) !== "Choose...") { mod_ratesValidityLCL.innerText = getValue(ratesValidityLCL) } else { mod_ratesValidityLCL.innerText = "-" }
+        if (getValue(ratesValidityRail) !== "Choose...") { mod_ratesValidityRail.innerText = getValue(ratesValidityRail) } else { mod_ratesValidityRail.innerText = "-" }
+        if (getValue(africaToAfrica)) { mod_africaToAfrica.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_africaToAfrica.innerText = "-" }
+        if (getValue(africaToAmericas)) { mod_africaToAmericas.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_africaToAmericas.innerText = "-" }
+        if (getValue(africaToAsia)) { mod_africaToAsia.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_africaToAsia.innerText = "-" }
+        if (getValue(africaToEurope)) { mod_africaToEurope.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_africaToEurope.innerText = "-" }
+        if (getValue(africaToOceania)) { mod_africaToOceania.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_africaToOceania.innerText = "-" }
+        if (getValue(americasToAfrica)) { mod_americasToAfrica.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_americasToAfrica.innerText = "-" }
+        if (getValue(americasToAmericas)) { mod_americasToAmericas.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_americasToAmericas.innerText = "-" }
+        if (getValue(americasToAsia)) { mod_americasToAsia.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_americasToAsia.innerText = "-" }
+        if (getValue(americasToEurope)) { mod_americasToEurope.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_americasToEurope.innerText = "-" }
+        if (getValue(americasToOceania)) { mod_americasToOceania.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_americasToOceania.innerText = "-" }
+        if (getValue(asiaToAfrica)) { mod_asiaToAfrica.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_asiaToAfrica.innerText = "-" }
+        if (getValue(asiaToAmericas)) { mod_asiaToAmericas.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_asiaToAmericas.innerText = "-" }
+        if (getValue(asiaToAsia)) { mod_asiaToAsia.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_asiaToAsia.innerText = "-" }
+        if (getValue(asiaToEurope)) { mod_asiaToEurope.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_asiaToEurope.innerText = "-" }
+        if (getValue(asiaToOceania)) { mod_asiaToOceania.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_asiaToOceania.innerText = "-" }
+        if (getValue(europeToAfrica)) { mod_europeToAfrica.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_europeToAfrica.innerText = "-" }
+        if (getValue(europeToAmericas)) { mod_europeToAmericas.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_europeToAmericas.innerText = "-" }
+        if (getValue(europeToAsia)) { mod_europeToAsia.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_europeToAsia.innerText = "-" }
+        if (getValue(europeToEurope)) { mod_europeToEurope.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_europeToEurope.innerText = "-" }
+        if (getValue(europeToOceania)) { mod_europeToOceania.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_europeToOceania.innerText = "-" }
+        if (getValue(oceaniaToAfrica)) { mod_oceaniaToAfrica.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_oceaniaToAfrica.innerText = "-" }
+        if (getValue(oceaniaToAmericas)) { mod_oceaniaToAmericas.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_oceaniaToAmericas.innerText = "-" }
+        if (getValue(oceaniaToAsia)) { mod_oceaniaToAsia.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_oceaniaToAsia.innerText = "-" }
+        if (getValue(oceaniaToEurope)) { mod_oceaniaToEurope.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_oceaniaToEurope.innerText = "-" }
+        if (getValue(oceaniaToOceania)) { mod_oceaniaToOceania.innerHTML = "<i class='twa twa-check-mark-button'></i>" } else { mod_oceaniaToOceania.innerText = "-" }
+        if (getValue(segmentA)) { mod_existingCustomerSegment.innerText = "A-customer" } else if (getValue(segmentB)) { mod_existingCustomerSegment.innerText = "B-customer" } else if (getValue(segmentC)) { mod_existingCustomerSegment.innerText = "C-customer" } else { mod_existingCustomerSegment.innerText = "-" }
+        if (getValue(additionalComment)) { mod_additionalComment.innerText = getValue(additionalComment) } else { mod_additionalComment.innerText = "-" }
+        if (getValue(potential)) { mod_potential.innerText = getValue(potential) } else { mod_potential.innerText = "-" }
 
         // ---- Special display for Country registering the registration
-        const adjustmod_countryLocation = async function () { 
-                try { 
-                    const result = await axios.get("../../ressources/countries.json")
-                    const countriesData = result.data
-                    for (let country of countriesData) {
-                        if (country.cca2 === countryLocation.value) {
-                            console.log(`Correct country is ${country.name.common}`)
-                            mod_countryLocation.innerText = `${country.cca2} - ${country.name.common} ${country.flag}`
-                        }
+        const adjustmod_countryLocation = async function () {
+            try {
+                const result = await axios.get("../../ressources/countries.json")
+                const countriesData = result.data
+                for (let country of countriesData) {
+                    if (country.cca2 === countryLocation.value) {
+                        // console.log(`Correct country is ${country.name.common}`)
+                        mod_countryLocation.innerText = `${country.cca2} - ${country.name.common} ${country.flag}`
                     }
                 }
-                catch (err) {
-                    console.log("Oh no ! There's an error !", err) 
-                } 
+            }
+            catch (err) {
+                console.log("Oh no ! There's an error !", err)
+            }
 
         }
 
@@ -457,16 +458,16 @@ const launchModal = function () {
                 switch (history) {
                     case historyAirOcean:
                         historyArray.push(historiesFormats.historyAirOcean)
-                    break;
+                        break;
                     case historyRoadFreight:
                         historyArray.push(historiesFormats.historyRoadFreight)
-                    break;
+                        break;
                     case historyContractLog:
                         historyArray.push(historiesFormats.historyContractLog)
-                    break;
+                        break;
                     case historyPortLog:
                         historyArray.push(historiesFormats.historyPortLog)
-                    break;
+                        break;
                     case historyNone:
                         historyArray.push(historiesFormats.historyNone)
                 }
@@ -481,13 +482,13 @@ const launchModal = function () {
                 switch (handling) {
                     case dangerousGoods:
                         specialHandlingArray.push(handlingsFormats.dangerousGoods)
-                    break;
+                        break;
                     case pharmaGoods:
                         specialHandlingArray.push(handlingsFormats.pharmaGoods)
-                    break;
+                        break;
                     case coldChain:
                         specialHandlingArray.push(handlingsFormats.coldChain)
-                    break;
+                        break;
                     case timeCritical:
                         specialHandlingArray.push(handlingsFormats.timeCritical)
                 }
@@ -500,7 +501,7 @@ const launchModal = function () {
         }
 
         // ---- Special display for Document uploads
-        if(getValue(fileUpload)){
+        if (getValue(fileUpload)) {
             let fileNameArray = []
             let files = fileUpload.files
             for (let file of files) {
@@ -556,20 +557,20 @@ const formValidation = function () {
                 confirmBtn.classList.add("btn-primary")
             }, 250);
             launchModal()
-            console.log("The form is validated.")
+            // console.log("The form is validated.")
         } else {
-            console.log("The form is not validated.")
+            // console.log("The form is not validated.")
             confirmBtn.classList.remove("btn-primary")
             confirmBtn.classList.add("btn-danger", "animate__animated", "animate__shakeX", "animate__faster")
             setTimeout(() => {
                 confirmBtn.classList.remove("btn-danger", "animate__animated", "animate__shakeX", "animate__faster")
-                confirmBtn.classList.add("btn-primary") 
+                confirmBtn.classList.add("btn-primary")
             }, 250);
         }
     }
 }
 
-confirmBtn.addEventListener("click", function (event) {event.preventDefault(), formValidation()})
+confirmBtn.addEventListener("click", function (event) { event.preventDefault(), formValidation() })
 
 // ---- Controling the availability of volume fields depending on the transport mode selected
 for (let transportModeBox of transportModeBoxes) {
@@ -586,8 +587,8 @@ for (let transportModeBox of transportModeBoxes) {
         }
     })
 }
-    window.addEventListener("load", function () {
-        for (let transportModeBox of transportModeBoxes) {
+window.addEventListener("load", function () {
+    for (let transportModeBox of transportModeBoxes) {
         if (!transportModeBox.checked) {
             var array = Array.from(transportModeBoxes);
             let index = array.indexOf(transportModeBox)
@@ -608,7 +609,7 @@ const validationArray1 = []
 for (let transportModesCheckbox of transportModesCheckboxes) {
     transportModesCheckbox.addEventListener("click", function () {
         let index = transportModesCheckboxes.indexOf(transportModesCheckbox)
-        if (transportModesCheckbox.checked){
+        if (transportModesCheckbox.checked) {
             validationArray1.push(transportModesVolumes[`${index}`])
             transportModesCheckbox.setAttribute("required", true)
             transportModesVolumes[`${index}`].setAttribute("required", true)
@@ -620,8 +621,8 @@ for (let transportModesCheckbox of transportModesCheckboxes) {
             }
         } else {
             let indexToDelete = validationArray1.indexOf(transportModesVolumes[`${index}`])
-            validationArray1.splice(indexToDelete,1)
-            if(validationArray1.length === 0) {
+            validationArray1.splice(indexToDelete, 1)
+            if (validationArray1.length === 0) {
                 for (let transportModesCheckbox of transportModesCheckboxes) {
                     transportModesCheckbox.setAttribute("required", true)
                 }
@@ -704,11 +705,11 @@ const adjust_preadvisedIDField = function () {
         preadviseID.removeAttribute("required")
         preadviseID.value = ""
         opt_preadviseID.classList.add("d-none")
-        console.log("Value is NO - Nothing should appear")
+        // console.log("Value is NO - Nothing should appear")
     } else {
         preadviseID.setAttribute("required", "true")
         opt_preadviseID.classList.remove("d-none")
-        console.log("Value is YES - Tile should appear")
+        // console.log("Value is YES - Tile should appear")
     }
 }
 
@@ -726,11 +727,11 @@ const adjust_rfiField = function () {
         deadlineRFI.removeAttribute("required")
         deadlineRFI.value = ""
         opt_deadlineRFI.classList.add("d-none")
-        console.log("Value is NO - Nothing should appear")
+        // console.log("Value is NO - Nothing should appear")
     } else {
         deadlineRFI.setAttribute("required", "true")
         opt_deadlineRFI.classList.remove("d-none")
-        console.log("Value is YES - Tile should appear")
+        // console.log("Value is YES - Tile should appear")
     }
 }
 
@@ -751,23 +752,23 @@ for (let route of routes) {
             lanesBoxCheckedAmount -= 1
         }
         for (let route of routes) {
-            if (lanesBoxCheckedAmount > 0) {route.removeAttribute("required")}
-            else {route.setAttribute("required", true)}
+            if (lanesBoxCheckedAmount > 0) { route.removeAttribute("required") }
+            else { route.setAttribute("required", true) }
         }
     })
 }
 
 window.addEventListener("load", function () {
     for (let route of routes) {
-            if (route.checked === true) {
-                lanesBoxCheckedAmount += 1
-            }
-            for (let route of routes) {
-                if (lanesBoxCheckedAmount > 0) {route.removeAttribute("required")}
-                else {route.setAttribute("required", true)}
-            }
+        if (route.checked === true) {
+            lanesBoxCheckedAmount += 1
+        }
+        for (let route of routes) {
+            if (lanesBoxCheckedAmount > 0) { route.removeAttribute("required") }
+            else { route.setAttribute("required", true) }
         }
     }
+}
 )
 
 // ---- Controling the requiered attribute of the Transportation scopes checkboxes
@@ -781,8 +782,8 @@ for (let transportScope of transportScopes) {
             transportScopeCheckedAmount -= 1
         }
         for (let transportScope of transportScopes) {
-            if (transportScopeCheckedAmount > 0) {transportScope.removeAttribute("required")}
-            else {transportScope.setAttribute("required", true)}
+            if (transportScopeCheckedAmount > 0) { transportScope.removeAttribute("required") }
+            else { transportScope.setAttribute("required", true) }
         }
     })
 }
@@ -810,16 +811,16 @@ for (let checkbox of transportModesCheckboxes) {
 
 window.addEventListener("load", function () {
     for (let checkbox of transportModesCheckboxes) {
-            let index = transportModesCheckboxes.indexOf(checkbox)
-            if (!checkbox.checked) {
-                ratesValidityInputs[index].setAttribute("disabled", "true")
-                ratesValidityInputs[index].value = ratesValidityInputs[index].children[0].value
-                opt_ratesValidityFields[index].classList.add("d-none")
-            } else {
-                ratesValidityInputs[index].setAttribute("required", "true")
-                ratesValidityInputs[index].removeAttribute("disabled")
-                opt_ratesValidityFields[index].classList.remove("d-none")
-            }
+        let index = transportModesCheckboxes.indexOf(checkbox)
+        if (!checkbox.checked) {
+            ratesValidityInputs[index].setAttribute("disabled", "true")
+            ratesValidityInputs[index].value = ratesValidityInputs[index].children[0].value
+            opt_ratesValidityFields[index].classList.add("d-none")
+        } else {
+            ratesValidityInputs[index].setAttribute("required", "true")
+            ratesValidityInputs[index].removeAttribute("disabled")
+            opt_ratesValidityFields[index].classList.remove("d-none")
+        }
     }
 })
 
@@ -834,8 +835,8 @@ for (let history of histories) {
             historyBoxCheckedAmount -= 1
         }
         for (let history of histories) {
-            if (historyBoxCheckedAmount > 0) {history.removeAttribute("required")}
-            else {history.setAttribute("required", true)}
+            if (historyBoxCheckedAmount > 0) { history.removeAttribute("required") }
+            else { history.setAttribute("required", true) }
         }
     })
 }
@@ -851,8 +852,8 @@ window.addEventListener("load", function () {
             historyBoxCheckedAmount -= 1
         }
         for (let history of histories) {
-            if (historyBoxCheckedAmount > 0) {history.removeAttribute("required")}
-            else {history.setAttribute("required", true)}
+            if (historyBoxCheckedAmount > 0) { history.removeAttribute("required") }
+            else { history.setAttribute("required", true) }
         }
     }
 })
@@ -865,7 +866,7 @@ historyAirOcean.addEventListener("click", function () {
             radio.setAttribute("required", true)
         }
         else {
-            radio.removeAttribute("required")   
+            radio.removeAttribute("required")
         }
     }
 })
@@ -876,7 +877,7 @@ window.addEventListener("load", function () {
             radio.setAttribute("required", true)
         }
         else {
-            radio.removeAttribute("required")   
+            radio.removeAttribute("required")
         }
     }
 })
@@ -884,14 +885,14 @@ window.addEventListener("load", function () {
 
 // ---- Controling the availability of customer segment radio depending on the customer history
 const validationArray2 = []
-const hasHistoryArray = ["historyAirOcean","historyRoadFreight","historyContractLog","historyPortLog"]
+const hasHistoryArray = ["historyAirOcean", "historyRoadFreight", "historyContractLog", "historyPortLog"]
 
 for (let historyBox of historyBoxes) {
     historyBox.addEventListener("click", function () {
         if (historyBox.value === "historyNone" && historyBox.checked) {
-                for (let historyBox of historyBoxes) {
-                    if (hasHistoryArray.includes(historyBox.value) && !historyBox.checked) {
-                        historyBox.removeAttribute("required")
+            for (let historyBox of historyBoxes) {
+                if (hasHistoryArray.includes(historyBox.value) && !historyBox.checked) {
+                    historyBox.removeAttribute("required")
                 }
             }
         }
@@ -928,10 +929,10 @@ for (let historyBox of historyBoxes) {
             validationArray2.splice(removalIndex, 1)
             if (validationArray2.length === 0) {
                 historyNone.removeAttribute("disabled")
-                    for (let historyBox of historyBoxes) {
-                        historyBox.setAttribute("required", "true")
-                    }
+                for (let historyBox of historyBoxes) {
+                    historyBox.setAttribute("required", "true")
                 }
+            }
             else if (validationArray2.length > 0) {
                 for (let historyBox of historyBoxes) {
                     if (!historyBox.checked) {
@@ -973,7 +974,7 @@ window.addEventListener("load", function () {
                 }
             }
         }
-    }   
+    }
 
     if (historyNone.checked) {
         for (let historyBox of historyBoxes) {
@@ -991,25 +992,25 @@ let currentTile = 0
 
 const adjustTileDisplay = function (button) {
     for (let tile of Array.from(allTiles)) {
-        if (!tile.classList.contains("d-none")){
+        if (!tile.classList.contains("d-none")) {
             tile.classList.add("d-none")
         }
     }
     allTiles[currentTile].classList.remove("d-none")
     if (button === "nextBtn") {
-    allTiles[currentTile].classList.add("animate__animated", "animate__fadeInRight", "animate__faster")
-    allTiles[currentTile].addEventListener('animationend', () => {
-        allTiles[currentTile].classList.remove("animate__animated", "animate__fadeInRight", "animate__faster")
-      })
+        allTiles[currentTile].classList.add("animate__animated", "animate__fadeInRight", "animate__faster")
+        allTiles[currentTile].addEventListener('animationend', () => {
+            allTiles[currentTile].classList.remove("animate__animated", "animate__fadeInRight", "animate__faster")
+        })
     } else if (button === "prevBtn") {
-    allTiles[currentTile].classList.add("animate__animated", "animate__fadeInLeft", "animate__faster")
-    allTiles[currentTile].addEventListener('animationend', () => {
-        allTiles[currentTile].classList.remove("animate__animated", "animate__fadeInLeft", "animate__faster")
-      })
+        allTiles[currentTile].classList.add("animate__animated", "animate__fadeInLeft", "animate__faster")
+        allTiles[currentTile].addEventListener('animationend', () => {
+            allTiles[currentTile].classList.remove("animate__animated", "animate__fadeInLeft", "animate__faster")
+        })
     }
-    for (let pageBtn of Array.from(allPageBtn)){
-        if (pageBtn.classList.contains("bg-secondary")){pageBtn.classList.remove("bg-secondary", "bg-opacity-25")}
-        if (Array.from(allPageBtn).indexOf(pageBtn) === currentTile){
+    for (let pageBtn of Array.from(allPageBtn)) {
+        if (pageBtn.classList.contains("bg-secondary")) { pageBtn.classList.remove("bg-secondary", "bg-opacity-25") }
+        if (Array.from(allPageBtn).indexOf(pageBtn) === currentTile) {
             pageBtn.classList.add("bg-secondary", "bg-opacity-25")
         }
     }
@@ -1021,15 +1022,15 @@ const tileValidation = function () {
     let toBeValidated = tile.querySelectorAll(".form-select:not([disabled]), .form-control:not([disabled]), .form-check-input:not([disabled])")
     let fieldsAmount = toBeValidated.length
     let fieldsValidated = 0
-    for (let i = 0; i < fieldsAmount; i ++) {
+    for (let i = 0; i < fieldsAmount; i++) {
         if (!toBeValidated[i].checkValidity()) {
-                nextBtn.classList.remove("bg-secondary")
-                nextBtn.classList.add("bg-danger", "animate__animated", "animate__shakeX", "animate__faster")
-                setTimeout(() => {
-                    nextBtn.classList.remove("bg-danger", "animate__animated", "animate__shakeX", "animate__faster")
-                    nextBtn.classList.add("bg-secondary") 
-                }, 250);
-                return false
+            nextBtn.classList.remove("bg-secondary")
+            nextBtn.classList.add("bg-danger", "animate__animated", "animate__shakeX", "animate__faster")
+            setTimeout(() => {
+                nextBtn.classList.remove("bg-danger", "animate__animated", "animate__shakeX", "animate__faster")
+                nextBtn.classList.add("bg-secondary")
+            }, 250);
+            return false
         } else {
             fieldsValidated = fieldsValidated + 1
         }
@@ -1041,29 +1042,29 @@ const tileValidation = function () {
             nextBtn.classList.remove("bg-success")
             nextBtn.classList.add("bg-secondary")
         }, 250);
-        console.log("The tile is validated.")
+        // console.log("The tile is validated.")
         return true
-    }                           
+    }
 }
 
 const prevBtnPushed = function () {
     if (currentTile !== 0) {
         currentTile = currentTile - 1
-        if (nextBtn.parentElement.classList.contains("disabled")) {nextBtn.parentElement.classList.remove("disabled")}
+        if (nextBtn.parentElement.classList.contains("disabled")) { nextBtn.parentElement.classList.remove("disabled") }
         document.querySelectorAll(".tile")[currentTile].classList.remove("was-validated")
-        console.log("Prev. button pushed")
-        console.log(`Current tile value: ${currentTile}`)
+        // console.log("Prev. button pushed")
+        // console.log(`Current tile value: ${currentTile}`)
         if (currentTile === 0) {
             prevBtn.parentElement.classList.add("disabled")
             lead.parentElement.classList.remove("d-none")
             lead.parentElement.classList.add("animate__animated", "animate__fadeInLeft", "animate__faster")
         }
         adjustTileDisplay("prevBtn")
-    } else {
-        console.log("Prev. button pushed, but cannot decrease")
-        console.log(`Current tile value is min: ${currentTile}`)
     }
-
+    // else {
+    //     console.log("Prev. button pushed, but cannot decrease")
+    //     console.log(`Current tile value is min: ${currentTile}`)
+    // }
 }
 
 const nextBtnPushed = function () {
@@ -1071,20 +1072,22 @@ const nextBtnPushed = function () {
     if (currentTile !== (Array.from(allTiles).length - 1)) {
         if (tileValidation()) {
             currentTile = currentTile + 1
-            if (!lead.parentElement.classList.contains("d-none")){lead.parentElement.classList.add("d-none")}
-            if (prevBtn.parentElement.classList.contains("disabled")) {prevBtn.parentElement.classList.remove("disabled")}
-            console.log("Next button pushed")
-            console.log(`Current tile value: ${currentTile}`)
-            if (currentTile === (Array.from(allTiles).length - 1)) {nextBtn.parentElement.classList.add("disabled")}
-            if (form.classList.contains("was-validated")){form.classList.remove("was-validated")}
+            if (!lead.parentElement.classList.contains("d-none")) { lead.parentElement.classList.add("d-none") }
+            if (prevBtn.parentElement.classList.contains("disabled")) { prevBtn.parentElement.classList.remove("disabled") }
+            // console.log("Next button pushed")
+            // console.log(`Current tile value: ${currentTile}`)
+            if (currentTile === (Array.from(allTiles).length - 1)) { nextBtn.parentElement.classList.add("disabled") }
+            if (form.classList.contains("was-validated")) { form.classList.remove("was-validated") }
             adjustTileDisplay("nextBtn")
-        } else {
-            console.log("Tile is not validated")
         }
-    } else {
-        console.log("Next button pushed, but cannot increase")
-        console.log(`Current tile value is max: ${currentTile}`)
+        // else {
+        //     console.log("Tile is not validated")
+        // }
     }
+    // else {
+    //     console.log("Next button pushed, but cannot increase")
+    //     console.log(`Current tile value is max: ${currentTile}`)
+    // }
 }
 
 prevBtn.addEventListener("click", prevBtnPushed)
@@ -1112,14 +1115,14 @@ const calculateDateAndTime = function (number, date) {
         return now
     }
     let someDate
-    if (!date){
+    if (!date) {
         someDate = new Date()
     } else {
         someDate = new Date(date)
     }
     let numberOfDaysToAdd = number;
     return new Date(now.setDate(someDate.getDate() + numberOfDaysToAdd));
-  };
+};
 
 let pickerDeadlineRFI = new easepick.create({
     element: "#deadlineRFI",
@@ -1211,7 +1214,7 @@ let pickerStartBusinessDate = new easepick.create({
     ]
 })
 
-  // ------ Below is a function to get the value of the Reception date after input
+// ------ Below is a function to get the value of the Reception date after input
 //   receptionDate.addEventListener("input", function() {
 //     let receptionDateValue = getValue(receptionDate)
 //     if (getValue(deadlineRFQ)){
@@ -1239,21 +1242,21 @@ let pickerStartBusinessDate = new easepick.create({
 // ---- ---- Bootstrap form validation
 const bootsrapValidation = function () {
 
-// ---- Fetch all the forms we want to apply custom Bootstrap validation styles to
+    // ---- Fetch all the forms we want to apply custom Bootstrap validation styles to
     var forms = document.querySelectorAll('.needs-validation')
-  
-// ---- Loop over them and prevent submission
+
+    // ---- Loop over them and prevent submission
     Array.prototype.slice.call(forms)
-      .forEach(function (form) {
-        form.addEventListener('submit', function (event) {
-          if (!form.checkValidity()) {
-            event.preventDefault()
-            event.stopPropagation()
-          }
-  
-          form.classList.add('was-validated')
-        }, false)
-      })
-  }
+        .forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+
+                form.classList.add('was-validated')
+            }, false)
+        })
+}
 
 mod_submitBtn.addEventListener("click", bootsrapValidation())
