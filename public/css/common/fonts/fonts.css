@@ -1,11 +1,19 @@
 @font-face {
-  font-family: NotoColorEmoji;
+  /* font-family: NotoColorEmoji;
   unicode-range: U+1F1E6-1F1FF;
-  src: url("./NotoColorEmoji.ttf") format('truetype');
+  src: url("./NotoColorEmoji.ttf") format('truetype'); */
+  font-family: TwemojiMozilla;
+  unicode-range: U+1F1E6-1F1FF;
+  src: url("./TwemojiMozilla.ttf") format('truetype');
 }
 
-* {
+/* * {
   font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, NotoColorEmoji, "Segoe UI",
+    Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+} */
+
+* {
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, TwemojiMozilla, "Segoe UI",
     Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
 }
 
@@ -23,8 +31,14 @@ h3 {
   font-weight: 600;
 }
 
-.monospace,
+/* .monospace,
 .font-monospace {
   font-family: "Fira Code", "Fira Mono", SFMono-Regular, Menlo, Monaco, Consolas,
     "Liberation Mono", "Courier New", NotoColorEmoji, monospace !important;
+} */
+
+.monospace,
+.font-monospace {
+  font-family: "Fira Code", "Fira Mono", SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", TwemojiMozilla, monospace !important;
 }
