@@ -36,7 +36,7 @@ const {
     findResponsibleTenderOffice,
     currentDateAndTime,
     formatDate
-  } = require("../utilities/commonfunctions.js");
+} = require("../utilities/commonfunctions.js");
 
 // ----- Controllers for MOONSHOT OFFICE
 
@@ -55,7 +55,7 @@ module.exports.renderNewPage = function (req, res) {
 
 module.exports.createOffice = catchAsync(async function (req, res) {
     console.log(`${colors.black.bgBrightCyan("* ATTEMPT *")} A new OFFICE submit has been attempted with the following data:`);
-    console.log(req.body);
+    // console.log(req.body);
 
     let cca2 = req.body.countryLocation;
     let officeSetup = req.body.officeSetup;
@@ -96,9 +96,9 @@ module.exports.renderShowPage = catchAsync(async function (req, res) {
         res.redirect("/office/start");
     } else {
         res.render("office/office_show.ejs", {
-        countriesData,
-        monthsData,
-        matchingOffice
+            countriesData,
+            monthsData,
+            matchingOffice
         })
     }
 });
@@ -111,9 +111,9 @@ module.exports.renderEditPage = catchAsync(async function (req, res) {
         res.redirect("/office/start");
     } else {
         res.render("office/office_edit.ejs", {
-        countriesData,
-        monthsData,
-        matchingOffice
+            countriesData,
+            monthsData,
+            matchingOffice
         })
     }
 });
@@ -153,8 +153,8 @@ module.exports.patchOffice = catchAsync(async function (req, res) {
 module.exports.deleteOffice = catchAsync(async function (req, res) {
     let matchingId = req.params.id;
     let matchingOffice = await Office.findById(matchingId);
-    console.log("An OFFICE has been selected for deletion...");
-    console.log(matchingOffice);
+    console.log(`An OFFICE has been selected for deletion... - ${matchingOffice.companyName}, ${matchingOffice.cca2}`);
+    // console.log(matchingOffice);
     await Office.findByIdAndDelete(matchingId);
     console.log("... and has been deleted.");
     req.flash("success", "Office has been deleted.");

@@ -124,7 +124,7 @@
                                             <p class="text-gray-700" style="line-height: 24px; font-size: 16px; color: #4a5568; width: 100%; margin: 0;" align="left">Dear <%= userName %>,</p>
                                             <br>
                                             <p class="text-gray-700" style="line-height: 24px; font-size: 16px; color: #4a5568; width: 100%; margin: 0;" align="left">
-                                              Following your request, the report related to the <% if (type === "preadvise") { %>pre-advised tender<% } else if (type === "register") { %>registered tender<% } else { %>tender<% } %>opportunity of <%= companyName %> (<i><%= Id %></i>) has been issued.<br>
+                                              Following your request, the report related to the <% if (type === "preadvise") { %>pre-advised tender<% } else if (type === "register") { %>registered tender<% } else { %>tender<% } %> opportunity of <%= companyName %> (<span class="monospace" style="font-family: 'Fira Code', 'Fira Mono', Consolas, Courrier, 'Courrier New', Monaco, 'Liberation Mono', 'Ubuntu Mono', monospace;"><%= Id %></span>) has been issued.<br>
                                               <br>
                                               You can find the report attached to this email.
                                             </p>

@@ -34,7 +34,7 @@ const {
     findResponsibleTenderOffice,
     currentDateAndTime,
     formatDate
-  } = require("../utilities/commonfunctions.js");
+} = require("../utilities/commonfunctions.js");
 
 // ----- Controllers for MOONSHOT USER MANAGEMENT
 
@@ -57,30 +57,33 @@ module.exports.renderRegistrationPage = function (req, res) {
 }
 
 module.exports.registerUser = catchAsync(async function (req, res) {
-try {
-    const { username, email, password } = req.body;
-    const user = new User({ email, username });
-    const registeredUser = await User.register(user, password)
-    req.login(registeredUser, function(err) {
-        if (err) { 
+    try {
+        const { username, email, password } = req.body;
+        const user = new User({ email, username });
+        const registeredUser = await User.register(user, password)
+        req.login(registeredUser, function (err) {
+            if (err) {
                 return next(err);
             }
         });
-    await welcomeEmailDistribution(registeredUser.id)
-    req.flash("success", "Welcome to The Moonshot project !")
-    res.redirect("/start")
-}
-catch (error) {
-    req.flash('error', error.message);
-    res.redirect('/user/registration');
+        await welcomeEmailDistribution(registeredUser.id)
+        req.flash("success", "Welcome to The Moonshot project !")
+        res.redirect("/start")
+    }
+    catch (error) {
+        req.flash('error', error.message);
+        res.redirect('/user/registration');
     }
 })
 
 module.exports.logoutUser = function (req, res) {
-    req.logout();
-    req.flash("success", "Logged out ! Bye !")
-    res.redirect("/")
-}
+    req.logout(
+        function () {
+            req.flash("success", "You have been logged out !");
+            res.redirect("/");
+        }
+    );
+};
 
 module.exports.renderUserPage = catchAsync(async function (req, res) {
     const userId = req.params.id
@@ -95,7 +98,7 @@ module.exports.renderUserPage = catchAsync(async function (req, res) {
 module.exports.requestAccess = catchAsync(async function (req, res) {
     const userId = req.params.id
     const matchingUser = await User.findById(userId)
-    if (!matchingUser){
+    if (!matchingUser) {
         req.flash("error", "The ID provided does not match")
         res.redirect("/start")
     }
@@ -103,7 +106,7 @@ module.exports.requestAccess = catchAsync(async function (req, res) {
         req.flash("error", "You can't access this page")
         res.redirect(`/user/${userId}`)
     }
-    let {userRequest, requestComment} = req.body
+    let { userRequest, requestComment } = req.body
     if (typeof userRequest != "object") {
         userRequest = [userRequest]
     }
@@ -120,7 +123,7 @@ module.exports.changePassword = catchAsync(async function (req, res) {
     const userId = req.params.id
     const matchingUser = await User.findById(userId)
     const currentUserId = req.user.id
-    let {currentPassword, newPassword1, newPassword2} = req.body
+    let { currentPassword, newPassword1, newPassword2 } = req.body
     if (!currentUserId) {
         req.flash("error", "The ID provided does not match")
         return res.redirect("/start")
@@ -133,28 +136,28 @@ module.exports.changePassword = catchAsync(async function (req, res) {
         req.flash("error", "Passwords are not matching")
         return res.redirect(`/user/${userId}`)
     }
-    await matchingUser.changePassword(currentPassword, newPassword1, function(err) {
-        if(err) {
-            if(err.name === 'IncorrectPasswordError'){
-            req.flash("error", "The current password provided is incorrect")
-            return res.redirect(`/user/${userId}`)
-            }else {
-            req.flash("error", "There's been an error")
-            return res.redirect(`/user/${userId}`)
+    await matchingUser.changePassword(currentPassword, newPassword1, function (err) {
+        if (err) {
+            if (err.name === 'IncorrectPasswordError') {
+                req.flash("error", "The current password provided is incorrect")
+                return res.redirect(`/user/${userId}`)
+            } else {
+                req.flash("error", "There's been an error")
+                return res.redirect(`/user/${userId}`)
             }
-       } else {
+        } else {
             req.logout();
             req.flash("success", "Password changed successfully, you can login again with your new password")
             return res.redirect(`/user/login`)
         }
-      })
+    })
 })
 
 module.exports.changeEmail = catchAsync(async function (req, res) {
     const userId = req.params.id
     const matchingUser = await User.findById(userId)
     const currentUserId = req.user.id
-    let {newEmail1, newEmail2} = req.body
+    let { newEmail1, newEmail2 } = req.body
     if (!currentUserId) {
         req.flash("error", "The ID provided does not match")
         return res.redirect("/start")
@@ -171,7 +174,7 @@ module.exports.changeEmail = catchAsync(async function (req, res) {
     let updatedEntry = {
         email: newEmail1
     }
-    
+
     try {
         await User.findByIdAndUpdate(userId, updatedEntry)
         req.flash("success", "The email address has been updated")

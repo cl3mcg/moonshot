@@ -9,7 +9,7 @@ const colors = require("colors");
 const ejs = require("ejs");
 const fs = require("fs").promises;
 const nodemailer = require("nodemailer");
-const multer  = require('multer')
+const multer = require('multer')
 const upload = multer({ dest: 'uploads/' })
 const { preadviseSchema, registerSchema, decisionSchema } = require("../utilities/joischemas.js");
 const countriesData = require("../public/ressources/countries.json");
@@ -28,7 +28,7 @@ const bidRequirements = require("../public/ressources/bidRequirements.json");
 const businessVerticals = require("../public/ressources/businessVerticals.json");
 const specialHandling = require("../public/ressources/specialHandling.json");
 const freightForwarders = require("../public/ressources/freightForwarders.json");
-const { uploadFile, downloadFile, deleteFile }  = require("../utilities/s3.js");
+const { uploadFile, downloadFile, deleteFile } = require("../utilities/s3.js");
 
 // ----- catchAsync middleware used to handle Async functions errors
 
@@ -46,11 +46,11 @@ const ExpressError = require("../utilities/expresserror.js");
 // ----- Middleware used
 
 const {
-  // ----- isLoggedIn middleware used to check if the user is properly logged in - Check the value of req.user stored in Express Session
-  isLoggedIn,
-  // ----- validateRegister middleware used with JOI to validate new registered tenders according to JOI schema
-  validateRegister,
-  validateDecision
+    // ----- isLoggedIn middleware used to check if the user is properly logged in - Check the value of req.user stored in Express Session
+    isLoggedIn,
+    // ----- validateRegister middleware used with JOI to validate new registered tenders according to JOI schema
+    validateRegister,
+    validateDecision
 } = require("../utilities/middleware.js");
 
 // ----- generateRegisterReport function used to generate the register pdf report
@@ -71,19 +71,19 @@ const {
 // ----- Commonly used functions
 
 const {
-  findCountryName,
-  findcca2,
-  findSubRegion,
-  findResponsibleTenderOffice,
-  capitalize,
-  currentDateAndTime,
-  formatDate
+    findCountryName,
+    findcca2,
+    findSubRegion,
+    findResponsibleTenderOffice,
+    capitalize,
+    currentDateAndTime,
+    formatDate
 } = require("../utilities/commonfunctions.js");
 
-  // ----- ----- The function below is used to retrieve the contents of a folder (typically the document upload folder)
-  // ----- ----- the function listFiles() can be called (with await !! It's an async !!) and the result provided would be an array.
-  // ----- ----- more informationa available at https://dev.to/sinedied/work-with-files-and-directories-in-a-node-js-app-4kh8
-  // ----- ----- refer to the part called "List directories contents"
+// ----- ----- The function below is used to retrieve the contents of a folder (typically the document upload folder)
+// ----- ----- the function listFiles() can be called (with await !! It's an async !!) and the result provided would be an array.
+// ----- ----- more informationa available at https://dev.to/sinedied/work-with-files-and-directories-in-a-node-js-app-4kh8
+// ----- ----- refer to the part called "List directories contents"
 //   let listFiles = async function (folderId) {
 //     try {
 //       let id = folderId;
@@ -113,17 +113,17 @@ module.exports.renderNewPage = function (req, res) {
 };
 
 module.exports.createRegister = catchAsync(async function (req, res) {
-    console.log(`${colors.black.bgBrightCyan("* ATTEMPT *")} A new TENDER REGISTRATION submit has been attempted`);
-    console.log(req.body);
+    console.log(`${colors.black.bgBrightCyan("* ATTEMPT *")} A new TENDER REGISTRATION submit has been attempted with the following company name: ${req.body.companyName}`);
+    // console.log(req.body);
     console.log(req.files);
     let preadvise = null;
     if (req.body.isPreadvised === "yes") {
         let checkingPreadvise = await PreadvisedTender.findById(req.body.preadviseID);
         if (checkingPreadvise) {
-        preadvise = checkingPreadvise;
-        await PreadvisedTender.findByIdAndUpdate(req.body.preadviseID, {
-            launched: true,
-            launchedTime: currentDateAndTime(),
+            preadvise = checkingPreadvise;
+            await PreadvisedTender.findByIdAndUpdate(req.body.preadviseID, {
+                launched: true,
+                launchedTime: currentDateAndTime(),
             });
         }
     }
@@ -173,7 +173,7 @@ module.exports.createRegister = catchAsync(async function (req, res) {
     } else {
         specialHandling = req.body.specialHandling;
         if (typeof specialHandling != "object") {
-        specialHandling = [specialHandling];
+            specialHandling = [specialHandling];
         }
     }
     let linkedRFI = req.body.linkedRFI;
@@ -258,12 +258,12 @@ module.exports.createRegister = catchAsync(async function (req, res) {
     }
     for (let file of filesUploaded) {
         const s3Results = await uploadFile(file);
-        console.log(s3Results)
+        // console.log(s3Results)
         console.log(`${file.originalname} has been uploaded to S3`)
         fs.unlink(`./${file.path}`, function (err) {
             if (err) {
-            console.error(err)
-            return
+                console.error(err)
+                return
             }
         })
         console.log(`${file.originalname} was deleted from the server`)
@@ -325,14 +325,14 @@ module.exports.createRegister = catchAsync(async function (req, res) {
     if (req.body.isPreadvised === "yes") {
         try {
             await PreadvisedTender.findByIdAndUpdate(req.body.preadviseID, {
-            register: newEntry
+                register: newEntry
             });
         } catch (err) {
             return res.status(500).send(err);
         }
     }
 
-    console.log(newEntry);
+    // console.log(newEntry);
     console.log(`${colors.black.bgBrightGreen("* OK *")} A new TENDER has been registered in the database: ${companyName}`);
     req.flash("success", "Tender is successfully registered !");
     res.redirect("/register/start");
@@ -342,8 +342,8 @@ module.exports.createRegister = catchAsync(async function (req, res) {
     await registerTenderNotice(newEntry.id, fileIdentifier)
     fs.unlink(`./reports/reportsGenerated/${newEntry.companyName}_${fileIdentifier}.pdf`, function (err) {
         if (err) {
-        console.error(err)
-        return
+            console.error(err)
+            return
         }
     })
     console.log(`${colors.black.bgBrightGreen("* OK *")} The PDF report related to the registration of ${companyName} has been deleted from the server`);
@@ -370,16 +370,16 @@ module.exports.renderIndexPage = catchAsync(async function (req, res) {
     // ----- Function below has been copied from https://stackoverflow.com/questions/10123953/how-to-sort-an-object-array-by-date-property
     var sortBy = (function () {
         var toString = Object.prototype.toString,
-        // default parser function
-        parse = function (x) {
-            return x;
-        },
-        // gets the item to be sorted
-        getItem = function (x) {
-            var isObject = x != null && typeof x === "object";
-            var isProp = isObject && this.prop in x;
-            return this.parser(isProp ? x[this.prop] : x);
-        };
+            // default parser function
+            parse = function (x) {
+                return x;
+            },
+            // gets the item to be sorted
+            getItem = function (x) {
+                var isObject = x != null && typeof x === "object";
+                var isProp = isObject && this.prop in x;
+                return this.parser(isProp ? x[this.prop] : x);
+            };
 
         /**
          * Sorts an array of elements.
@@ -392,15 +392,15 @@ module.exports.renderIndexPage = catchAsync(async function (req, res) {
          * @return {Array}
          */
         return function sortby(array, cfg) {
-        if (!(array instanceof Array && array.length)) return [];
-        if (toString.call(cfg) !== "[object Object]") cfg = {};
-        if (typeof cfg.parser !== "function") cfg.parser = parse;
-        cfg.desc = !!cfg.desc ? -1 : 1;
-        return array.sort(function (a, b) {
-            a = getItem.call(cfg, a);
-            b = getItem.call(cfg, b);
-            return cfg.desc * (a < b ? -1 : +(a > b));
-        });
+            if (!(array instanceof Array && array.length)) return [];
+            if (toString.call(cfg) !== "[object Object]") cfg = {};
+            if (typeof cfg.parser !== "function") cfg.parser = parse;
+            cfg.desc = !!cfg.desc ? -1 : 1;
+            return array.sort(function (a, b) {
+                a = getItem.call(cfg, a);
+                b = getItem.call(cfg, b);
+                return cfg.desc * (a < b ? -1 : +(a > b));
+            });
         };
     })();
 
@@ -413,7 +413,7 @@ module.exports.renderIndexPage = catchAsync(async function (req, res) {
     );
     const registered_14d = sortBy(
         await RegisteredTender.find({
-        deadlineRFQ: { $gt: today, $lte: next14days },
+            deadlineRFQ: { $gt: today, $lte: next14days },
         }),
         { prop: "deadlineRFQ" }
     );
@@ -427,23 +427,23 @@ module.exports.renderIndexPage = catchAsync(async function (req, res) {
 
     for (let register of allRegisteredTenders) {
         for (let country of countriesData) {
-        if (country.cca2 === register.countryLocation) {
-            if (
-            country.region === "Europe" ||
-            country.region === "Africa" ||
-            country.subregion === "Central Asia" ||
-            country.subregion === "Western Asia"
-            ) {
-            registered_inEU.push(register);
-            } else if (
-            country.region === "Asia" ||
-            country.region === "Oceania"
-            ) {
-            registered_inAP.push(register);
-            } else if (country.region === "Americas") {
-            registered_inAM.push(register);
-            } else registered_inEU.push(register);
-        }
+            if (country.cca2 === register.countryLocation) {
+                if (
+                    country.region === "Europe" ||
+                    country.region === "Africa" ||
+                    country.subregion === "Central Asia" ||
+                    country.subregion === "Western Asia"
+                ) {
+                    registered_inEU.push(register);
+                } else if (
+                    country.region === "Asia" ||
+                    country.region === "Oceania"
+                ) {
+                    registered_inAP.push(register);
+                } else if (country.region === "Americas") {
+                    registered_inAM.push(register);
+                } else registered_inEU.push(register);
+            }
         }
     }
 
@@ -493,16 +493,16 @@ module.exports.renderHistoryPage = catchAsync(async function (req, res) {
     // ----- Function below has been copied from https://stackoverflow.com/questions/10123953/how-to-sort-an-object-array-by-date-property
     var sortBy = (function () {
         var toString = Object.prototype.toString,
-        // default parser function
-        parse = function (x) {
-            return x;
-        },
-        // gets the item to be sorted
-        getItem = function (x) {
-            var isObject = x != null && typeof x === "object";
-            var isProp = isObject && this.prop in x;
-            return this.parser(isProp ? x[this.prop] : x);
-        };
+            // default parser function
+            parse = function (x) {
+                return x;
+            },
+            // gets the item to be sorted
+            getItem = function (x) {
+                var isObject = x != null && typeof x === "object";
+                var isProp = isObject && this.prop in x;
+                return this.parser(isProp ? x[this.prop] : x);
+            };
 
         /**
          * Sorts an array of elements.
@@ -514,40 +514,40 @@ module.exports.renderHistoryPage = catchAsync(async function (req, res) {
          * @property {Function} cfg.parser: function to parse the items to expected type
          * @return {Array}
          */
-         return function sortby(array, cfg) {
+        return function sortby(array, cfg) {
             if (!(array instanceof Array && array.length)) return [];
             if (toString.call(cfg) !== "[object Object]") cfg = {};
             if (typeof cfg.parser !== "function") cfg.parser = parse;
             cfg.desc = !!cfg.desc ? -1 : 1;
             return array.sort(function (a, b) {
-            a = getItem.call(cfg, a);
-            b = getItem.call(cfg, b);
-            return cfg.desc * (a < b ? -1 : +(a > b));
+                a = getItem.call(cfg, a);
+                b = getItem.call(cfg, b);
+                return cfg.desc * (a < b ? -1 : +(a > b));
             });
         };
-        })();
+    })();
 
-    const allRegisteredTenders = sortBy(await RegisteredTender.find({author : req.user}), {
+    const allRegisteredTenders = sortBy(await RegisteredTender.find({ author: req.user }), {
         prop: "deadlineRFQ",
     });
     const registered_past = sortBy(
         await RegisteredTender.find({
-        deadlineRFQ: { $lt: today },
-        author : req.user
+            deadlineRFQ: { $lt: today },
+            author: req.user
         }),
         { prop: "deadlineRFQ" }
     );
     const registered_14d = sortBy(
         await RegisteredTender.find({
-        deadlineRFQ: { $gt: today, $lte: next14days },
-        author : req.user
+            deadlineRFQ: { $gt: today, $lte: next14days },
+            author: req.user
         }),
         { prop: "deadlineRFQ" }
     );
     const registered_after = sortBy(
         await RegisteredTender.find({
-        deadlineRFQ: { $gt: next14days },
-        author : req.user
+            deadlineRFQ: { $gt: next14days },
+            author: req.user
         }),
         { prop: "deadlineRFQ" }
     );
@@ -558,42 +558,42 @@ module.exports.renderHistoryPage = catchAsync(async function (req, res) {
 
     for (let register of allRegisteredTenders) {
         for (let country of countriesData) {
-        if (country.cca2 === register.countryLocation) {
-            if (
-            country.region === "Europe" ||
-            country.region === "Africa" ||
-            country.subregion === "Central Asia" ||
-            country.subregion === "Western Asia"
-            ) {
-            registered_inEU.push(register);
-            } else if (
-            country.region === "Asia" ||
-            country.region === "Oceania"
-            ) {
-            registered_inAP.push(register);
-            } else if (country.region === "Americas") {
-            registered_inAM.push(register);
-            } else registered_inEU.push(register);
-        }
+            if (country.cca2 === register.countryLocation) {
+                if (
+                    country.region === "Europe" ||
+                    country.region === "Africa" ||
+                    country.subregion === "Central Asia" ||
+                    country.subregion === "Western Asia"
+                ) {
+                    registered_inEU.push(register);
+                } else if (
+                    country.region === "Asia" ||
+                    country.region === "Oceania"
+                ) {
+                    registered_inAP.push(register);
+                } else if (country.region === "Americas") {
+                    registered_inAM.push(register);
+                } else registered_inEU.push(register);
+            }
         }
     }
-    
-    
+
+
     let hasHistory = false
-    if(allRegisteredTenders && allRegisteredTenders.length){
+    if (allRegisteredTenders && allRegisteredTenders.length) {
         hasHistory = true
     }
 
     // ----- For debugging purposes
-    console.log(`"allRegisteredTenders" is registered as ${allRegisteredTenders}`)
-    console.log(`"today" is registered as ${today}`)
-    console.log(`"next14days" is registered as ${next14days}`)
-    console.log(`"registered_past" results are ${registered_past}`)
-    console.log(`"registered_14d" results are ${registered_14d}`)
-    console.log(`"registered_after" results are ${registered_after}`)
-    console.log(`"registered_inAM" results are ${registered_inAM}`)
-    console.log(`"registered_inAP" results are ${registered_inAP}`)
-    console.log(`"registered_inEU" results are ${registered_inEU}`)
+    // console.log(`"allRegisteredTenders" is registered as ${allRegisteredTenders}`)
+    // console.log(`"today" is registered as ${today}`)
+    // console.log(`"next14days" is registered as ${next14days}`)
+    // console.log(`"registered_past" results are ${registered_past}`)
+    // console.log(`"registered_14d" results are ${registered_14d}`)
+    // console.log(`"registered_after" results are ${registered_after}`)
+    // console.log(`"registered_inAM" results are ${registered_inAM}`)
+    // console.log(`"registered_inAP" results are ${registered_inAP}`)
+    // console.log(`"registered_inEU" results are ${registered_inEU}`)
 
     res.render("register/register_history.ejs", {
         hasHistory,
@@ -628,9 +628,9 @@ module.exports.renderShowPage = catchAsync(async function (req, res) {
 
         let isSubmitted
         if (matchingTender.tenderTeamSubmissionDate) {
-        isSubmitted = true
+            isSubmitted = true
         } else {
-        isSubmitted = false
+            isSubmitted = false
         }
 
         let priviledge = false;
@@ -641,28 +641,28 @@ module.exports.renderShowPage = catchAsync(async function (req, res) {
         if (matchingTender.author.id !== req.user.id || matchingTender.tenderTeamDecision || matchingTender.outcome || matchingTender.tenderTeamSubmissionDate) {
             editRestriction = true;
         }
-        console.log(matchingTender)
+        // console.log(matchingTender)
         res.render("register/register_show.ejs", {
-        isDecisionDatePassed,
-        isSubmitted,
-        priviledge,
-        editRestriction,
-        countriesData,
-        decisionCriteria,
-        monthsData,
-        reasonForTender,
-        tenderLaunchMethod,
-        tradelanes,
-        transportModes,
-        transportScope,
-        visitHistory,
-        volumeSplit,
-        bidRestrictions,
-        bidRequirements,
-        history,
-        specialHandling,
-        matchingTender,
-        capitalize
+            isDecisionDatePassed,
+            isSubmitted,
+            priviledge,
+            editRestriction,
+            countriesData,
+            decisionCriteria,
+            monthsData,
+            reasonForTender,
+            tenderLaunchMethod,
+            tradelanes,
+            transportModes,
+            transportScope,
+            visitHistory,
+            volumeSplit,
+            bidRestrictions,
+            bidRequirements,
+            history,
+            specialHandling,
+            matchingTender,
+            capitalize
         });
     }
 });
@@ -679,12 +679,12 @@ module.exports.tenderTeamDecision = catchAsync(async function (req, res) {
         return res.redirect(`/register/${matchingId}`);
     } else {
         let updatedEntry = {
-        tenderTeamDecision: decision,
-        tenderTeamDecisionDate: currentDateAndTime(),
-        tenderTeamDecisionMaker: "Tender team member",
-        tenderTeamDecisionComment: req.body.tenderTeamDecisionComment,
+            tenderTeamDecision: decision,
+            tenderTeamDecisionDate: currentDateAndTime(),
+            tenderTeamDecisionMaker: "Tender team member",
+            tenderTeamDecisionComment: req.body.tenderTeamDecisionComment,
         };
-        console.log(updatedEntry)
+        // console.log(updatedEntry)
         await RegisteredTender.findByIdAndUpdate(matchingId, updatedEntry);
         req.flash("success", "The decision has been updated.");
         return res.redirect("/register/index");
@@ -700,19 +700,19 @@ module.exports.renderEditPage = catchAsync(async function (req, res) {
     } else {
         // let filesUploaded = await listFiles(matchingId);
         res.render("register/register_edit.ejs", {
-        countriesData,
-        monthsData,
-        businessVerticals,
-        matchingTender,
-        // filesUploaded,
+            countriesData,
+            monthsData,
+            businessVerticals,
+            matchingTender,
+            // filesUploaded,
         });
     }
 });
 
 module.exports.patchRegister = catchAsync(async function (req, res) {
     let matchingId = req.params.id;
-    console.log(`${colors.black.bgBrightCyan("* ATTEMPT *")} A new TENDER REGISTRATION edit has been attempted`);
-    console.log(req.body);
+    console.log(`${colors.black.bgBrightCyan("* ATTEMPT *")} A new TENDER REGISTRATION edit has been attempted with the following company name: ${req.body.companyName}`);
+    // console.log(req.body);
     console.log(req.files);
 
     let newIsPreadvised = req.body.isPreadvised;
@@ -770,7 +770,7 @@ module.exports.patchRegister = catchAsync(async function (req, res) {
     } else {
         newSpecialHandling = req.body.specialHandling;
         if (typeof newSpecialHandling != "object") {
-        newSpecialHandling = [newSpecialHandling];
+            newSpecialHandling = [newSpecialHandling];
         }
     }
     let newLinkedRFI = req.body.linkedRFI;
@@ -851,11 +851,11 @@ module.exports.patchRegister = catchAsync(async function (req, res) {
 
     let registerToUpdate = await RegisteredTender.findById(matchingId);
     let newDocumentUpload = registerToUpdate.documentUpload;
-    console.log("The value newDocumentUpload is:", newDocumentUpload)
+    // console.log("The value newDocumentUpload is:", newDocumentUpload)
     if (!newDocumentUpload || !newDocumentUpload.length) {
         newDocumentUpload = []
     }
-    
+
     let newFilesUploaded = req.files
     if (newFilesUploaded.length) {
         console.log(`Files uploaded: ${newFilesUploaded}`);
@@ -864,12 +864,12 @@ module.exports.patchRegister = catchAsync(async function (req, res) {
         }
         for (let file of newFilesUploaded) {
             const s3Results = await uploadFile(file);
-            console.log(s3Results)
+            // console.log(s3Results)
             console.log(`${file.originalname} has been uploaded to S3`)
             fs.unlink(`./${file.path}`, function (err) {
                 if (err) {
-                console.error(err)
-                return
+                    console.error(err)
+                    return
                 }
             })
             console.log(`${file.originalname} was deleted from the server`)
@@ -975,16 +975,14 @@ module.exports.deleteRegister = catchAsync(async function (req, res) {
         req.flash("error", "The tender with the given ID was not found.");
         res.redirect("/register/start");
     } else {
-        console.log(matchingTender);
+        // console.log(matchingTender);
         let matchingTenderName = matchingTender.companyName;
         console.log(`${colors.black.bgBrightCyan("* ATTEMPT *")} A TENDER REGISTRATION has been selected for deletion: ${matchingTenderName}`);
-        console.log(matchingTender);
+        // console.log(matchingTender);
         await registerTenderEmailCancellation(matchingId);
         await registerCancelTenderNotice(matchingId);
         await RegisteredTender.findByIdAndDelete(matchingId);
-        console.log(
-        `${colors.black.bgBrightGreen("* OK *")} The TENDER REGISTRATION related to "${matchingTenderName}" has been deleted`
-        );
+        console.log(`${colors.black.bgBrightGreen("* OK *")} The TENDER REGISTRATION related to "${matchingTenderName}" has been deleted`);
         if (matchingTender.documentUpload.length > 0) {
             // Remove all the documents from the S3 bucket
             for (let upload of matchingTender.documentUpload) {
@@ -1031,10 +1029,10 @@ module.exports.postReport = catchAsync(async function (req, res) {
     await registerReportEmail(req.user, matchingId, fileIdentifier)
 
     fs.unlink(`./reports/reportsGenerated/${matchingTender.companyName}_${fileIdentifier}.pdf`, function (err) {
-    if (err) {
-        console.error(err)
-        return
-    }
+        if (err) {
+            console.error(err)
+            return
+        }
     })
     console.log(`${colors.black.bgBrightGreen("* OK *")} The PDF report related to the register of ${matchingTender.companyName} has been deleted from the server`);
 
@@ -1049,7 +1047,7 @@ module.exports.renderOutcomePage = catchAsync(async function (req, res) {
         req.flash("error", "The tender with the given ID was not found.");
         res.redirect("/register/start");
     } else {
-        res.render("register/register_outcome.ejs", { 
+        res.render("register/register_outcome.ejs", {
             matchingTender,
             countriesData
         });
@@ -1065,43 +1063,43 @@ module.exports.registerOutcome = catchAsync(async function (req, res) {
     }
     let result = req.params.result;
     const rangeOfValidResults = ["positive", "negative", "unknown"]
-    if (!rangeOfValidResults.includes(result)){
+    if (!rangeOfValidResults.includes(result)) {
         req.flash("error", "The result provided is not valid.");
         res.redirect("/register/start");
     }
     let updatedEntry
     if (result === "positive") {
-            let awardResults = req.body.outcomeTenderResult
-            let awardVolumeSplit
-            if (typeof req.body.awardVolumeSplit != "object") {
-                awardVolumeSplit = [req.body.awardVolumeSplit]
-            } else {
-                awardVolumeSplit = req.body.awardVolumeSplit
-            }
-            let awardReceiveDate = new Date(req.body.outcomeAwardReceiveDate)
-            let expectedBusinessStartDate = new Date(req.body.outcomeExpectedBusinessStartDate)
-            let expectedTurnover = Number(req.body.outcomeExpectedTurnover)
-            let expectedAirfreightVol = Number(req.body.outcomeExpectedAirfreightVol)
-            let expectedSeafreightFCLVol = Number(req.body.outcomeExpectedSeafreightFCLVol)
-            let expectedSeafreightLCLVol = Number(req.body.outcomeExpectedSeafreightLCLVol)
-            let expectedRailfreightFCLVol = Number(req.body.outcomeExpectedRailfreightFCLVol)
-            let outcomeAdditionalComment = req.body.outcomeAdditionalComment
+        let awardResults = req.body.outcomeTenderResult
+        let awardVolumeSplit
+        if (typeof req.body.awardVolumeSplit != "object") {
+            awardVolumeSplit = [req.body.awardVolumeSplit]
+        } else {
+            awardVolumeSplit = req.body.awardVolumeSplit
+        }
+        let awardReceiveDate = new Date(req.body.outcomeAwardReceiveDate)
+        let expectedBusinessStartDate = new Date(req.body.outcomeExpectedBusinessStartDate)
+        let expectedTurnover = Number(req.body.outcomeExpectedTurnover)
+        let expectedAirfreightVol = Number(req.body.outcomeExpectedAirfreightVol)
+        let expectedSeafreightFCLVol = Number(req.body.outcomeExpectedSeafreightFCLVol)
+        let expectedSeafreightLCLVol = Number(req.body.outcomeExpectedSeafreightLCLVol)
+        let expectedRailfreightFCLVol = Number(req.body.outcomeExpectedRailfreightFCLVol)
+        let outcomeAdditionalComment = req.body.outcomeAdditionalComment
 
-            updatedEntry = {
-                outcome: "positive",
-                outcomeDetails : {
-                    awardResults: awardResults,
-                    awardVolumeSplit: awardVolumeSplit,
-                    awardReceiveDate: awardReceiveDate,
-                    expectedBusinessStartDate: expectedBusinessStartDate,
-                    expectedTurnover: expectedTurnover,
-                    expectedAirfreightVol : expectedAirfreightVol,
-                    expectedSeafreightFCLVol: expectedSeafreightFCLVol,
-                    expectedSeafreightLCLVol: expectedSeafreightLCLVol,
-                    expectedRailfreightFCLVol: expectedRailfreightFCLVol,
-                    outcomeAdditionalComment: outcomeAdditionalComment
-                }
+        updatedEntry = {
+            outcome: "positive",
+            outcomeDetails: {
+                awardResults: awardResults,
+                awardVolumeSplit: awardVolumeSplit,
+                awardReceiveDate: awardReceiveDate,
+                expectedBusinessStartDate: expectedBusinessStartDate,
+                expectedTurnover: expectedTurnover,
+                expectedAirfreightVol: expectedAirfreightVol,
+                expectedSeafreightFCLVol: expectedSeafreightFCLVol,
+                expectedSeafreightLCLVol: expectedSeafreightLCLVol,
+                expectedRailfreightFCLVol: expectedRailfreightFCLVol,
+                outcomeAdditionalComment: outcomeAdditionalComment
             }
+        }
     } else if (result === "negative") {
         let changeProvider = req.body.outcomeChangeProvider
         let pricingComment = req.body.outcomePricingComment
@@ -1133,7 +1131,7 @@ module.exports.registerOutcome = catchAsync(async function (req, res) {
 
         updatedEntry = {
             outcome: "negative",
-            outcomeDetails : {
+            outcomeDetails: {
                 changeProvider: changeProvider,
                 pricingComment: pricingComment,
                 ITComment: ITComment,
@@ -1157,7 +1155,7 @@ module.exports.registerOutcome = catchAsync(async function (req, res) {
     } else if (result === "unknown") {
         updatedEntry = {
             outcome: "unknown",
-            outcomeDetails : {
+            outcomeDetails: {
                 outcomeAdditionalComment: req.body.outcomeAdditionalComment
             }
         }
@@ -1165,7 +1163,7 @@ module.exports.registerOutcome = catchAsync(async function (req, res) {
 
     await RegisteredTender.findByIdAndUpdate(matchingId, updatedEntry);
 
-    console.log(updatedEntry)
+    // console.log(updatedEntry)
     req.flash("success", "The tender outcome has been registered.");
     res.redirect(`/register/${matchingId}`)
 })

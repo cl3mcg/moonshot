@@ -63,77 +63,19 @@ const {
   deleteFile
 } = require("../utilities/commonfunctions.js");
 
-// ----- Routes MOONSHOT PREADVISED
+// ----- Controllers used for DASHBOARD ROUTES
 
-router.get("/start", isLoggedIn, isTenderTeam, function (req, res) {
-    res.render("dashboard/dashboard_start.ejs");
-  });
+const dashboardCtrl = require("../controllers/dashboard_ctrl.js");
 
-router.get("/visual", isLoggedIn, isTenderTeam, function (req, res) {
-    res.render("dashboard/dashboard_visual.ejs");
-  });
+// ----- Routes MOONSHOT DASHBOARD
 
-router.get("/reporting", isLoggedIn, isTenderTeam, function (req, res) {
-    res.render("dashboard/dashboard_reporting.ejs");
-  });
+router.get("/start", isLoggedIn, isTenderTeam, dashboardCtrl.renderStartPage);
 
-router.post("/issueReport/:type", isLoggedIn, isTenderTeam, async function (req, res) {
-    const type = req.params.type;
-    const userId = req.user._id;
-    let fileName
-    
-    if (type === "preadvise") {
-      fileName = `excelReport_${Date.now()}`
-      let file = await generatePreadviseExcelReport(fileName);
-      req.flash("success", "The pre-advise tender Excel report has been generated.");
-      setTimeout(() => {
-        res.download(`./reports/reportsGenerated/${fileName}.xlsx`, `${fileName}.xlsx`, function (err) {
-          if (err) {
-            console.log(err);
-            throw new ExpressError("File cannot be downloaded", 500)
-          } else {
-            deleteFile(`./reports/reportsGenerated/${fileName}.xlsx`)
-          }
-        });
-      }, 5000);
+router.get("/reporting", isLoggedIn, isTenderTeam, dashboardCtrl.renderReportsPage);
 
-    }
-    else if (type === "register") {
-      fileName = `excelReport_${Date.now()}`
-      let file = await generateRegisterExcelReport(fileName);
-      req.flash("success", "The registered tender Excel report has been generated.");
-      setTimeout(() => {
-        res.download(`./reports/reportsGenerated/${fileName}.xlsx`, `${fileName}.xlsx`, function (err) {
-          if (err) {
-            console.log(err);
-            throw new ExpressError("File cannot be downloaded", 500)
-          } else {
-            fs.unlink(`./reports/reportsGenerated/${fileName}.xlsx`, function (err) {
-              if (err) {
-                  console.error(err)
-                  return
-              } else {
-                console.log(`${colors.black.bgBrightGreen("* OK *")} The dashboard EXCEL report related to the ${type} has been deleted from the server`);
-              }
-            })
-          }
-        });
-      }, 5000);
-    }
+router.post("/issueReport/:type", isLoggedIn, isTenderTeam, dashboardCtrl.issueReport);
 
-    // setTimeout(() => {
-    //   fs.unlink(`./reports/reportsGenerated/${fileName}.xlsx`, function (err) {
-    //     if (err) {
-    //         console.error(err)
-    //         return
-    //     }
-    //     })
-    //     console.log(`${colors.black.bgBrightGreen("* OK *")} The dashboard EXCEL report related to the ${type} has been deleted from the server`);
-    // }, 30000);
-
-  });
-
-  
+router.get("/visual", isLoggedIn, isTenderTeam, dashboardCtrl.renderVisualPage);
 
 // ----- Export the router
 module.exports = router;

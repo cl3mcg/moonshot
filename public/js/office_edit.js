@@ -35,7 +35,7 @@ const tenderDeskNames = {
 
 // ---- ---- Declaration of reusable functions
 // ---- Function to get the filds .value or the checkbox .checked
-const getValue = function(element){
+const getValue = function (element) {
     if (element.type === "checkbox" || element.type === "radio") {
         return element.checked
     } else {
@@ -48,7 +48,7 @@ const getValue = function(element){
 const launchModal = function () {
     const addingModalTriggers = function () {
         confirmBtn.setAttribute("data-bs-toggle", "modal")
-        confirmBtn.setAttribute("data-bs-target","#staticBackdrop")
+        confirmBtn.setAttribute("data-bs-target", "#staticBackdrop")
     }
 
     const addingModalFields = function () {
@@ -60,25 +60,25 @@ const launchModal = function () {
         mod_countryName.innerText = getValue(countryName)
         mod_coordinates.innerText = `${getValue(lat)}, ${getValue(lng)}`
         mod_mapsLink.href = `http://www.google.com/maps/place/${getValue(lat)},${getValue(lng)}`
-        if (rhenusSetup.checked) {mod_officeSetup.innerText = "Rhenus office"}
-        else if (agentSetup.checked) {mod_officeSetup.innerText = "Agent office"}
+        if (rhenusSetup.checked) { mod_officeSetup.innerText = "Rhenus office" }
+        else if (agentSetup.checked) { mod_officeSetup.innerText = "Agent office" }
         mod_tenderDesk.innerText = tenderDeskNames[`${getValue(tenderDesk)}`]
 
         // ---- Special display for Country registering the pre-advise
-        const adjustmod_countryLocation = async function () { 
-                try { 
-                    const result = await axios.get("../../../ressources/countries.json")
-                    const countriesData = result.data
-                    for (let country of countriesData) {
-                        if (country.cca2 === getValue(countryLocation)) {
-                            mod_countryLocationcca2.innerText = `${country.cca2}`
-                            mod_countryLocation.innerText =  `${country.name.common} ${country.flag}`
-                        }
+        const adjustmod_countryLocation = async function () {
+            try {
+                const result = await axios.get("../../../ressources/countries.json")
+                const countriesData = result.data
+                for (let country of countriesData) {
+                    if (country.cca2 === getValue(countryLocation)) {
+                        mod_countryLocationcca2.innerText = `${country.cca2}`
+                        mod_countryLocation.innerText = `${country.name.common} ${country.flag}`
                     }
-                    }
-                catch (err) {
-                    console.log("Oh no ! There's an error !", err) 
-                } 
+                }
+            }
+            catch (err) {
+                console.log("Oh no ! There's an error !", err)
+            }
         }
         adjustmod_countryLocation()
 
@@ -89,7 +89,7 @@ const launchModal = function () {
         confirmBtn.removeAttribute("data-bs-toggle")
         confirmBtn.removeAttribute("data-bs-target")
     }
-    
+
     addingModalTriggers()
     confirmBtn.click()
     addingModalFields()
@@ -110,17 +110,17 @@ const formValidation = function () {
                 confirmBtn.classList.add("btn-primary")
             }, 250);
             launchModal()
-            console.log("The form is validated.")
+            // console.log("The form is validated.")
         } else {
-            console.log("The form is not validated.")
+            // console.log("The form is not validated.")
             confirmBtn.classList.remove("btn-primary")
             confirmBtn.classList.add("btn-danger", "animate__animated", "animate__shakeX", "animate__faster")
             setTimeout(() => {
                 confirmBtn.classList.remove("btn-danger", "animate__animated", "animate__shakeX", "animate__faster")
-                confirmBtn.classList.add("btn-primary") 
+                confirmBtn.classList.add("btn-primary")
             }, 250);
         }
     }
 }
 
-confirmBtn.addEventListener("click", function (event) {event.preventDefault(), formValidation()})
+confirmBtn.addEventListener("click", function (event) { event.preventDefault(), formValidation() })

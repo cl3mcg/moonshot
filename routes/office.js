@@ -33,6 +33,8 @@ const { validateOffice } = require("../utilities/middleware.js");
 
 const officeCtrl = require("../controllers/office_ctrl.js");
 
+// ----- Routes MOONSHOT OFFICES
+
 router.get("/start", officeCtrl.renderStartPage);
 
 router.get("/index", officeCtrl.renderindexPage);
