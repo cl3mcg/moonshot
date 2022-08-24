@@ -63,15 +63,15 @@ let dataPreadviseNum = {
     datasets: [
         {
             label: 'Pre-advise recorded',
-            backgroundColor: 'rgba(141, 151, 151, 0.2)',
-            borderColor: 'rgba(141, 151, 151, 1)',
+            backgroundColor: 'rgba(28, 63, 96, 0.2)',
+            borderColor: 'rgba(28, 63, 96, 1)',
             borderWidth: 1,
             data: [],
         },
         {
             label: 'Registrations recorded',
-            backgroundColor: 'rgba(141, 151, 151, 0.5)',
-            borderColor: 'rgba(141, 151, 151, 1)',
+            backgroundColor: 'rgba(28, 63, 96, 0.6)',
+            borderColor: 'rgba(28, 63, 96, 1)',
             borderWidth: 1,
             data: [],
         }
@@ -183,8 +183,8 @@ let dataChartModeNum = {
         },
         {
             label: 'Railfreight FCL',
-            backgroundColor: 'rgba(28, 63, 96, 0.6)',
-            borderColor: 'rgba(28, 63, 96, 1)',
+            backgroundColor: 'rgba(77, 11, 108, 0.4)',
+            borderColor: 'rgba(77, 11, 108, 1)',
             borderWidth: 1,
             data: [],
         }
@@ -209,7 +209,7 @@ let configChartModeNum = {
         },
         plugins: {
             legend: {
-                display: false
+                display: true
             }
         }
     }
