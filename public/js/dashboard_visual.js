@@ -273,7 +273,8 @@ let dataChartAirfreightVolumeEvol = {
         {
             label: 'Airfreight',
             fill: false,
-            borderColor: 'rgba(60, 145, 230, 1)',
+            borderColor: 'rgba(70, 75, 150, 1)',
+            backgroundColor: 'rgba(70, 75, 150, 1)',
             tension: 0.05,
             data: [],
         }
@@ -316,7 +317,8 @@ let dataChartSeafreightFCLVolumeEvol = {
         {
             label: 'Seafreight FCL',
             fill: false,
-            borderColor: 'rgba(60, 145, 230, 1)',
+            borderColor: 'rgba(70, 75, 150, 1)',
+            backgroundColor: 'rgba(70, 75, 150, 1)',
             tension: 0.05,
             data: [],
         }
@@ -359,7 +361,8 @@ let dataChartSeafreightLCLVolumeEvol = {
         {
             label: 'Seafreight LCL',
             fill: false,
-            borderColor: 'rgba(60, 145, 230, 1)',
+            borderColor: 'rgba(70, 75, 150, 1)',
+            backgroundColor: 'rgba(70, 75, 150, 1)',
             tension: 0.05,
             data: [],
         }
@@ -402,7 +405,8 @@ let dataChartRailfreightFCLVolumeEvol = {
         {
             label: 'Railfreight FCL',
             fill: false,
-            borderColor: 'rgba(60, 145, 230, 1)',
+            borderColor: 'rgba(70, 75, 150, 1)',
+            backgroundColor: 'rgba(70, 75, 150, 1)',
             tension: 0.05,
             data: [],
         }
