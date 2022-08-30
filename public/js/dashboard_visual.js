@@ -479,7 +479,7 @@ window.addEventListener('load', () => {
             // Logic allowing to populate the value of preadviseLeadTimeValue for the average days between a preadvise an a tender launch
             if (results.preadviseLeadTimeValue[2022]) {
                 if (results.preadviseLeadTimeValue[2022] < 10) {
-                    document.querySelector("#preadviseLeadTimeValue").innerText = `0${results.preadviseLeadTimeValue[2022]}`
+                    document.querySelector("#preadviseLeadTimeValue").innerText = `0${Math.ceil(results.preadviseLeadTimeValue[2022])}`
                 } else {
                     document.querySelector("#preadviseLeadTimeValue").innerText = Math.ceil(results.preadviseLeadTimeValue[2022])
                 }
