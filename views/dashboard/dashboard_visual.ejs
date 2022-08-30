@@ -15,7 +15,7 @@
 <div class="col d-flex justify-content-between mx-3 my-4">
     <div><a href="/dashboard/start" class="btn btn-secondary btn-sm"><i class="bi bi-arrow-left-circle me-2"></i>Back</a></div>
     <div><h1 class="text-center">Visual dashboard</h1></div>
-    <!-- <div><button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="bi bi-gear me-1"></i>Options</button></div> -->
+    <div><button class="btn btn-sm btn-outline-primary d-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="bi bi-gear me-1"></i>Options</button></div>
 </div>
 <div class="mt-3">
     <div class="container-fluid">
@@ -24,7 +24,7 @@
               <button class="nav-link active" id="v-pills-opportunity-tab" data-bs-toggle="pill" data-bs-target="#v-pills-opportunity" type="button" role="tab" aria-controls="v-pills-opportunity" aria-selected="true">Opportunities</button>
               <button class="nav-link" id="v-pills-schedule-tab" data-bs-toggle="pill" data-bs-target="#v-pills-schedule" type="button" role="tab" aria-controls="v-pills-schedule" aria-selected="false">Schedule</button>
               <button class="nav-link" id="v-pills-volume-tab" data-bs-toggle="pill" data-bs-target="#v-pills-volume" type="button" role="tab" aria-controls="v-pills-volume" aria-selected="false">Volumes</button>
-              <!-- <button class="nav-link" id="v-pills-outcome-tab" data-bs-toggle="pill" data-bs-target="#v-pills-outcome" type="button" role="tab" aria-controls="v-pills-outcome" aria-selected="false">Outcome</button> -->
+              <button class="nav-link" id="v-pills-outcome-tab" data-bs-toggle="pill" data-bs-target="#v-pills-outcome" type="button" role="tab" aria-controls="v-pills-outcome" aria-selected="false">Outcome</button>
             </div>
             <div class="container">
                 <div class="tab-content mx-3" id="v-pills-tabContent">
@@ -159,9 +159,19 @@
                           </div>
                       </div>
                     </div>
-                    <!-- <div class="tab-pane fade" id="v-pills-outcome" role="tabpanel" aria-labelledby="v-pills-outcome-tab" tabindex="0">
-      
-                    </div> -->
+                    <div class="tab-pane fade" id="v-pills-outcome" role="tabpanel" aria-labelledby="v-pills-outcome-tab" tabindex="0">
+                        <div class="row mt-5 gy-3 justify-content-center">
+                            <div class="col col-12 col-sm-6 mt-2">
+                                <div class="card h-100 text-muted">
+                                    <div class="card-body">
+                                    <h1><i class="bi bi-wrench-adjustable-circle me-2"></i></h1>
+                                    <h5 class="card-title">Available soon...</h5>
+                                    <p class="card-text">This feature is under active development.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
           </div>
