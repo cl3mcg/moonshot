@@ -230,6 +230,10 @@ initEmailScheduler();
 
 
 // ----- Routes MOONSHOT HOME & START
+app.get("", function (req, res) {
+  res.render("index/homepage.ejs");
+});
+
 app.get("/", function (req, res) {
   res.render("index/homepage.ejs");
 });
