@@ -21,3 +21,11 @@ The project evolves around 3 main tools.
    - The tender dashboard offers the option to download all registered entries in an Excel format for custom manipulation of the data.
 3. Office and contact lists.
    - The office and contact lists is a tool gathering in a single space the contact list useful to launch a tender.
+
+### Documentation
+
+For the time being, the documentation of this project is stored on a [Notion public page](https://www.notion.so/cl3mcg/Moonshot-19731ba2dfa84329862bc203d4a97793?pvs=4).
+
+## License
+
+[Marguerite project](https://github.com/cl3mcg/marguerite) by [cl3mcg](http://www.linkedin.com/in/cl3mcg) is licensed under [CC BY-NC-SA 4.0](https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1](http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1)http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1).
