@@ -28,4 +28,4 @@ For the time being, the documentation of this project is stored on a [Notion pub
 
 ## License
 
-[Marguerite project](https://github.com/cl3mcg/marguerite) by [cl3mcg](http://www.linkedin.com/in/cl3mcg) is licensed under [CC BY-NC-SA 4.0](https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1](http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1)http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1).
+[The Moonshot project](https://github.com/cl3mcg/moonshot) by [cl3mcg](http://www.linkedin.com/in/cl3mcg) is licensed under [CC BY-NC-SA 4.0](https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1](http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1)http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1).
